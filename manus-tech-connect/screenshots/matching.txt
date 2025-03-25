@@ -1,0 +1,14 @@
+// Matching System screenshot description
+This is the matching page of Tech Connect, featuring:
+- Header with page title "Find a Match" and back button
+- Explanation of the automatic matching system
+- "Find a Teacher Match" button that triggers the matching algorithm
+- When a match is found, displays:
+  - Teacher's profile information (name, photo)
+  - Technology being matched on
+  - Teacher's proficiency level
+  - Matching availability days
+  - "Connect with this Teacher" button
+- If no match is found, displays a message advising to try again later
+- Success/error message area
+- Note: This page is only available to learners, teachers wait for connection requests

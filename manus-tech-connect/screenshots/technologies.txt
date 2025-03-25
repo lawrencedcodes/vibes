@@ -1,0 +1,16 @@
+// Technology Selection screenshot description
+This is the technology selection page of Tech Connect, featuring:
+- Header with page title "Your Technologies" and back button
+- Section showing currently selected technologies with:
+  - Technology name
+  - Proficiency level badge (beginner, intermediate, advanced, expert)
+  - Brief description of each technology
+  - Remove button for each technology
+- Add Technology form with:
+  - Technology dropdown (JavaScript, TypeScript, Java, C#, Python, Data Structures and Algorithms, Tech Career Preparation)
+  - Proficiency level selection
+  - Add Technology button
+- Success/error message area
+- Different context based on user role:
+  - For teachers: "Technologies You Teach" with teaching proficiency
+  - For learners: "Technologies You Want to Learn" with current level

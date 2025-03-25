@@ -1,0 +1,14 @@
+// Profile Management screenshot description
+This is the profile management page of Tech Connect, featuring:
+- Header with page title "Your Profile" and back button
+- Form with fields for:
+  - First name
+  - Last name
+  - Email address (disabled, cannot be changed)
+  - Profile photo upload section with:
+    - Current photo display or placeholder
+    - "Change photo" button
+    - Supported file types information
+- Save and Cancel buttons at the bottom
+- Success/error message area at the top
+- Clean, organized layout with proper section spacing

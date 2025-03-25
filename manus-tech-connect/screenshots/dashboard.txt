@@ -1,0 +1,11 @@
+// Dashboard screenshot description
+This is the dashboard page of Tech Connect, featuring:
+- Header with user welcome message and sign out button
+- Grid layout of cards for different features:
+  - Profile card with link to update profile
+  - Role-specific card (Teaching for teachers, Learning for learners)
+  - Connections card to view and manage connections
+  - Availability card to set teaching/learning availability
+- Each card has a descriptive title, brief explanation, and action button
+- Clean, organized layout with consistent styling
+- Responsive design that adapts to different screen sizes

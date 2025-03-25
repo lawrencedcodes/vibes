@@ -1,0 +1,19 @@
+// Connections Management screenshot description
+This is the connections page of Tech Connect, featuring:
+- Header with page title "Your Connections" and back button
+- List of connections with:
+  - User photo (or initials if no photo)
+  - Name of the connected user
+  - Role (Teacher or Learner)
+  - Technology they're connected for
+  - Connection status badge (Pending, Accepted, Rejected, Completed)
+  - Connection date
+- For pending connections:
+  - Teachers see Accept/Reject buttons
+  - Learners see a waiting indicator
+- For accepted connections:
+  - Message button to open chat
+  - Mark as Completed button
+- Empty state with message when no connections exist
+- Success/error message area
+- Clean, organized layout with clear visual hierarchy

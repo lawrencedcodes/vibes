@@ -1,0 +1,17 @@
+// Availability Scheduling screenshot description
+This is the availability scheduling page of Tech Connect, featuring:
+- Header with page title "Your Availability" and back button
+- Section showing current availability schedule with:
+  - Day of the week (Sunday through Saturday)
+  - Time range (start time - end time)
+  - Remove button for each time slot
+- Add Availability form with:
+  - Day of week dropdown
+  - Start time picker (24-hour format)
+  - End time picker (24-hour format)
+  - Add Availability button
+- Success/error message area
+- Clean, organized layout with clear visual hierarchy
+- Different context based on user role:
+  - For teachers: "Set your availability for teaching sessions"
+  - For learners: "Set your availability for learning sessions"

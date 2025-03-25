@@ -1,0 +1,9 @@
+// Login page screenshot description
+This is the login page of Tech Connect, featuring:
+- Clean, minimalist design with a white background
+- "Sign in to Tech Connect" heading
+- Email address input field
+- Password input field
+- "Sign in" button
+- Link to registration page for new users
+- Error message display area (shown when login fails)

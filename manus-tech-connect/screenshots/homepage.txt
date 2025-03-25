@@ -1,0 +1,7 @@
+// Homepage screenshot description
+This is the homepage of Tech Connect, featuring:
+- Hero section with a background image and overlay
+- "Tech Connect" title and tagline
+- Call-to-action buttons for registration or login
+- Features section highlighting the platform's capabilities
+- Footer with social media links for Top Southern Coders
