@@ -1,0 +1,60 @@
+version: '3'
+
+services:
+  # PostgreSQL Database
+  postgres:
+    image: postgres:14
+    container_name: techpathways-postgres
+    environment:
+      POSTGRES_DB: techpathways
+      POSTGRES_USER: techpathways
+      POSTGRES_PASSWORD: techpathways_password
+    volumes:
+      - postgres_data:/var/lib/postgresql/data
+    ports:
+      - "5432:5432"
+    networks:
+      - techpathways-network
+    restart: unless-stopped
+
+  # Spring Boot Backend
+  backend:
+    build:
+      context: ./backend
+      dockerfile: Dockerfile
+    container_name: techpathways-backend
+    depends_on:
+      - postgres
+    environment:
+      SPRING_DATASOURCE_URL: jdbc:postgresql://postgres:5432/techpathways
+      SPRING_DATASOURCE_USERNAME: techpathways
+      SPRING_DATASOURCE_PASSWORD: techpathways_password
+      SPRING_JPA_HIBERNATE_DDL_AUTO: update
+      JWT_SECRET: techpathways_jwt_secret_key_for_token_generation_and_validation
+      JWT_EXPIRATION_MS: 86400000
+    ports:
+      - "8080:8080"
+    networks:
+      - techpathways-network
+    restart: unless-stopped
+
+  # React Frontend
+  frontend:
+    build:
+      context: ./frontend
+      dockerfile: Dockerfile
+    container_name: techpathways-frontend
+    depends_on:
+      - backend
+    ports:
+      - "80:80"
+    networks:
+      - techpathways-network
+    restart: unless-stopped
+
+networks:
+  techpathways-network:
+    driver: bridge
+
+volumes:
+  postgres_data:
