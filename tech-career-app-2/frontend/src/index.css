@@ -1,0 +1,46 @@
+/* Global styles for the application */
+body {
+  margin: 0;
+  font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', 'Roboto', 'Oxygen',
+    'Ubuntu', 'Cantarell', 'Fira Sans', 'Droid Sans', 'Helvetica Neue',
+    sans-serif;
+  -webkit-font-smoothing: antialiased;
+  -moz-osx-font-smoothing: grayscale;
+}
+
+code {
+  font-family: source-code-pro, Menlo, Monaco, Consolas, 'Courier New',
+    monospace;
+}
+
+/* Mobile-first responsive design */
+html {
+  font-size: 16px;
+}
+
+@media (min-width: 600px) {
+  html {
+    font-size: 18px;
+  }
+}
+
+/* Ensure content is readable in dark mode */
+a {
+  color: #90caf9;
+  text-decoration: none;
+}
+
+a:hover {
+  text-decoration: underline;
+}
+
+/* Smooth scrolling */
+html {
+  scroll-behavior: smooth;
+}
+
+/* Improve accessibility */
+:focus {
+  outline: 2px solid #90caf9;
+  outline-offset: 2px;
+}
