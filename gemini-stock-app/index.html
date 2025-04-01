@@ -1,0 +1,738 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Stock Market Simulator</title>
+    <script src="https://cdn.tailwindcss.com?plugins=forms"></script>
+    <link rel="preconnect" href="https://fonts.googleapis.com" />
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+    <link
+      href="https://fonts.googleapis.com/css2?family=IBM+Plex+Mono:wght@400;500;600&display=swap"
+      rel="stylesheet"
+    />
+    <style>
+      /* Apply monospace font globally */
+      body {
+        font-family: "IBM Plex Mono", monospace;
+        color: #e0e0e0; /* Light text */
+      }
+      /* Custom styles for Bloomberg-like feel */
+      .terminal-border {
+        background-color: #1a1a1a; /* Dark background */
+        border: 1px solid #444; /* Subtle border */
+      }
+      .terminal-header {
+        background-color: #333;
+        color: #f0f0f0;
+        font-weight: 600;
+      }
+      .terminal-input {
+        background-color: #2a2a2a;
+        border: 1px solid #555;
+        color: #e0e0e0;
+        caret-color: #00ff00; /* Green caret */
+      }
+      .terminal-input:focus {
+        outline: none;
+        border-color: #00ff00; /* Green border on focus */
+        box-shadow: 0 0 5px rgba(0, 255, 0, 0.5);
+      }
+      .terminal-button {
+        background-color: #444;
+        border: 1px solid #666;
+        color: #e0e0e0;
+        transition: all 0.2s ease-in-out;
+      }
+      .terminal-button:hover {
+        background-color: #555;
+        border-color: #888;
+      }
+      /* Add disabled styles */
+      .terminal-button:disabled {
+        background-color: #333;
+        border-color: #555;
+        color: #777;
+        cursor: not-allowed;
+      }
+      .terminal-button-buy {
+        background-color: #006400; /* Dark Green */
+        border-color: #008000;
+      }
+      .terminal-button-buy:hover:not(:disabled) {
+        background-color: #008000; /* Brighter Green */
+        border-color: #228b22;
+      }
+      .terminal-button-sell {
+        background-color: #8b0000; /* Dark Red */
+        border-color: #a52a2a;
+      }
+      .terminal-button-sell:hover:not(:disabled) {
+        background-color: #a52a2a; /* Brighter Red */
+        border-color: #dc143c;
+      }
+      .positive-value {
+        color: #32cd32; /* Lime Green */
+      }
+      .negative-value {
+        color: #ff4500; /* Orange Red */
+      }
+      /* Style the scrollbar for portfolio */
+      .portfolio-scroll::-webkit-scrollbar {
+        width: 8px;
+      }
+      .portfolio-scroll::-webkit-scrollbar-track {
+        background: #2a2a2a;
+      }
+      .portfolio-scroll::-webkit-scrollbar-thumb {
+        background-color: #555;
+        border-radius: 4px;
+        border: 2px solid #2a2a2a;
+      }
+      /* Message Box Styles */
+      #messageBox {
+        position: fixed;
+        bottom: 20px;
+        left: 50%;
+        transform: translateX(-50%);
+        background-color: #333;
+        color: #fff;
+        padding: 10px 20px;
+        border-radius: 5px;
+        border: 1px solid #555;
+        box-shadow: 0 2px 10px rgba(0, 0, 0, 0.5);
+        z-index: 1000;
+        opacity: 0;
+        visibility: hidden;
+        transition: opacity 0.3s ease, visibility 0.3s ease;
+        max-width: 90%;
+        text-align: center;
+      }
+      #messageBox.show {
+        opacity: 1;
+        visibility: visible;
+      }
+    </style>
+  </head>
+  <body class="p-4 md:p-8">
+    <div
+      class="container mx-auto max-w-6xl grid grid-cols-1 md:grid-cols-3 gap-6"
+    >
+      <div
+        class="md:col-span-1 p-4 terminal-border rounded-md bg-gray-900/50 backdrop-blur-sm"
+      >
+        <h2
+          class="text-xl font-semibold mb-4 terminal-header p-2 rounded-t-md -m-4 text-center"
+        >
+          Trade Terminal
+        </h2>
+
+        <div class="mb-4">
+          <label
+            for="ticker"
+            class="block text-sm font-medium mb-1 text-gray-300"
+            >Stock Ticker (e.g., AAPL, GOOGL):</label
+          >
+          <input
+            type="text"
+            id="ticker"
+            name="ticker"
+            placeholder="Enter Ticker"
+            class="w-full p-2 rounded terminal-input uppercase"
+          />
+        </div>
+
+        <div class="mb-4">
+          <label
+            for="quantity"
+            class="block text-sm font-medium mb-1 text-gray-300"
+            >Quantity:</label
+          >
+          <input
+            type="number"
+            id="quantity"
+            name="quantity"
+            placeholder="Enter Shares"
+            min="1"
+            class="w-full p-2 rounded terminal-input"
+          />
+        </div>
+
+        <div class="grid grid-cols-2 gap-4 mb-4">
+          <button
+            id="buyButton"
+            class="p-2 rounded terminal-button terminal-button-buy font-semibold"
+          >
+            BUY
+          </button>
+          <button
+            id="sellButton"
+            class="p-2 rounded terminal-button terminal-button-sell font-semibold"
+          >
+            SELL
+          </button>
+        </div>
+
+        <button
+          id="updateButton"
+          class="w-full p-2 rounded terminal-button font-semibold mt-2"
+        >
+          Update Portfolio Prices
+        </button>
+      </div>
+
+      <div
+        class="md:col-span-2 p-4 terminal-border rounded-md bg-gray-900/50 backdrop-blur-sm"
+      >
+        <h2
+          class="text-xl font-semibold mb-4 terminal-header p-2 rounded-t-md -m-4 text-center"
+        >
+          Portfolio Status
+        </h2>
+
+        <div
+          class="grid grid-cols-2 gap-4 mb-4 p-3 bg-gray-800/50 rounded terminal-border"
+        >
+          <div>
+            <span class="text-gray-400 text-sm block">Cash Balance:</span>
+            <span id="cashBalance" class="text-lg font-semibold"
+              >$100,000.00</span
+            >
+          </div>
+          <div>
+            <span class="text-gray-400 text-sm block"
+              >Total Portfolio Value:</span
+            >
+            <span id="totalValue" class="text-lg font-semibold"
+              >$100,000.00</span
+            >
+          </div>
+          <div>
+            <span class="text-gray-400 text-sm block">Total Gain/Loss:</span>
+            <span id="totalGainLoss" class="text-lg font-semibold">$0.00</span>
+          </div>
+          <div>
+            <span class="text-gray-400 text-sm block">Gain/Loss (%):</span>
+            <span id="totalGainLossPercent" class="text-lg font-semibold"
+              >0.00%</span
+            >
+          </div>
+        </div>
+
+        <h3 class="text-lg font-medium mb-2 text-gray-300">Current Holdings</h3>
+        <div
+          class="overflow-auto portfolio-scroll terminal-border rounded"
+          style="max-height: 400px"
+        >
+          <table class="min-w-full divide-y divide-gray-700">
+            <thead class="bg-gray-800/80 sticky top-0">
+              <tr>
+                <th
+                  scope="col"
+                  class="px-4 py-2 text-left text-xs font-medium text-gray-300 uppercase tracking-wider"
+                >
+                  Ticker
+                </th>
+                <th
+                  scope="col"
+                  class="px-4 py-2 text-left text-xs font-medium text-gray-300 uppercase tracking-wider"
+                >
+                  Shares
+                </th>
+                <th
+                  scope="col"
+                  class="px-4 py-2 text-left text-xs font-medium text-gray-300 uppercase tracking-wider"
+                >
+                  Avg Cost/Share
+                </th>
+                <th
+                  scope="col"
+                  class="px-4 py-2 text-left text-xs font-medium text-gray-300 uppercase tracking-wider"
+                >
+                  Current Price
+                </th>
+                <th
+                  scope="col"
+                  class="px-4 py-2 text-left text-xs font-medium text-gray-300 uppercase tracking-wider"
+                >
+                  Total Cost
+                </th>
+                <th
+                  scope="col"
+                  class="px-4 py-2 text-left text-xs font-medium text-gray-300 uppercase tracking-wider"
+                >
+                  Market Value
+                </th>
+                <th
+                  scope="col"
+                  class="px-4 py-2 text-left text-xs font-medium text-gray-300 uppercase tracking-wider"
+                >
+                  Gain/Loss
+                </th>
+              </tr>
+            </thead>
+            <tbody
+              id="portfolioBody"
+              class="bg-gray-900/70 divide-y divide-gray-600"
+            >
+              <tr>
+                <td colspan="7" class="text-center px-4 py-4 text-gray-500">
+                  No holdings yet. Start trading!
+                </td>
+              </tr>
+            </tbody>
+          </table>
+        </div>
+      </div>
+    </div>
+
+    <div id="messageBox">
+      <span id="messageText"></span>
+    </div>
+
+    <script>
+      // --- Configuration ---
+      const STARTING_CASH = 100000;
+      const BACKEND_URL = "http://localhost:3000"; // URL of your Node.js backend server
+
+      // --- State Variables ---
+      let cashBalance = STARTING_CASH;
+      let portfolio = {}; // { 'AAPL': { shares: 10, totalCost: 1700 }, ... }
+      let stockPrices = {}; // Cache for current prices { 'AAPL': 175.50, ... }
+      let isUpdating = false; // Flag to prevent concurrent updates/trades
+
+      // --- DOM Elements ---
+      const tickerInput = document.getElementById("ticker");
+      const quantityInput = document.getElementById("quantity");
+      const buyButton = document.getElementById("buyButton");
+      const sellButton = document.getElementById("sellButton");
+      const updateButton = document.getElementById("updateButton");
+      const cashBalanceEl = document.getElementById("cashBalance");
+      const totalValueEl = document.getElementById("totalValue");
+      const totalGainLossEl = document.getElementById("totalGainLoss");
+      const totalGainLossPercentEl = document.getElementById(
+        "totalGainLossPercent"
+      );
+      const portfolioBody = document.getElementById("portfolioBody");
+      const messageBox = document.getElementById("messageBox");
+      const messageText = document.getElementById("messageText");
+
+      // --- Utility Functions ---
+
+      // Format currency
+      function formatCurrency(amount) {
+        // Handle potential non-numeric input gracefully
+        if (typeof amount !== "number" || isNaN(amount)) {
+          return "$--.--";
+        }
+        return amount.toLocaleString("en-US", {
+          style: "currency",
+          currency: "USD",
+        });
+      }
+
+      // Format percentage
+      function formatPercent(value) {
+        if (typeof value !== "number" || isNaN(value)) {
+          return "--.--%";
+        }
+        return (value * 100).toFixed(2) + "%";
+      }
+
+      // Display messages to the user
+      let messageTimeout;
+      function showMessage(message, isError = false, duration = 3000) {
+        clearTimeout(messageTimeout); // Clear previous timeout if any
+        messageText.textContent = message;
+        messageBox.style.backgroundColor = isError ? "#8B0000" : "#333"; // Red for errors
+        messageBox.classList.add("show");
+        messageTimeout = setTimeout(() => {
+          messageBox.classList.remove("show");
+        }, duration);
+      }
+
+      // Disable/Enable trading buttons
+      function setTradingButtonsDisabled(disabled) {
+        isUpdating = disabled; // Set the global flag
+        buyButton.disabled = disabled;
+        sellButton.disabled = disabled;
+        updateButton.disabled = disabled;
+        tickerInput.disabled = disabled;
+        quantityInput.disabled = disabled;
+      }
+
+      // --- NEW: Fetch Stock Price from Backend ---
+      /**
+       * Fetches the current stock price from the backend server.
+       * @param {string} ticker The stock ticker symbol.
+       * @returns {Promise<number|null>} The price as a number, or null if fetching fails.
+       */
+      async function fetchStockPrice(ticker) {
+        ticker = ticker.toUpperCase();
+        // Return cached price if available (used by renderPortfolio after update)
+        if (stockPrices[ticker] !== undefined) {
+          return stockPrices[ticker];
+        }
+
+        console.log(`Fetching price for ${ticker} from backend...`);
+        try {
+          const response = await fetch(`${BACKEND_URL}/api/stock/${ticker}`);
+
+          if (!response.ok) {
+            // Attempt to read error message from backend response body
+            let errorMsg = `HTTP error! Status: ${response.status}`;
+            try {
+              const errorData = await response.json();
+              if (errorData && errorData.error) {
+                errorMsg = `API Error (${response.status}): ${errorData.error}`;
+              }
+            } catch (e) {
+              // Ignore if response body isn't valid JSON
+              console.warn("Could not parse error response body as JSON.");
+            }
+            throw new Error(errorMsg);
+          }
+
+          const data = await response.json();
+
+          if (typeof data.price !== "number" || isNaN(data.price)) {
+            throw new Error(
+              `Invalid price received from backend for ${ticker}.`
+            );
+          }
+
+          console.log(`Received price for ${ticker}: ${data.price}`);
+          // Cache the fetched price
+          stockPrices[ticker] = data.price;
+          return data.price;
+        } catch (error) {
+          console.error(`Failed to fetch price for ${ticker}:`, error);
+          showMessage(
+            `Error fetching price for ${ticker}: ${error.message}`,
+            true,
+            5000
+          );
+          // Store null in cache to indicate fetch failure for this cycle
+          stockPrices[ticker] = null;
+          return null; // Indicate failure
+        }
+      }
+
+      // --- Core Logic Functions (Modified for Async) ---
+
+      /**
+       * Fetches prices for all holdings and renders the portfolio table and summary.
+       * Handles fetching prices concurrently using Promise.allSettled.
+       */
+      async function renderPortfolio() {
+        console.log("Rendering portfolio...");
+        portfolioBody.innerHTML = ""; // Clear existing rows
+
+        const tickers = Object.keys(portfolio).sort();
+
+        // --- Fetch missing prices concurrently ---
+        const priceFetchPromises = [];
+        const tickersToFetch = [];
+        tickers.forEach((ticker) => {
+          // Only fetch if price is not already cached for this update cycle
+          if (stockPrices[ticker] === undefined) {
+            tickersToFetch.push(ticker);
+            // Note: We call fetchStockPrice here, which will cache the result
+            priceFetchPromises.push(fetchStockPrice(ticker));
+          }
+        });
+
+        if (priceFetchPromises.length > 0) {
+          console.log(`Fetching prices for: ${tickersToFetch.join(", ")}`);
+          // Use allSettled to continue even if some fetches fail
+          await Promise.allSettled(priceFetchPromises);
+          console.log("Finished fetching prices. Updated cache:", stockPrices);
+        }
+        // --- End Fetching Prices ---
+
+        let totalMarketValue = 0;
+        let totalCostBasis = 0;
+        let hasValidPrices = false; // Flag to check if we could calculate market value
+
+        if (tickers.length === 0) {
+          portfolioBody.innerHTML =
+            '<tr><td colspan="7" class="text-center px-4 py-4 text-gray-500">No holdings yet. Start trading!</td></tr>';
+        } else {
+          tickers.forEach((ticker) => {
+            const holding = portfolio[ticker];
+            // Use the cached price (which might be null if fetch failed)
+            const currentPrice = stockPrices[ticker];
+            const avgCostPerShare = holding.totalCost / holding.shares;
+
+            let marketValue = 0;
+            let gainLoss = 0;
+            let currentPriceDisplay = "--.--";
+            let marketValueDisplay = "--.--";
+            let gainLossDisplay = "--.--";
+            let gainLossClass = "";
+
+            if (currentPrice !== null && typeof currentPrice === "number") {
+              marketValue = holding.shares * currentPrice;
+              gainLoss = marketValue - holding.totalCost;
+              totalMarketValue += marketValue; // Only add if price is valid
+              hasValidPrices = true; // Mark that we have at least one valid price
+
+              currentPriceDisplay = formatCurrency(currentPrice);
+              marketValueDisplay = formatCurrency(marketValue);
+              gainLossDisplay = formatCurrency(gainLoss);
+              gainLossClass =
+                gainLoss >= 0 ? "positive-value" : "negative-value";
+            } else {
+              currentPriceDisplay = '<span class="text-red-500">Error</span>'; // Indicate fetch failure
+            }
+
+            totalCostBasis += holding.totalCost; // Always include cost basis
+
+            const row = document.createElement("tr");
+            row.innerHTML = `
+                        <td class="px-4 py-2 whitespace-nowrap text-sm font-medium">${ticker}</td>
+                        <td class="px-4 py-2 whitespace-nowrap text-sm">${
+                          holding.shares
+                        }</td>
+                        <td class="px-4 py-2 whitespace-nowrap text-sm">${formatCurrency(
+                          avgCostPerShare
+                        )}</td>
+                        <td class="px-4 py-2 whitespace-nowrap text-sm">${currentPriceDisplay}</td>
+                        <td class="px-4 py-2 whitespace-nowrap text-sm">${formatCurrency(
+                          holding.totalCost
+                        )}</td>
+                        <td class="px-4 py-2 whitespace-nowrap text-sm">${marketValueDisplay}</td>
+                        <td class="px-4 py-2 whitespace-nowrap text-sm ${gainLossClass}">${gainLossDisplay}</td>
+                    `;
+            portfolioBody.appendChild(row);
+          });
+        }
+
+        // Update summary
+        const portfolioValue = cashBalance + totalMarketValue;
+        // Only calculate gain/loss if we have valid market prices
+        const overallGainLoss = hasValidPrices
+          ? portfolioValue - STARTING_CASH
+          : NaN;
+        const overallGainLossPercent =
+          STARTING_CASH === 0 || !hasValidPrices
+            ? NaN
+            : overallGainLoss / STARTING_CASH;
+
+        cashBalanceEl.textContent = formatCurrency(cashBalance);
+        totalValueEl.textContent = hasValidPrices
+          ? formatCurrency(portfolioValue)
+          : "$???.??"; // Indicate uncertainty if prices failed
+        totalGainLossEl.textContent = formatCurrency(overallGainLoss);
+        totalGainLossPercentEl.textContent = formatPercent(
+          overallGainLossPercent
+        );
+
+        // Apply color to overall gain/loss only if valid
+        if (!isNaN(overallGainLoss)) {
+          totalGainLossEl.className = `text-lg font-semibold ${
+            overallGainLoss >= 0 ? "positive-value" : "negative-value"
+          }`;
+          totalGainLossPercentEl.className = `text-lg font-semibold ${
+            overallGainLoss >= 0 ? "positive-value" : "negative-value"
+          }`;
+        } else {
+          totalGainLossEl.className = "text-lg font-semibold"; // Reset class if invalid
+          totalGainLossPercentEl.className = "text-lg font-semibold";
+        }
+        console.log("Portfolio rendering complete.");
+      }
+
+      /**
+       * Handle buying stock (now async).
+       */
+      async function buyStock() {
+        if (isUpdating) return; // Prevent action if already processing
+
+        const ticker = tickerInput.value.trim().toUpperCase();
+        const quantity = parseInt(quantityInput.value);
+
+        if (!ticker) {
+          showMessage("Please enter a stock ticker.", true);
+          return;
+        }
+        if (isNaN(quantity) || quantity <= 0) {
+          showMessage("Please enter a valid quantity.", true);
+          return;
+        }
+
+        setTradingButtonsDisabled(true); // Disable buttons during transaction
+        showMessage(`Fetching price for ${ticker}...`);
+        stockPrices = {}; // Reset price cache for fresh price on trade
+
+        const price = await fetchStockPrice(ticker);
+
+        if (price === null) {
+          // Check if fetch failed
+          // fetchStockPrice already shows error message
+          setTradingButtonsDisabled(false); // Re-enable buttons
+          return;
+        }
+
+        const cost = price * quantity;
+
+        if (cost > cashBalance) {
+          showMessage(
+            `Insufficient funds. Cost: ${formatCurrency(
+              cost
+            )}, Balance: ${formatCurrency(cashBalance)}`,
+            true
+          );
+          setTradingButtonsDisabled(false); // Re-enable buttons
+          return;
+        }
+
+        // --- Transaction ---
+        cashBalance -= cost;
+        if (portfolio[ticker]) {
+          portfolio[ticker].shares += quantity;
+          portfolio[ticker].totalCost += cost;
+        } else {
+          portfolio[ticker] = { shares: quantity, totalCost: cost };
+        }
+        // --- End Transaction ---
+
+        showMessage(
+          `Bought ${quantity} shares of ${ticker} at ${formatCurrency(price)}`
+        );
+        tickerInput.value = ""; // Clear inputs
+        quantityInput.value = "";
+
+        // Re-render portfolio (fetches prices for all holdings)
+        await renderPortfolio();
+        setTradingButtonsDisabled(false); // Re-enable buttons
+      }
+
+      /**
+       * Handle selling stock (now async).
+       */
+      async function sellStock() {
+        if (isUpdating) return; // Prevent action if already processing
+
+        const ticker = tickerInput.value.trim().toUpperCase();
+        const quantity = parseInt(quantityInput.value);
+
+        if (!ticker) {
+          showMessage("Please enter a stock ticker.", true);
+          return;
+        }
+        if (isNaN(quantity) || quantity <= 0) {
+          showMessage("Please enter a valid quantity.", true);
+          return;
+        }
+
+        const holding = portfolio[ticker];
+
+        if (!holding) {
+          showMessage(`You do not own any shares of ${ticker}.`, true);
+          return;
+        }
+        if (quantity > holding.shares) {
+          showMessage(
+            `You only own ${holding.shares} shares of ${ticker}. Cannot sell ${quantity}.`,
+            true
+          );
+          return;
+        }
+
+        setTradingButtonsDisabled(true); // Disable buttons during transaction
+        showMessage(`Fetching price for ${ticker}...`);
+        stockPrices = {}; // Reset price cache for fresh price on trade
+
+        const price = await fetchStockPrice(ticker);
+
+        if (price === null) {
+          // Check if fetch failed
+          // fetchStockPrice already shows error message
+          setTradingButtonsDisabled(false); // Re-enable buttons
+          return;
+        }
+
+        const proceeds = price * quantity;
+        const costBasisSold = (holding.totalCost / holding.shares) * quantity;
+
+        // --- Transaction ---
+        cashBalance += proceeds;
+        holding.shares -= quantity;
+        holding.totalCost -= costBasisSold;
+        if (holding.shares < 0.0001) {
+          // Use tolerance for floating point
+          delete portfolio[ticker];
+        }
+        // --- End Transaction ---
+
+        showMessage(
+          `Sold ${quantity} shares of ${ticker} at ${formatCurrency(price)}`
+        );
+        tickerInput.value = ""; // Clear inputs
+        quantityInput.value = "";
+
+        // Re-render portfolio (fetches prices for all holdings)
+        await renderPortfolio();
+        setTradingButtonsDisabled(false); // Re-enable buttons
+      }
+
+      /**
+       * Handle portfolio update (now async).
+       */
+      async function updatePortfolioPrices() {
+        if (isUpdating) return; // Prevent action if already processing
+
+        if (Object.keys(portfolio).length === 0) {
+          showMessage("Portfolio is empty. No prices to update.");
+          return;
+        }
+
+        setTradingButtonsDisabled(true); // Disable buttons during update
+        showMessage("Updating portfolio prices...");
+        stockPrices = {}; // Clear the price cache to force fetching new prices
+        await renderPortfolio(); // Re-render which will fetch all needed prices
+        showMessage("Portfolio prices updated.", false, 2000); // Shorter confirmation
+        setTradingButtonsDisabled(false); // Re-enable buttons
+      }
+
+      // --- Event Listeners ---
+      buyButton.addEventListener("click", buyStock); // Calls async function
+      sellButton.addEventListener("click", sellStock); // Calls async function
+      updateButton.addEventListener("click", updatePortfolioPrices); // Calls async function
+
+      // Allow Enter key press in input fields to trigger actions
+      tickerInput.addEventListener("keypress", function (event) {
+        if (event.key === "Enter" && !isUpdating) {
+          event.preventDefault();
+          quantityInput.focus();
+        }
+      });
+
+      quantityInput.addEventListener("keypress", function (event) {
+        if (event.key === "Enter" && !isUpdating) {
+          event.preventDefault();
+          buyButton.click(); // Default action is Buy
+        }
+      });
+
+      // --- Initial Render ---
+      // Perform an initial render without fetching prices immediately
+      // Prices will be fetched on the first 'Update' or trade.
+      (async () => {
+        console.log("Performing initial render...");
+        // Render placeholders initially
+        portfolioBody.innerHTML =
+          '<tr><td colspan="7" class="text-center px-4 py-4 text-gray-500">Click "Update Portfolio Prices" or trade to load data.</td></tr>';
+        cashBalanceEl.textContent = formatCurrency(cashBalance);
+        totalValueEl.textContent = formatCurrency(cashBalance); // Initially, value is just cash
+        totalGainLossEl.textContent = formatCurrency(0);
+        totalGainLossPercentEl.textContent = formatPercent(0);
+        console.log("Initial render complete.");
+        // Optional: Trigger an initial update automatically
+        // showMessage("Fetching initial portfolio prices...");
+        // await updatePortfolioPrices();
+      })();
+    </script>
+  </body>
+</html>
