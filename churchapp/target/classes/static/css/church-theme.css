@@ -1,0 +1,147 @@
+:root {
+    /* Church App Color Palette */
+    --primary-purple: #4B0082;   /* Royal Purple: Divinity, Royalty */
+    --accent-gold: #C5A009;      /* Burnished Gold: Value, Light */
+    --bg-cream: #FDFBF7;         /* Warm Cream: Warmth, Reduced Eye Strain */
+    --text-dark: #3E2723;        /* Deep Earth Tone: Grounding */
+    --text-light: #FDFBF7;
+    --success-green: #556B2F;    /* Olive Green: Natural, Warm Success */
+    --error-red: #8B0000;        /* Dark Red: Clear but polite urgency */
+    
+    /* Shadows & Depth */
+    --card-shadow: 0 4px 12px rgba(75, 0, 130, 0.15);
+    --hover-shadow: 0 6px 16px rgba(75, 0, 130, 0.25);
+    
+    /* Typography */
+    --font-heading: 'Merriweather', 'Playfair Display', serif;
+    --font-body: 'Inter', 'Lato', sans-serif;
+}
+
+/* Global Reset & Typography */
+body {
+    background-color: var(--bg-cream);
+    color: var(--text-dark);
+    font-family: var(--font-body);
+    font-size: 18px; /* High legibility */
+    line-height: 1.6;
+    margin: 0;
+    padding: 0;
+}
+
+h1, h2, h3, h4, h5, h6 {
+    font-family: var(--font-heading);
+    color: var(--primary-purple);
+    font-weight: 700;
+    margin-bottom: 1rem;
+}
+
+a {
+    color: var(--primary-purple);
+    text-decoration: none;
+    transition: color 0.3s ease;
+}
+
+a:hover {
+    color: var(--accent-gold);
+}
+
+/* Layout & Containers */
+.container {
+    max-width: 800px;
+    margin: 0 auto;
+    padding: 2rem;
+}
+
+.main-card {
+    background: #FFFFFF;
+    border-top: 5px solid var(--accent-gold);
+    border-radius: 8px;
+    padding: 2.5rem;
+    box-shadow: var(--card-shadow);
+    margin-top: 2rem;
+}
+
+/* Components: Buttons */
+.btn {
+    display: inline-block;
+    padding: 0.8rem 1.5rem;
+    border-radius: 4px;
+    font-weight: 600;
+    text-transform: uppercase;
+    letter-spacing: 0.5px;
+    cursor: pointer;
+    border: none;
+    transition: all 0.3s ease;
+}
+
+.btn-primary {
+    background-color: var(--primary-purple);
+    color: var(--text-light);
+}
+
+.btn-primary:hover {
+    background-color: #38006b;
+    transform: translateY(-2px);
+    box-shadow: var(--hover-shadow);
+    color: var(--text-light);
+}
+
+.btn-secondary {
+    background-color: var(--accent-gold);
+    color: #fff;
+}
+
+.btn-secondary:hover {
+    background-color: #a88805;
+    transform: translateY(-2px);
+    box-shadow: var(--hover-shadow);
+}
+
+/* Form Elements */
+input[type="text"], 
+input[type="tel"], 
+input[type="password"],
+input[type="email"] {
+    width: 100%;
+    padding: 12px;
+    margin-bottom: 1rem;
+    border: 1px solid #ddd;
+    border-radius: 4px;
+    font-family: var(--font-body);
+    font-size: 16px;
+    background-color: #FAFAFA;
+    transition: border-color 0.3s;
+}
+
+input:focus {
+    border-color: var(--primary-purple);
+    outline: none;
+    box-shadow: 0 0 0 3px rgba(75, 0, 130, 0.1);
+}
+
+label {
+    display: block;
+    margin-bottom: 0.5rem;
+    font-weight: 600;
+    color: var(--text-dark);
+}
+
+/* Utility Classes */
+.text-center { text-align: center; }
+.mt-1 { margin-top: 1rem; }
+.mt-2 { margin-top: 2rem; }
+.text-muted { color: #666; font-size: 0.9em; }
+
+/* Header/Nav (Simple for Public Pages) */
+.public-header {
+    background-color: var(--primary-purple);
+    color: var(--bg-cream);
+    padding: 1.5rem 0;
+    text-align: center;
+    box-shadow: 0 2px 4px rgba(0,0,0,0.1);
+}
+
+.public-header h1 {
+    color: var(--bg-cream); /* Override default purple */
+    margin: 0;
+}

@@ -1,0 +1,596 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>MyDevBot - DevRel Dashboard</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <script>
+      tailwind.config = {
+        theme: {
+          extend: {
+            fontFamily: {
+              // Use Inter font as default
+              sans: ["Inter", "sans-serif"],
+            },
+            colors: {
+              // Example custom colors - adjust as needed
+              primary: {
+                DEFAULT: "#4f46e5", // Indigo 600
+                hover: "#4338ca", // Indigo 700
+              },
+              secondary: "#64748b", // Slate 500
+            },
+          },
+        },
+      };
+    </script>
+    <style>
+      /* Basic body styling */
+      body {
+        font-family: "Inter", sans-serif;
+        background-color: #f3f4f6; /* Gray 100 */
+      }
+      /* Simple transition for hover effects */
+      button,
+      a {
+        transition: all 0.2s ease-in-out;
+      }
+      /* Style for form elements */
+      input[type="text"],
+      input[type="date"],
+      select,
+      textarea {
+        @apply w-full px-3 py-2 border border-gray-300 rounded-md shadow-sm focus:outline-none focus:ring-primary focus:border-primary;
+      }
+      label {
+        @apply block text-sm font-medium text-gray-700 mb-1;
+      }
+      /* Custom scrollbar (optional) */
+      ::-webkit-scrollbar {
+        width: 8px;
+      }
+      ::-webkit-scrollbar-track {
+        background: #f1f1f1;
+        border-radius: 10px;
+      }
+      ::-webkit-scrollbar-thumb {
+        background: #cbd5e1; /* Slate 300 */
+        border-radius: 10px;
+      }
+      ::-webkit-scrollbar-thumb:hover {
+        background: #94a3b8; /* Slate 400 */
+      }
+      /* Styling for content cards */
+      .content-card {
+        @apply bg-white p-3 rounded-md shadow-sm border border-gray-200;
+      }
+      .content-card-title {
+        @apply font-medium text-gray-800 text-sm mb-1;
+      }
+      .content-card-details {
+        @apply text-xs text-gray-500 flex items-center space-x-2;
+      }
+      .content-card-icon {
+        @apply h-4 w-4 text-secondary;
+      }
+    </style>
+  </head>
+  <body class="flex h-screen">
+    <aside class="w-64 bg-gray-800 text-white flex flex-col fixed h-full">
+      <div class="px-6 py-4 border-b border-gray-700">
+        <h1 class="text-2xl font-semibold">MyDevBot</h1>
+      </div>
+      <nav class="flex-1 mt-6 px-4 space-y-2">
+        <a
+          href="#dashboard"
+          class="flex items-center px-3 py-2 text-gray-300 hover:bg-gray-700 hover:text-white rounded-md"
+        >
+          <img
+            src="https://cdn.jsdelivr.net/npm/lucide-static@latest/icons/layout-dashboard.svg"
+            alt="Dashboard"
+            class="h-5 w-5 mr-3 filter invert brightness-75 group-hover:brightness-100"
+          />
+          Dashboard
+        </a>
+        <a
+          href="#community-pulse"
+          class="flex items-center px-3 py-2 text-gray-300 hover:bg-gray-700 hover:text-white rounded-md"
+        >
+          <img
+            src="https://cdn.jsdelivr.net/npm/lucide-static@latest/icons/activity.svg"
+            alt="Community Pulse"
+            class="h-5 w-5 mr-3 filter invert brightness-75 group-hover:brightness-100"
+          />
+          Community Pulse
+        </a>
+        <a
+          href="#content-planner"
+          class="flex items-center px-3 py-2 text-gray-300 hover:bg-gray-700 hover:text-white rounded-md"
+        >
+          <img
+            src="https://cdn.jsdelivr.net/npm/lucide-static@latest/icons/calendar-days.svg"
+            alt="Content Planner"
+            class="h-5 w-5 mr-3 filter invert brightness-75 group-hover:brightness-100"
+          />
+          Content Planner
+        </a>
+        <a
+          href="#sentiment"
+          class="flex items-center px-3 py-2 text-gray-300 hover:bg-gray-700 hover:text-white rounded-md opacity-50 cursor-not-allowed"
+          title="Coming Soon"
+        >
+          <img
+            src="https://cdn.jsdelivr.net/npm/lucide-static@latest/icons/smile.svg"
+            alt="Sentiment Analysis"
+            class="h-5 w-5 mr-3 filter invert brightness-75"
+          />
+          Sentiment Analysis
+        </a>
+        <a
+          href="#reporting"
+          class="flex items-center px-3 py-2 text-gray-300 hover:bg-gray-700 hover:text-white rounded-md opacity-50 cursor-not-allowed"
+          title="Coming Soon"
+        >
+          <img
+            src="https://cdn.jsdelivr.net/npm/lucide-static@latest/icons/bar-chart-3.svg"
+            alt="Reporting"
+            class="h-5 w-5 mr-3 filter invert brightness-75"
+          />
+          Reporting
+        </a>
+      </nav>
+      <div class="px-6 py-4 border-t border-gray-700">
+        <a
+          href="#settings"
+          class="flex items-center px-3 py-2 text-gray-300 hover:bg-gray-700 hover:text-white rounded-md"
+        >
+          <img
+            src="https://cdn.jsdelivr.net/npm/lucide-static@latest/icons/settings.svg"
+            alt="Settings"
+            class="h-5 w-5 mr-3 filter invert brightness-75 group-hover:brightness-100"
+          />
+          Settings
+        </a>
+      </div>
+    </aside>
+
+    <main class="flex-1 ml-64 p-8 overflow-y-auto">
+      <h2 id="dashboard" class="text-3xl font-bold text-gray-800 mb-6">
+        Dashboard Overview
+      </h2>
+      <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6 mb-8">
+        <div class="bg-white p-6 rounded-lg shadow-md">
+          <h3 class="text-lg font-semibold text-gray-700 mb-2">
+            Community Health
+          </h3>
+          <p class="text-3xl font-bold text-green-600">Good</p>
+          <p class="text-sm text-gray-500">Score: 85/100</p>
+        </div>
+        <div class="bg-white p-6 rounded-lg shadow-md">
+          <h3 class="text-lg font-semibold text-gray-700 mb-2">
+            Upcoming Content
+          </h3>
+          <p class="text-3xl font-bold text-primary">3 Items</p>
+          <p class="text-sm text-gray-500">Due this week</p>
+        </div>
+        <div class="bg-white p-6 rounded-lg shadow-md">
+          <h3 class="text-lg font-semibold text-gray-700 mb-2">
+            Recent Mentions
+          </h3>
+          <p class="text-3xl font-bold text-secondary">15</p>
+          <p class="text-sm text-gray-500">In the last 24h</p>
+        </div>
+      </div>
+
+      <section
+        id="community-pulse"
+        class="mb-8 p-6 bg-white rounded-lg shadow-md"
+      >
+        <h3 class="text-xl font-semibold text-gray-800 mb-4 flex items-center">
+          <img
+            src="https://cdn.jsdelivr.net/npm/lucide-static@latest/icons/activity.svg"
+            alt="Pulse"
+            class="h-6 w-6 mr-2 text-primary"
+          />
+          Community Pulse
+        </h3>
+        <p class="text-gray-600 mb-4">
+          Enter a keyword or phrase to check mentions across platforms.
+        </p>
+        <div class="flex space-x-2">
+          <input
+            type="text"
+            id="pulse-keyword"
+            placeholder="e.g., 'API documentation', 'getting started guide'"
+            class="flex-grow"
+          />
+          <button
+            onclick="searchPulse()"
+            class="bg-primary hover:bg-primary-hover text-white font-medium py-2 px-4 rounded-md flex items-center"
+          >
+            <img
+              src="https://cdn.jsdelivr.net/npm/lucide-static@latest/icons/search.svg"
+              alt="Search"
+              class="h-5 w-5 mr-2 filter invert"
+            />
+            Search
+          </button>
+        </div>
+        <div id="pulse-results" class="mt-4 text-gray-500 italic">
+          Search results will appear here...
+        </div>
+      </section>
+
+      <section
+        id="content-planner"
+        class="mb-8 p-6 bg-white rounded-lg shadow-md"
+      >
+        <h3 class="text-xl font-semibold text-gray-800 mb-4 flex items-center">
+          <img
+            src="https://cdn.jsdelivr.net/npm/lucide-static@latest/icons/calendar-days.svg"
+            alt="Planner"
+            class="h-6 w-6 mr-2 text-primary"
+          />
+          Master Content Planner
+        </h3>
+        <form id="content-form" class="space-y-4 mb-6 pb-6 border-b">
+          <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
+            <div>
+              <label for="content-type">Content Type:</label>
+              <select id="content-type" name="content-type">
+                <option value="blog">Blog Post</option>
+                <option value="video">Video</option>
+                <option value="livestream">Live Stream</option>
+                <option value="podcast">Podcast Interview</option>
+                <option value="meetup">Meetup Talk</option>
+                <option value="conference">Conference Talk</option>
+                <option value="social">Social Snippet</option>
+                <option value="other">Other</option>
+              </select>
+            </div>
+            <div>
+              <label for="content-title">Title / Topic:</label>
+              <input
+                type="text"
+                id="content-title"
+                name="content-title"
+                placeholder="Enter content title or topic"
+              />
+            </div>
+          </div>
+          <div>
+            <label for="content-description">Description / Notes:</label>
+            <textarea
+              id="content-description"
+              name="content-description"
+              rows="3"
+              placeholder="Add brief description or notes..."
+            ></textarea>
+          </div>
+          <div class="grid grid-cols-1 md:grid-cols-3 gap-4">
+            <div>
+              <label for="due-date">Due Date:</label>
+              <input type="date" id="due-date" name="due-date" />
+            </div>
+            <div>
+              <label for="delivery-date">Delivery Date:</label>
+              <input type="date" id="delivery-date" name="delivery-date" />
+            </div>
+            <div>
+              <label for="content-status">Status:</label>
+              <select id="content-status" name="content-status">
+                <option value="incomplete">Incomplete</option>
+                <option value="complete">Complete</option>
+              </select>
+            </div>
+          </div>
+          <div class="text-right">
+            <button
+              type="button"
+              onclick="addContentItem()"
+              class="bg-primary hover:bg-primary-hover text-white font-medium py-2 px-4 rounded-md"
+            >
+              Add Content Item
+            </button>
+          </div>
+        </form>
+
+        <div id="content-list" class="mt-6">
+          <h4 class="text-lg font-medium text-gray-700 mb-4">
+            Planned Content Overview
+          </h4>
+          <div class="grid grid-cols-1 md:grid-cols-3 gap-4">
+            <div class="bg-slate-50 p-4 rounded-lg border border-slate-200">
+              <h5
+                class="font-semibold text-center text-red-600 mb-3 pb-2 border-b border-red-200"
+              >
+                🚨 Today
+              </h5>
+              <div class="space-y-3" id="content-today">
+                <div class="content-card">
+                  <p class="content-card-title">Finalize slides for Meetup</p>
+                  <div class="content-card-details">
+                    <img
+                      src="https://cdn.jsdelivr.net/npm/lucide-static@latest/icons/presentation.svg"
+                      alt="Meetup"
+                      class="content-card-icon"
+                    />
+                    <span>Meetup Talk</span>
+                    <span class="ml-auto text-red-500">Due Today!</span>
+                  </div>
+                </div>
+                <div class="content-card">
+                  <p class="content-card-title">
+                    Publish 'Getting Started' Blog Post
+                  </p>
+                  <div class="content-card-details">
+                    <img
+                      src="https://cdn.jsdelivr.net/npm/lucide-static@latest/icons/file-text.svg"
+                      alt="Blog"
+                      class="content-card-icon"
+                    />
+                    <span>Blog Post</span>
+                  </div>
+                </div>
+              </div>
+            </div>
+
+            <div class="bg-blue-50 p-4 rounded-lg border border-blue-200">
+              <h5
+                class="font-semibold text-center text-blue-600 mb-3 pb-2 border-b border-blue-200"
+              >
+                🗓️ This Week
+              </h5>
+              <div class="space-y-3" id="content-this-week">
+                <div class="content-card">
+                  <p class="content-card-title">Record API Demo Video</p>
+                  <div class="content-card-details">
+                    <img
+                      src="https://cdn.jsdelivr.net/npm/lucide-static@latest/icons/video.svg"
+                      alt="Video"
+                      class="content-card-icon"
+                    />
+                    <span>Video</span>
+                    <span class="ml-auto">Due: Wed</span>
+                  </div>
+                </div>
+                <div class="content-card">
+                  <p class="content-card-title">Prep for Podcast Interview</p>
+                  <div class="content-card-details">
+                    <img
+                      src="https://cdn.jsdelivr.net/npm/lucide-static@latest/icons/mic.svg"
+                      alt="Podcast"
+                      class="content-card-icon"
+                    />
+                    <span>Podcast</span>
+                    <span class="ml-auto">Due: Fri</span>
+                  </div>
+                </div>
+                <div class="content-card">
+                  <p class="content-card-title">
+                    Draft Social Snippets for Launch
+                  </p>
+                  <div class="content-card-details">
+                    <img
+                      src="https://cdn.jsdelivr.net/npm/lucide-static@latest/icons/twitter.svg"
+                      alt="Social"
+                      class="content-card-icon"
+                    />
+                    <span>Social</span>
+                  </div>
+                </div>
+              </div>
+            </div>
+
+            <div class="bg-gray-50 p-4 rounded-lg border border-gray-200">
+              <h5
+                class="font-semibold text-center text-gray-600 mb-3 pb-2 border-b border-gray-200"
+              >
+                🔭 Long Term
+              </h5>
+              <div class="space-y-3" id="content-long-term">
+                <div class="content-card">
+                  <p class="content-card-title">Submit CFP for DevConf</p>
+                  <div class="content-card-details">
+                    <img
+                      src="https://cdn.jsdelivr.net/npm/lucide-static@latest/icons/send.svg"
+                      alt="Conference"
+                      class="content-card-icon"
+                    />
+                    <span>Conference Talk</span>
+                    <span class="ml-auto">Due: Next Month</span>
+                  </div>
+                </div>
+                <div class="content-card">
+                  <p class="content-card-title">Outline Advanced Workshop</p>
+                  <div class="content-card-details">
+                    <img
+                      src="https://cdn.jsdelivr.net/npm/lucide-static@latest/icons/book-open.svg"
+                      alt="Workshop"
+                      class="content-card-icon"
+                    />
+                    <span>Other (Workshop)</span>
+                  </div>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+      </section>
+
+      <section
+        id="sentiment"
+        class="mb-8 p-6 bg-white rounded-lg shadow-md opacity-50"
+      >
+        <h3 class="text-xl font-semibold text-gray-800 mb-4 flex items-center">
+          <img
+            src="https://cdn.jsdelivr.net/npm/lucide-static@latest/icons/smile.svg"
+            alt="Sentiment"
+            class="h-6 w-6 mr-2 text-primary"
+          />
+          Automated Sentiment Analysis & Trend Identification
+        </h3>
+        <p class="text-gray-500 italic">Feature coming soon...</p>
+      </section>
+
+      <section
+        id="reporting"
+        class="mb-8 p-6 bg-white rounded-lg shadow-md opacity-50"
+      >
+        <h3 class="text-xl font-semibold text-gray-800 mb-4 flex items-center">
+          <img
+            src="https://cdn.jsdelivr.net/npm/lucide-static@latest/icons/bar-chart-3.svg"
+            alt="Reporting"
+            class="h-6 w-6 mr-2 text-primary"
+          />
+          Customizable Reporting Dashboards
+        </h3>
+        <p class="text-gray-500 italic">Feature coming soon...</p>
+      </section>
+    </main>
+
+    <script>
+      // Basic JavaScript for interactivity (placeholders)
+
+      function searchPulse() {
+        const keyword = document.getElementById("pulse-keyword").value;
+        const resultsDiv = document.getElementById("pulse-results");
+        if (keyword) {
+          // In a real app, this would trigger an API call to the backend
+          resultsDiv.textContent = `Searching for "${keyword}"... (Backend integration needed)`;
+          console.log(`Searching for pulse keyword: ${keyword}`);
+          // Simulate finding results after a delay
+          setTimeout(() => {
+            resultsDiv.innerHTML = `
+                        <p class="text-green-600 font-medium">Showing mock results for "${keyword}":</p>
+                        <ul class="list-disc list-inside mt-2 space-y-1 text-gray-700">
+                            <li>Question on Stack Overflow about "${keyword}" setup.</li>
+                            <li>Twitter thread discussing "${keyword}" best practices.</li>
+                            <li>Forum post asking for examples using "${keyword}".</li>
+                        </ul>
+                        <p class="text-xs text-gray-400 mt-2">(These are mock results - requires real data integration)</p>
+                     `;
+          }, 1500);
+        } else {
+          resultsDiv.textContent = "Please enter a keyword to search.";
+        }
+      }
+
+      function addContentItem() {
+        const form = document.getElementById("content-form");
+        const titleInput = document.getElementById("content-title");
+        const typeInput = document.getElementById("content-type");
+        const dateInput = document.getElementById("due-date"); // Get the due date input
+        const listDiv = document.getElementById("content-list"); // Reference the parent container
+
+        const title = titleInput.value.trim();
+        const type = typeInput.value;
+        const dueDate = dateInput.value; // Get the due date value
+
+        if (title && type) {
+          const newItem = {
+            type: type,
+            title: title,
+            dueDate: dueDate,
+            deliveryDate: document.getElementById("delivery-date").value,
+            status: document.getElementById("content-status").value,
+            description: document.getElementById("content-description").value,
+          };
+          // In a real app, this would send data to the backend and dynamically add the card
+          // to the correct column ('Today', 'This Week', 'Long Term') based on the due date.
+          console.log("Adding content item:", newItem);
+
+          // --- Simple Feedback (Temporary) ---
+          // Find the h4 to show feedback relative to it
+          const feedbackTarget = listDiv.querySelector("h4");
+          let feedbackElement = listDiv.querySelector(".temp-feedback");
+          if (!feedbackElement) {
+            feedbackElement = document.createElement("p");
+            feedbackElement.className =
+              "temp-feedback text-green-600 font-medium mt-2 text-sm";
+            // Insert after the h4
+            feedbackTarget.parentNode.insertBefore(
+              feedbackElement,
+              feedbackTarget.nextSibling
+            );
+          }
+          feedbackElement.textContent = `Mock item "${title}" (${type}) added. (Needs logic to place in correct column based on date: ${
+            dueDate || "No Due Date"
+          }).`;
+          // --- End Simple Feedback ---
+
+          form.reset(); // Clear the form
+
+          // Remove feedback message after a few seconds
+          setTimeout(() => {
+            if (feedbackElement) {
+              feedbackElement.remove();
+            }
+          }, 4000);
+        } else {
+          // Using a more subtle feedback than alert()
+          const feedbackTarget = listDiv.querySelector("h4");
+          let errorElement = listDiv.querySelector(".error-feedback");
+          if (!errorElement) {
+            errorElement = document.createElement("p");
+            errorElement.className =
+              "error-feedback text-red-600 font-medium mt-2 text-sm";
+            feedbackTarget.parentNode.insertBefore(
+              errorElement,
+              feedbackTarget.nextSibling
+            );
+          }
+          errorElement.textContent =
+            "Please fill in at least the Content Type and Title.";
+          setTimeout(() => {
+            if (errorElement) {
+              errorElement.remove();
+            }
+          }, 3000);
+        }
+      }
+
+      // --- Navigation Highlighting Logic ---
+      function updateActiveNavLink() {
+        // Remove active class from all links first
+        document
+          .querySelectorAll("aside nav a")
+          .forEach((l) => l.classList.remove("bg-gray-700", "text-white"));
+
+        // Determine the currently visible section (simple version based on hash)
+        const currentHash = window.location.hash || "#dashboard";
+        const activeLink = document.querySelector(
+          `aside nav a[href="${currentHash}"]`
+        );
+
+        if (activeLink) {
+          activeLink.classList.add("bg-gray-700", "text-white");
+        } else {
+          // Default to dashboard if hash is invalid or not found
+          const dashboardLink = document.querySelector(
+            'aside nav a[href="#dashboard"]'
+          );
+          if (dashboardLink) {
+            dashboardLink.classList.add("bg-gray-700", "text-white");
+          }
+        }
+      }
+
+      // Add click listeners for navigation
+      document.querySelectorAll("aside nav a").forEach((link) => {
+        link.addEventListener("click", (e) => {
+          // Update hash, which will trigger the hashchange listener
+          // Note: This causes a page jump. For smooth scroll, preventDefault and use scrollIntoView.
+        });
+      });
+
+      // Add listener for hash changes (handles back/forward buttons and direct link clicks)
+      window.addEventListener("hashchange", updateActiveNavLink);
+
+      // Set initial active link on page load
+      document.addEventListener("DOMContentLoaded", updateActiveNavLink);
+      // --- End Navigation Highlighting Logic ---
+    </script>
+  </body>
+</html>

@@ -14,10 +14,11 @@ export default function Header() {
         </div>
         <div className="flex items-center gap-4">
           <nav className="hidden md:flex items-center gap-6">
-            <a href="#" className="text-sm font-medium hover:text-primary transition-colors">Home</a>
-            <a href="#" className="text-sm font-medium hover:text-primary transition-colors">Explore Careers</a>
-            <a href="#" className="text-sm font-medium hover:text-primary transition-colors">Learning Paths</a>
-            <a href="#" className="text-sm font-medium hover:text-primary transition-colors">Community</a>
+            <a href="/" className="text-sm font-medium hover:text-primary transition-colors">Home</a>
+            <a href="/assessment" className="text-sm font-medium hover:text-primary transition-colors">Explore Careers</a>
+            <a href="/learning-path" className="text-sm font-medium hover:text-primary transition-colors">Learning Paths</a>
+            <a href="/community" className="text-sm font-medium hover:text-primary transition-colors">Community</a>
+            <a href="/jobs" className="text-sm font-medium hover:text-primary transition-colors">Jobs</a>
           </nav>
           <ThemeToggle />
         </div>

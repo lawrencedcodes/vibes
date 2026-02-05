@@ -1,0 +1,17 @@
+{
+  "frontendFolder": "/Users/lawrencedcodes/Documents/Coding/churchapp/./frontend",
+  "themeFolder": "themes",
+  "themeResourceFolder": "/Users/lawrencedcodes/Documents/Coding/churchapp/./frontend/generated/jar-resources",
+  "staticOutput": "/Users/lawrencedcodes/Documents/Coding/churchapp/target/classes/META-INF/VAADIN/webapp/VAADIN/static",
+  "generatedFolder": "generated",
+  "statsOutput": "/Users/lawrencedcodes/Documents/Coding/churchapp/target/classes/META-INF/VAADIN/config",
+  "frontendBundleOutput": "/Users/lawrencedcodes/Documents/Coding/churchapp/target/classes/META-INF/VAADIN/webapp",
+  "devBundleOutput": "/Users/lawrencedcodes/Documents/Coding/churchapp/target/dev-bundle/webapp",
+  "devBundleStatsOutput": "/Users/lawrencedcodes/Documents/Coding/churchapp/target/dev-bundle/config",
+  "jarResourcesFolder": "/Users/lawrencedcodes/Documents/Coding/churchapp/./frontend/generated/jar-resources",
+  "themeName": "",
+  "clientServiceWorkerSource": "/Users/lawrencedcodes/Documents/Coding/churchapp/target/sw.ts",
+  "pwaEnabled": false,
+  "offlineEnabled": false,
+  "offlinePath": "'offline.html'"
+}

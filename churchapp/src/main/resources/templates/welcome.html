@@ -1,0 +1,135 @@
+<!DOCTYPE html>
+<html lang="en" xmlns:th="http://www.thymeleaf.org">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Welcome Home - FaithTech Church</title>
+    <!-- Fonts -->
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link
+        href="https://fonts.googleapis.com/css2?family=Merriweather:wght@400;700&family=Inter:wght@400;600&display=swap"
+        rel="stylesheet">
+
+    <!-- Custom Theme -->
+    <link rel="stylesheet" href="/css/church-theme.css">
+
+    <style>
+        .hero {
+            background-color: var(--primary-purple);
+            color: var(--bg-cream);
+            padding: 4rem 2rem;
+            text-align: center;
+            border-bottom: 5px solid var(--accent-gold);
+        }
+
+        .hero h1 {
+            color: var(--accent-gold);
+            font-size: 2.5rem;
+            margin-bottom: 0.5rem;
+        }
+
+        .welcome-content {
+            font-size: 1.1rem;
+            line-height: 1.8;
+            margin-bottom: 2rem;
+        }
+
+        .ministry-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+            gap: 1.5rem;
+            margin-top: 2rem;
+        }
+
+        .ministry-card {
+            background: #fff;
+            padding: 1.5rem;
+            border-radius: 8px;
+            border-left: 4px solid var(--primary-purple);
+            box-shadow: 0 2px 8px rgba(0, 0, 0, 0.05);
+        }
+
+        .ministry-card h3 {
+            font-size: 1.25rem;
+            margin-top: 0;
+        }
+
+        ul {
+            list-style-type: none;
+            padding: 0;
+        }
+
+        li {
+            padding: 0.5rem 0;
+            border-bottom: 1px solid #eee;
+        }
+
+        li:last-child {
+            border-bottom: none;
+        }
+    </style>
+</head>
+
+<body>
+
+    <div class="hero">
+        <h1>Welcome Home!</h1>
+        <p style="font-size: 1.2rem; max-width: 600px; margin: 0 auto; opacity: 0.9;">
+            "For where two or three are gathered together in my name, there am I in the midst of them."
+        </p>
+    </div>
+
+    <main class="container">
+        <div class="main-card" style="margin-top: -3rem; position: relative;">
+            <div class="text-center">
+                <h2>We Are Glad You're Here</h2>
+                <hr style="width: 50px; border: 2px solid var(--accent-gold); margin: 1rem auto;">
+            </div>
+
+            <p class="welcome-content text-center">
+                Thank you for connecting with <strong>FaithTech Church</strong>. We believe that every visitor is a
+                godsend,
+                and we are honored that you have chosen to fellowship with us. You are not just a guest; you are family.
+            </p>
+
+            <h3 class="text-center mt-2">Get Involved</h3>
+
+            <div class="ministry-grid">
+                <div class="ministry-card">
+                    <h3>Worship & Word</h3>
+                    <ul>
+                        <li><strong style="color: var(--primary-purple);">Sunday Worship:</strong> 10:00 AM</li>
+                        <li><strong style="color: var(--primary-purple);">Wednesday Bible Study:</strong> 7:00 PM</li>
+                        <li><strong style="color: var(--primary-purple);">Morning Prayer:</strong> Daily 6:00 AM</li>
+                    </ul>
+                </div>
+
+                <div class="ministry-card">
+                    <h3>Ministries</h3>
+                    <ul>
+                        <li>Choir & Music Ministry</li>
+                        <li>Youth & Young Adults</li>
+                        <li>Community Outreach</li>
+                        <li>Men & Women's Fellowship</li>
+                    </ul>
+                </div>
+            </div>
+
+            <div class="text-center mt-2">
+                <p>Someone from our leadership team will be reaching out to you shortly.</p>
+                <div class="mt-1">
+                    <a href="/" class="btn btn-primary">Return Home</a>
+                </div>
+            </div>
+        </div>
+    </main>
+
+    <footer class="text-center mt-2" style="padding-bottom: 2rem;">
+        <p class="text-muted">FaithTech Church &bull; 123 Gospel Way &bull; (555) 123-4567</p>
+    </footer>
+
+</body>
+
+</html>

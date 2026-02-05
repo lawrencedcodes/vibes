@@ -1,0 +1,105 @@
+<!DOCTYPE html>
+<html lang="en" xmlns:th="http://www.thymeleaf.org">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Sign In - FaithTech SMS</title>
+    <!-- Fonts -->
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link
+        href="https://fonts.googleapis.com/css2?family=Merriweather:wght@400;700&family=Inter:wght@400;600&display=swap"
+        rel="stylesheet">
+
+    <!-- Custom Theme -->
+    <link rel="stylesheet" href="/css/church-theme.css">
+
+    <style>
+        body {
+            display: flex;
+            flex-direction: column;
+            min-height: 100vh;
+        }
+
+        .login-wrapper {
+            flex: 1;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            padding: 2rem;
+        }
+
+        .login-card {
+            width: 100%;
+            max-width: 450px;
+        }
+
+        .brand-logo {
+            font-size: 2rem;
+            color: var(--primary-purple);
+            font-weight: bold;
+            text-align: center;
+            margin-bottom: 2rem;
+            font-family: var(--font-heading);
+            letter-spacing: -0.5px;
+        }
+
+        .brand-sub {
+            display: block;
+            font-size: 1rem;
+            color: var(--accent-gold);
+            font-family: var(--font-body);
+            font-weight: normal;
+            margin-top: 0.5rem;
+            text-transform: uppercase;
+            letter-spacing: 2px;
+        }
+    </style>
+</head>
+
+<body>
+
+    <div class="login-wrapper">
+        <div class="main-card login-card">
+            <div class="brand-logo">
+                FaithTech
+                <span class="brand-sub">Church Management</span>
+            </div>
+
+            <h2 class="text-center" style="font-size: 1.5rem; margin-bottom: 2rem;">Welcome Back</h2>
+
+            <!-- Feedback Messages -->
+            <div th:if="${param.error}"
+                style="background-color: #fee; color: var(--error-red); padding: 1rem; border-radius: 4px; margin-bottom: 1.5rem; text-align: center; border-left: 4px solid var(--error-red);">
+                Invalid username or password. Please try again.
+            </div>
+            <div th:if="${param.logout}"
+                style="background-color: #e8f5e9; color: var(--success-green); padding: 1rem; border-radius: 4px; margin-bottom: 1.5rem; text-align: center; border-left: 4px solid var(--success-green);">
+                You have been signed out securely.
+            </div>
+
+            <form th:action="@{/login}" method="post">
+                <div style="margin-bottom: 1.5rem;">
+                    <label for="username">Username</label>
+                    <input type="text" id="username" name="username" placeholder="Enter your username" required
+                        autofocus>
+                </div>
+
+                <div style="margin-bottom: 2rem;">
+                    <label for="password">Password</label>
+                    <input type="password" id="password" name="password" placeholder="Enter your password" required>
+                </div>
+
+                <button type="submit" class="btn btn-primary" style="width: 100%;">Sign In</button>
+            </form>
+
+            <p class="text-center mt-2 text-muted">
+                &copy; 2026 FaithTech. Serving the Kingdom.
+            </p>
+        </div>
+    </div>
+
+</body>
+
+</html>

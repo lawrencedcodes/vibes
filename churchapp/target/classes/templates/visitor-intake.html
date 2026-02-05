@@ -1,0 +1,138 @@
+<!DOCTYPE html>
+<html lang="en" xmlns:th="http://www.thymeleaf.org">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Connect with Us - FaithTech</title>
+    <!-- Fonts -->
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link
+        href="https://fonts.googleapis.com/css2?family=Merriweather:wght@400;700&family=Inter:wght@400;600&display=swap"
+        rel="stylesheet">
+
+    <!-- Custom Theme -->
+    <link rel="stylesheet" href="/css/church-theme.css">
+
+    <style>
+        .error-message {
+            color: var(--error-red);
+            font-size: 0.85rem;
+            margin-top: -0.5rem;
+            margin-bottom: 1rem;
+            display: none;
+        }
+
+        input:invalid:not(:placeholder-shown) {
+            border-color: var(--error-red);
+        }
+
+        input:invalid:not(:placeholder-shown)+.error-message {
+            display: block;
+        }
+
+        button[type="submit"]:disabled {
+            background-color: #ccc;
+            cursor: not-allowed;
+            opacity: 0.7;
+        }
+    </style>
+</head>
+
+<body>
+
+    <header class="public-header">
+        <h1>FaithTech Church</h1>
+        <div
+            style="font-size: 0.9rem; opacity: 0.9; margin-top: 0.5rem; text-transform: uppercase; letter-spacing: 1px;">
+            Welcome Home</div>
+    </header>
+
+    <main class="container">
+        <div class="main-card">
+            <h2 class="text-center">Let's Stay Connected</h2>
+            <p class="text-center text-muted" style="margin-bottom: 2rem;">Please fill out the form below so we can keep
+                in touch.</p>
+
+            <form action="/connect/submit" method="post" id="intakeForm">
+
+                <!-- First Name -->
+                <div class="form-group">
+                    <label for="firstName">First Name</label>
+                    <input type="text" id="firstName" name="firstName" required pattern="[A-Za-z]{2,}"
+                        placeholder="e.g. John">
+                    <small class="error-message">Please enter a valid first name (letters only, min 2 chars).</small>
+                </div>
+
+                <!-- Last Name -->
+                <div class="form-group">
+                    <label for="lastName">Last Name</label>
+                    <input type="text" id="lastName" name="lastName" required pattern="[A-Za-z]{2,}"
+                        placeholder="e.g. Doe">
+                    <small class="error-message">Please enter a valid last name (letters only, min 2 chars).</small>
+                </div>
+
+                <!-- Phone Number -->
+                <div class="form-group">
+                    <label for="phoneNumber">Phone Number</label>
+                    <input type="tel" id="phoneNumber" name="phoneNumber" required maxlength="12"
+                        placeholder="e.g. 123-456-7890">
+                    <small class="error-message">Please enter a complete 10-digit phone number.</small>
+                </div>
+
+                <div class="mt-2 text-center">
+                    <button type="submit" id="submitBtn" class="btn btn-secondary"
+                        style="width: 100%; font-size: 1.1rem;" disabled>
+                        Join the Family
+                    </button>
+                </div>
+            </form>
+        </div>
+    </main>
+
+    <footer class="text-center mt-2" style="padding: 2rem; color: #666; font-size: 0.9rem;">
+        &copy; 2026 FaithTech Church. All rights reserved.
+    </footer>
+
+    <script>
+        document.addEventListener('DOMContentLoaded', function () {
+            const form = document.getElementById('intakeForm');
+            const firstName = document.getElementById('firstName');
+            const lastName = document.getElementById('lastName');
+            const phoneNumber = document.getElementById('phoneNumber');
+            const submitBtn = document.getElementById('submitBtn');
+
+            // Phone masking logic
+            phoneNumber.addEventListener('input', function (e) {
+                let x = e.target.value.replace(/\D/g, '').match(/(\d{0,3})(\d{0,3})(\d{0,4})/);
+                e.target.value = !x[2] ? x[1] : x[1] + '-' + x[2] + (x[3] ? '-' + x[3] : '');
+                validateForm();
+            });
+
+            // Real-time validation
+            function validateForm() {
+                const isFirstNameValid = firstName.checkValidity();
+                const isLastNameValid = lastName.checkValidity();
+                // Simple regex check for 12 chars (XXX-XXX-XXXX = 12 chars)
+                const isPhoneValid = phoneNumber.value.length === 12;
+
+                if (isFirstNameValid && isLastNameValid && isPhoneValid) {
+                    submitBtn.removeAttribute('disabled');
+                    submitBtn.classList.add('btn-secondary'); // Ensure class serves as "active" style
+                } else {
+                    submitBtn.setAttribute('disabled', 'true');
+                }
+            }
+
+            [firstName, lastName, phoneNumber].forEach(field => {
+                field.addEventListener('input', validateForm);
+            });
+
+            // Initial check
+            validateForm();
+        });
+    </script>
+</body>
+
+</html>
