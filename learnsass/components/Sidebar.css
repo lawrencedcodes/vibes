@@ -1,0 +1,78 @@
+/* Sidebar.css */
+.sidebar {
+    width: 280px;
+    height: 100vh;
+    position: sticky;
+    top: 0;
+    display: flex;
+    flex-direction: column;
+    background-color: var(--color-sidebar-bg);
+    border-right: 1px solid var(--color-sidebar-border);
+    padding: 1.5rem;
+    overflow-y: auto;
+}
+
+.sidebar-header {
+    margin-bottom: 2rem;
+}
+
+.sidebar-logo {
+    display: flex;
+    align-items: center;
+    gap: 0.75rem;
+    font-weight: 700;
+    color: var(--color-foreground);
+}
+
+.sidebar-nav ul {
+    list-style: none;
+    padding: 0;
+    margin: 0;
+    display: flex;
+    flex-direction: column;
+    gap: 0.5rem;
+}
+
+.sidebar-link {
+    display: flex;
+    align-items: center;
+    gap: 0.75rem;
+    padding: 0.75rem 1rem;
+    border-radius: 0.5rem;
+    color: var(--color-secondary-foreground);
+    transition: all 0.2s ease;
+    font-size: 0.95rem;
+    text-decoration: none;
+}
+
+.sidebar-link:hover {
+    background-color: rgba(0, 0, 0, 0.05);
+    color: var(--color-foreground);
+}
+
+.sidebar-link.active {
+    background-color: rgba(37, 99, 235, 0.1);
+    /* Primary color with opacity */
+    color: var(--color-primary);
+    font-weight: 500;
+}
+
+.sidebar-link .icon {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    color: inherit;
+}
+
+.sidebar-footer {
+    margin-top: auto;
+    padding-top: 2rem;
+    border-top: 1px solid var(--color-sidebar-border);
+}
+
+@media (max-width: 768px) {
+    .sidebar {
+        display: none;
+        /* Hide on mobile for now, or implement a drawer */
+    }
+}

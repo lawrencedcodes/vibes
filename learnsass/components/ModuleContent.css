@@ -1,0 +1,66 @@
+/* ModuleContent.css */
+.module-content {
+    max-width: 800px;
+    margin: 0 auto;
+    padding: 2rem;
+    background: var(--color-background);
+    color: var(--color-foreground);
+}
+
+.text-primary {
+    color: var(--color-primary);
+}
+
+.text-gray-700 {
+    color: var(--color-secondary-foreground);
+}
+
+.text-gray-300 {
+    color: #d1d5db;
+    /* Tailwind gray-300 equivalent */
+}
+
+/* Add more utility-like classes here as needed since we're avoiding full Tailwind */
+.font-bold {
+    font-weight: 700;
+}
+
+.font-semibold {
+    font-weight: 600;
+}
+
+.mb-6 {
+    margin-bottom: 1.5rem;
+}
+
+.mb-4 {
+    margin-bottom: 1rem;
+}
+
+.mt-8 {
+    margin-top: 2rem;
+}
+
+.mt-6 {
+    margin-top: 1.5rem;
+}
+
+.pb-2 {
+    padding-bottom: 0.5rem;
+}
+
+.pl-4 {
+    padding-left: 1rem;
+}
+
+.border-b {
+    border-bottom: 1px solid var(--color-border);
+}
+
+.list-disc {
+    list-style-type: disc;
+}
+
+.list-inside {
+    list-style-position: inside;
+}

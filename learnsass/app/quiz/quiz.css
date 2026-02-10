@@ -1,0 +1,57 @@
+/* quiz.css */
+.quiz-container {
+    max-width: 800px !important;
+    margin: 0 auto;
+    padding: 2rem 1rem;
+}
+
+.back-link {
+    display: inline-flex;
+    align-items: center;
+    gap: 0.5rem;
+    color: var(--color-secondary-foreground);
+    font-weight: 500;
+    margin-bottom: 2rem;
+    transition: color 0.2s;
+}
+
+.back-link:hover {
+    color: var(--color-primary);
+}
+
+.question-card {
+    /* Using utility classes mostly, but fine-tuning here */
+}
+
+.option-btn {
+    /* Ensure text doesn't flow weirdly */
+    display: block;
+}
+
+/* Animations */
+@keyframes shake {
+
+    0%,
+    100% {
+        transform: translateX(0);
+    }
+
+    10%,
+    30%,
+    50%,
+    70%,
+    90% {
+        transform: translateX(-4px);
+    }
+
+    20%,
+    40%,
+    60%,
+    80% {
+        transform: translateX(4px);
+    }
+}
+
+.error-banner {
+    animation: shake 0.4s ease-in-out;
+}
