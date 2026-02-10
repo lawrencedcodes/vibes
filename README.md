@@ -18,7 +18,7 @@ This repository serves as a collection of "vibe-coded" applications, showcasing 
 
 ### 4. Learn Sass
 *   **Directory:** [`learnsass`](./learnsass)
-*   **Description:** An educational project or sandbox for mastering Sass (Syntactically Awesome Style Sheets).
+*   **Description:** An educational project or sandbox for learning SASS (Software as a Service).
 
 ### 5. Manus Stock App
 *   **Directory:** [`manus_stock_app`](./manus_stock_app)
