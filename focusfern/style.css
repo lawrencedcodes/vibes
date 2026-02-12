@@ -1,0 +1,326 @@
+:root {
+    /* New Palette: Cozy Garden */
+    --bg-wood-dark: #cc9966;
+    --bg-wood-light: #e6b380;
+    --parchment-bg: #fdf6e3;
+
+    --text-earth: #4b3621;
+    --text-earth-light: #6d4c41;
+
+    /* Plant Colors */
+    --accent-green: #7cb342;
+    --accent-dark-green: #33691e;
+
+    /* UI Buttons */
+    --btn-primary: #aed581;
+    --btn-primary-shadow: #7cb342;
+    --btn-danger: #ffab91;
+    --btn-danger-shadow: #e64a19;
+
+    --spacing-md: 16px;
+    --spacing-lg: 32px;
+}
+
+* {
+    box-sizing: border-box;
+    margin: 0;
+    padding: 0;
+}
+
+body {
+    font-family: 'VT323', monospace;
+    color: var(--text-earth);
+    min-height: 100vh;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    padding: var(--spacing-md);
+
+    /* Wood Fence Background */
+    background-color: #8d6e63;
+    background-image:
+        repeating-linear-gradient(90deg,
+            #8d6e63,
+            #8d6e63 20px,
+            #795548 20px,
+            #795548 40px);
+}
+
+header {
+    margin-bottom: var(--spacing-lg);
+    text-align: center;
+    background: var(--parchment-bg);
+    padding: 10px 20px;
+    border: 4px solid var(--text-earth);
+    box-shadow: 4px 4px 0px rgba(0, 0, 0, 0.3);
+    border-radius: 8px;
+    transform: rotate(-2deg);
+    /* Slightly jaunty sign look */
+}
+
+h1 {
+    font-size: 3.5rem;
+    color: var(--text-earth);
+    text-transform: uppercase;
+    letter-spacing: 2px;
+    text-shadow: 2px 2px 0px #a1887f;
+}
+
+/* Planter Section - The "Sign" / Parchment */
+.planter {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    background-color: var(--parchment-bg);
+    padding: 40px;
+    border: 4px solid var(--text-earth);
+    border-radius: 15px;
+    /* Rounded corners */
+    box-shadow:
+        8px 8px 0px rgba(0, 0, 0, 0.2),
+        inset 0 0 40px rgba(139, 69, 19, 0.1);
+    /* Inner vignette for parchment feel */
+    margin-bottom: var(--spacing-lg);
+    max-width: 450px;
+    width: 100%;
+    position: relative;
+}
+
+/* "Nail" decoration for the sign */
+.planter::before {
+    content: '';
+    position: absolute;
+    top: 10px;
+    width: 12px;
+    height: 12px;
+    background: #5d4037;
+    border-radius: 50%;
+    box-shadow: 1px 1px 0px rgba(255, 255, 255, 0.4);
+}
+
+.canvas-wrapper {
+    width: 300px;
+    height: 300px;
+    background-color: #e0e0e0;
+    border: 8px solid #8d6e63;
+    /* Wooden frame look */
+    border-radius: 4px;
+    margin-bottom: var(--spacing-md);
+    image-rendering: pixelated;
+    position: relative;
+    box-shadow:
+        inset 2px 2px 5px rgba(0, 0, 0, 0.2),
+        2px 2px 0px var(--text-earth);
+}
+
+canvas {
+    width: 100%;
+    height: 100%;
+    image-rendering: pixelated;
+    background-color: #dfebe5;
+    /* Skyish background behind plant */
+}
+
+.timer-display {
+    font-size: 4.5rem;
+    color: var(--text-earth);
+    margin: var(--spacing-md) 0;
+    font-weight: bold;
+    text-shadow: 2px 2px 0px #d7ccc8;
+}
+
+.controls {
+    display: flex;
+    gap: var(--spacing-md);
+    margin-bottom: var(--spacing-md);
+}
+
+button {
+    font-family: 'VT323', monospace;
+    font-size: 1.8rem;
+    padding: 10px 30px;
+    border: 2px solid var(--text-earth);
+    border-radius: 8px;
+    cursor: pointer;
+    text-transform: uppercase;
+    transition: all 0.1s;
+    outline: none;
+}
+
+#start-btn {
+    background-color: var(--btn-primary);
+    color: var(--text-earth);
+    box-shadow:
+        0 4px 0 var(--btn-primary-shadow),
+        0 4px 4px rgba(0, 0, 0, 0.2);
+}
+
+#start-btn:active {
+    transform: translateY(4px);
+    box-shadow: 0 0 0 var(--btn-primary-shadow);
+}
+
+#reset-btn {
+    background-color: var(--btn-danger);
+    color: var(--text-earth);
+    box-shadow:
+        0 4px 0 var(--btn-danger-shadow),
+        0 4px 4px rgba(0, 0, 0, 0.2);
+}
+
+#reset-btn:active {
+    transform: translateY(4px);
+    box-shadow: 0 0 0 var(--btn-danger-shadow);
+}
+
+/* Small Button (Peek) */
+.sm-btn {
+    font-size: 1rem;
+    padding: 6px 16px;
+    margin-top: var(--spacing-sm);
+    background-color: var(--accent-cream-dark);
+    color: var(--text-earth-light);
+    border: 2px solid var(--text-earth-light);
+    box-shadow: 0 2px 0 #a1887f;
+    opacity: 0.8;
+}
+
+.sm-btn:hover {
+    opacity: 1;
+}
+
+.sm-btn:active {
+    transform: translateY(2px);
+    box-shadow: none;
+}
+
+.sm-btn:disabled {
+    opacity: 0.4;
+    cursor: not-allowed;
+    box-shadow: none;
+    transform: translateY(2px);
+}
+
+.status-msg {
+    font-size: 1.4rem;
+    color: var(--text-earth-light);
+    min-height: 1.5em;
+    font-style: italic;
+}
+
+/* Garden Section */
+.garden-section {
+    width: 100%;
+    max-width: 800px;
+    text-align: center;
+    background: rgba(253, 246, 227, 0.9);
+    /* Transparent parchment */
+    padding: var(--spacing-md);
+    border: 4px solid var(--text-earth);
+    border-radius: 12px;
+    box-shadow: 6px 6px 0px rgba(0, 0, 0, 0.2);
+}
+
+h2 {
+    font-size: 2.2rem;
+    color: var(--text-earth);
+    margin-bottom: var(--spacing-md);
+    border-bottom: 3px dashed var(--text-earth);
+    display: inline-block;
+    padding-bottom: 5px;
+}
+
+.garden-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fill, minmax(90px, 1fr));
+    gap: 12px;
+    padding: 10px;
+}
+
+.garden-item {
+    width: 90px;
+    height: 90px;
+    background-color: #fff;
+    border: 3px solid #8d6e63;
+    /* Wood frame for photos */
+    padding: 4px;
+    position: relative;
+    cursor: pointer;
+    transition: transform 0.2s;
+    box-shadow: 2px 2px 4px rgba(0, 0, 0, 0.1);
+}
+
+.garden-item:hover {
+    transform: scale(1.1) rotate(2deg);
+    z-index: 10;
+    box-shadow: 4px 4px 8px rgba(0, 0, 0, 0.2);
+}
+
+.garden-item img {
+    width: 100%;
+    height: 100%;
+    object-fit: contain;
+    image-rendering: pixelated;
+    background-color: #f1f8e9;
+}
+
+/* Tooltip */
+.garden-item::after {
+    content: attr(data-date);
+    position: absolute;
+    bottom: 105%;
+    left: 50%;
+    transform: translateX(-50%);
+    background: var(--text-earth);
+    color: #fff;
+    padding: 4px 8px;
+    font-size: 0.9rem;
+    white-space: nowrap;
+    opacity: 0;
+    pointer-events: none;
+    transition: opacity 0.2s;
+    border-radius: 4px;
+}
+
+.garden-item:hover::after {
+    opacity: 1;
+}
+
+/* Mobile Responsiveness */
+@media (max-width: 600px) {
+    body {
+        padding: 10px;
+    }
+
+    h1 {
+        font-size: 2.5rem;
+    }
+
+    .planter {
+        padding: 20px;
+        width: 100%;
+    }
+
+    .canvas-wrapper {
+        width: 260px;
+        height: 260px;
+    }
+
+    .timer-display {
+        font-size: 3.5rem;
+    }
+
+    button {
+        font-size: 1.2rem;
+        padding: 8px 16px;
+    }
+
+    .garden-grid {
+        grid-template-columns: repeat(auto-fill, minmax(70px, 1fr));
+    }
+
+    .garden-item {
+        width: 70px;
+        height: 70px;
+    }
+}

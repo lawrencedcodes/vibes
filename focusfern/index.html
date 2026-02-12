@@ -1,0 +1,46 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Focus Fern</title>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=VT323&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="style.css">
+</head>
+
+<body>
+    <header>
+        <h1>Focus Fern</h1>
+    </header>
+
+    <main class="planter">
+        <div class="canvas-wrapper">
+            <canvas id="plant-canvas" width="300" height="300"></canvas>
+        </div>
+
+        <div class="timer-display" id="timer">25:00</div>
+
+        <div class="controls">
+            <button id="start-btn">Start</button>
+            <button id="reset-btn">Give Up</button>
+        </div>
+
+        <p class="status-msg" id="status-msg">Plant a seed by focusing.</p>
+
+        <button id="peek-btn" class="sm-btn" disabled>Peek</button>
+    </main>
+
+    <section class="garden-section">
+        <h2>My Garden</h2>
+        <div class="garden-grid" id="garden-grid">
+            <!-- Completed plants will appear here -->
+        </div>
+    </section>
+
+    <script src="script.js"></script>
+</body>
+
+</html>
