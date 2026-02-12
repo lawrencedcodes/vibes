@@ -1,5 +1,6 @@
 # Vibes Collection
 
+Everything here is WIP - toy around at your own risk.
 This repository serves as a collection of "vibe-coded" applications, showcasing various prototypes, tools, and full-stack projects. Each directory represents a standalone application or module developed with specific goals and technologies.
 
 ## Apps in this Collection
