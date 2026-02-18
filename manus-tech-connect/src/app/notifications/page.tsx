@@ -28,7 +28,7 @@ export default function NotificationsPage() {
           throw new Error('Failed to fetch notifications');
         }
         
-        const data = await response.json();
+        const data = ((await response.json()) as any) as any;
         setNotifications(data.notifications || []);
         setIsLoading(false);
       } catch (err: any) {

@@ -39,7 +39,7 @@ export default function MatchingPage() {
         method: 'POST',
       });
       
-      const data = await response.json();
+      const data = ((await response.json()) as any) as any;
       
       if (!response.ok) {
         throw new Error(data.error || 'Failed to find a match');
@@ -77,7 +77,7 @@ export default function MatchingPage() {
         }),
       });
       
-      const data = await response.json();
+      const data = ((await response.json()) as any) as any;
       
       if (!response.ok) {
         if (response.status === 409) {

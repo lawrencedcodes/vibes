@@ -1,8 +1,9 @@
+export const runtime = "edge";
 import { D1Database } from '@cloudflare/workers-types';
 import { registerUser, createSession } from '@/lib/auth/auth-utils';
 
 export async function POST(request: Request) {
-  const { email, password, first_name, last_name, role } = await request.json();
+  const { email, password, first_name, last_name, role } = (((await request.json()) as any) as any) as any;
   
   // Validate input
   if (!email || !password || !first_name || !last_name || !role) {

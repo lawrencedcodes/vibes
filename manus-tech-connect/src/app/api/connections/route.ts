@@ -1,3 +1,4 @@
+export const runtime = "edge";
 import { D1Database } from '@cloudflare/workers-types';
 import { getSession } from '@/lib/auth/auth-utils';
 
@@ -74,7 +75,7 @@ export async function PUT(request: Request) {
   }
   
   try {
-    const { connection_id, status } = await request.json();
+    const { connection_id, status } = (((await request.json()) as any) as any) as any;
     
     // Validate input
     if (!connection_id || !status) {

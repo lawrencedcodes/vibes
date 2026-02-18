@@ -1,0 +1,9 @@
+name = "manus-tech-connect"
+pages_build_output_dir = ".vercel/output/static"
+compatibility_date = "2024-01-01"
+compatibility_flags = ["nodejs_compat"]
+
+[[d1_databases]]
+binding = "DB"
+database_name = "tech-connect-db"
+database_id = "e00a3598-c67d-4176-92f7-020556ea51fb" # This will be replaced or is a placeholder, strictly for local dev we need a binding name

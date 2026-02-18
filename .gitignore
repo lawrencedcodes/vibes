@@ -1,2 +1,6 @@
+manus-tech-connect/.next/
 *.DS_Store
 docker-compose.yml
+**/node_modules/
+*.sqlite
+*.log

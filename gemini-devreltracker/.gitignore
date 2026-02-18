@@ -1,0 +1,5 @@
+node_modules/
+devrel.db
+.DS_Store
+coverage/
+.env

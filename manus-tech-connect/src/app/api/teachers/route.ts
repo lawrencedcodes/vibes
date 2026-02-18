@@ -1,3 +1,4 @@
+export const runtime = "edge";
 import { D1Database } from '@cloudflare/workers-types';
 import { getSession } from '@/lib/auth/auth-utils';
 

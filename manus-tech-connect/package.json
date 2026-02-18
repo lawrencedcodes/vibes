@@ -1,0 +1,31 @@
+{
+  "name": "manus-tech-connect",
+  "version": "0.1.0",
+  "private": true,
+  "scripts": {
+    "dev": "next dev",
+    "build": "next build",
+    "start": "next start",
+    "lint": "next lint",
+    "pages:build": "npx @cloudflare/next-on-pages",
+    "pages:dev": "npm run pages:build && wrangler pages dev .vercel/output/static --d1 DB=tech-connect-db",
+    "pages:deploy": "npm run pages:build && wrangler pages deploy .vercel/output/static"
+  },
+  "dependencies": {
+    "next": "15.1.0",
+    "react": "^19.0.0",
+    "react-dom": "^19.0.0"
+  },
+  "devDependencies": {
+    "@cloudflare/next-on-pages": "latest",
+    "@cloudflare/workers-types": "latest",
+    "@types/node": "latest",
+    "@types/react": "latest",
+    "@types/react-dom": "latest",
+    "autoprefixer": "latest",
+    "postcss": "latest",
+    "tailwindcss": "latest",
+    "typescript": "latest",
+    "wrangler": "latest"
+  }
+}

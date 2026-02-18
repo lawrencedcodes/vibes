@@ -1,6 +1,3 @@
-"use client";
-
-import { createHash } from 'crypto';
 
 // Types
 export interface User {
@@ -26,9 +23,12 @@ export interface AuthSession {
 const SESSION_COOKIE_NAME = 'tech_connect_session';
 const SESSION_EXPIRY_DAYS = 7;
 
-// Hash password
-export function hashPassword(password: string): string {
-  return createHash('sha256').update(password).digest('hex');
+// Hash password - Web Crypto API implementation
+export async function hashPassword(password: string): Promise<string> {
+  const msgBuffer = new TextEncoder().encode(password);
+  const hashBuffer = await crypto.subtle.digest('SHA-256', msgBuffer);
+  const hashArray = Array.from(new Uint8Array(hashBuffer));
+  return hashArray.map(b => b.toString(16).padStart(2, '0')).join('');
 }
 
 // Verify password - client-side mock implementation
@@ -49,7 +49,7 @@ export async function verifyPassword(
     created_at: new Date().toISOString(),
     updated_at: new Date().toISOString()
   };
-  
+
   return mockUser;
 }
 
@@ -62,11 +62,13 @@ export function createSession(user: User): string {
     firstName: user.first_name,
     lastName: user.last_name,
   };
-  
+
   // In a real implementation, we would set a cookie
   // For this demo, we'll just return the session token
-  const sessionToken = Buffer.from(JSON.stringify(session)).toString('base64');
-  
+  const sessionString = JSON.stringify(session);
+  // Browser-safe base64 encoding (handles UTF-8)
+  const sessionToken = btoa(unescape(encodeURIComponent(sessionString)));
+
   return sessionToken;
 }
 
@@ -81,7 +83,7 @@ export function getSession(): AuthSession | null {
     firstName: 'Demo',
     lastName: 'User'
   };
-  
+
   return mockSession;
 }
 
@@ -115,7 +117,7 @@ export async function registerUser(
     created_at: new Date().toISOString(),
     updated_at: new Date().toISOString()
   };
-  
+
   return mockUser;
 }
 
@@ -136,6 +138,7 @@ export async function getUserById(
     created_at: new Date().toISOString(),
     updated_at: new Date().toISOString()
   };
-  
+
   return mockUser;
 }
+

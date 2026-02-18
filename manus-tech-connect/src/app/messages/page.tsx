@@ -28,7 +28,7 @@ export default function MessagesListPage() {
           throw new Error('Failed to fetch connections');
         }
         
-        const data = await response.json();
+        const data = ((await response.json()) as any) as any;
         
         // Filter only accepted connections
         const acceptedConnections = (data.connections || []).filter(

@@ -22,7 +22,7 @@ export default function OnboardingPage() {
           return;
         }
         
-        const data = await response.json();
+        const data = ((await response.json()) as any) as any;
         setUserData(data.user);
         setIsLoading(false);
       } catch (error) {

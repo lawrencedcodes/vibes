@@ -39,7 +39,7 @@ export default function AvailabilityPage() {
           throw new Error('Failed to fetch profile data');
         }
         
-        const data = await response.json();
+        const data = ((await response.json()) as any) as any;
         
         setAvailabilities(data.availability || []);
         setIsLoading(false);
@@ -86,7 +86,7 @@ export default function AvailabilityPage() {
         }),
       });
       
-      const data = await response.json();
+      const data = ((await response.json()) as any) as any;
       
       if (!response.ok) {
         throw new Error(data.error || 'Failed to add availability');
@@ -94,7 +94,7 @@ export default function AvailabilityPage() {
       
       // Refresh data
       const profileResponse = await fetch('/api/profile');
-      const profileData = await profileResponse.json();
+      const profileData = (await profileResponse.json()) as any;
       
       setAvailabilities(profileData.availability || []);
       setSuccessMessage('Availability added successfully');
@@ -114,7 +114,7 @@ export default function AvailabilityPage() {
         method: 'DELETE',
       });
       
-      const data = await response.json();
+      const data = ((await response.json()) as any) as any;
       
       if (!response.ok) {
         throw new Error(data.error || 'Failed to remove availability');

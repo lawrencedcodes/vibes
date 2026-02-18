@@ -1,3 +1,4 @@
+export const runtime = "edge";
 import { D1Database } from '@cloudflare/workers-types';
 import { getSession } from '@/lib/auth/auth-utils';
 
@@ -12,7 +13,7 @@ export async function POST(request: Request) {
   }
   
   try {
-    const { technology_id, proficiency_level } = await request.json();
+    const { technology_id, proficiency_level } = (((await request.json()) as any) as any) as any;
     
     // Validate input
     if (!technology_id || !proficiency_level) {

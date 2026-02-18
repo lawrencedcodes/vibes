@@ -1,3 +1,4 @@
+export const runtime = "edge";
 import { D1Database } from '@cloudflare/workers-types';
 import { getSession } from '@/lib/auth/auth-utils';
 
@@ -12,7 +13,7 @@ export async function POST(request: Request) {
   }
   
   try {
-    const { day_of_week, start_time, end_time } = await request.json();
+    const { day_of_week, start_time, end_time } = (((await request.json()) as any) as any) as any;
     
     // Validate input
     if (day_of_week === undefined || !start_time || !end_time) {

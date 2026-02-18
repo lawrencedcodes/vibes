@@ -37,7 +37,7 @@ export default function ProfilePage() {
           throw new Error('Failed to fetch profile');
         }
         
-        const data = await response.json();
+        const data = ((await response.json()) as any) as any;
         
         setFormData({
           first_name: data.user.first_name,
@@ -123,7 +123,7 @@ export default function ProfilePage() {
         }),
       });
       
-      const data = await response.json();
+      const data = ((await response.json()) as any) as any;
       
       if (!response.ok) {
         throw new Error(data.error || 'Failed to update profile');

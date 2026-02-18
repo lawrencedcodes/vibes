@@ -1,3 +1,4 @@
+export const runtime = "edge";
 import { D1Database } from '@cloudflare/workers-types';
 import { getSession } from '@/lib/auth/auth-utils';
 
@@ -64,7 +65,7 @@ export async function PUT(request: Request) {
   }
   
   try {
-    const { notification_id } = await request.json();
+    const { notification_id } = (((await request.json()) as any) as any) as any;
     
     if (!notification_id) {
       return Response.json(

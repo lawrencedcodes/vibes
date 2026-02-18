@@ -1,3 +1,4 @@
+export const runtime = "edge";
 import { clearSession } from '@/lib/auth/auth-utils';
 
 export async function POST() {

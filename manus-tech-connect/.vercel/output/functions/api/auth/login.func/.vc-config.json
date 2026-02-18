@@ -1,0 +1,18 @@
+{
+  "runtime": "edge",
+  "name": "api/auth/login",
+  "deploymentTarget": "v8-worker",
+  "entrypoint": "index.js",
+  "assets": [],
+  "framework": {
+    "slug": "nextjs",
+    "version": "15.1.0"
+  },
+  "environment": {
+    "__NEXT_BUILD_ID": "49lOGbwPwPM2Hi44mEBwD",
+    "NEXT_SERVER_ACTIONS_ENCRYPTION_KEY": "jkZMph3CBAF8WjFKyXslP4/wcs3iH7dsXz9mag2TiM4=",
+    "__NEXT_PREVIEW_MODE_ID": "7b2884e99d195026a6f5b769db10b6f3",
+    "__NEXT_PREVIEW_MODE_ENCRYPTION_KEY": "108db53cdea0ea37bb6559320685f054ce07f3f300e1cfbd4cd10dfd6b173d37",
+    "__NEXT_PREVIEW_MODE_SIGNING_KEY": "9019e56bb076ddb99291944d7ea398a970cf706b4743e0e996c9865ee6e92003"
+  }
+}

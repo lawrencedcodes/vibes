@@ -1,18 +1,18 @@
 "use client";
 
+
 import { useState, useEffect, useRef } from 'react';
-import { useRouter } from 'next/navigation';
+import { useRouter, useParams } from 'next/navigation';
 import { getSession } from '@/lib/auth/auth-utils';
 
-export default function MessagesPage({
-  params
-}: {
-  params: { connectionId: string }
-}) {
+export const runtime = 'edge';
+
+export default function MessagesPage() {
   const router = useRouter();
+  const params = useParams();
   const session = getSession();
   const messagesEndRef = useRef<HTMLDivElement>(null);
-  
+
   const [messages, setMessages] = useState<any[]>([]);
   const [otherUser, setOtherUser] = useState<any>(null);
   const [connection, setConnection] = useState<any>(null);
@@ -20,25 +20,25 @@ export default function MessagesPage({
   const [isLoading, setIsLoading] = useState(true);
   const [isSending, setIsSending] = useState(false);
   const [error, setError] = useState('');
-  
-  const connectionId = params.connectionId;
-  
+
+  const connectionId = params.connectionId as string;
+
   useEffect(() => {
     if (!session) {
       router.push('/login');
       return;
     }
-    
+
     if (!connectionId) {
       router.push('/connections');
       return;
     }
-    
+
     // Fetch messages
     const fetchMessages = async () => {
       try {
         const response = await fetch(`/api/messages/${connectionId}`);
-        
+
         if (!response.ok) {
           if (response.status === 404) {
             router.push('/connections');
@@ -46,13 +46,13 @@ export default function MessagesPage({
           }
           throw new Error('Failed to fetch messages');
         }
-        
-        const data = await response.json();
+
+        const data = (((await response.json()) as any) as any) as any;
         setMessages(data.messages || []);
         setOtherUser(data.otherUser);
         setConnection(data.connection);
         setIsLoading(false);
-        
+
         // Scroll to bottom
         scrollToBottom();
       } catch (err: any) {
@@ -60,29 +60,29 @@ export default function MessagesPage({
         setIsLoading(false);
       }
     };
-    
+
     fetchMessages();
-    
+
     // Set up polling for new messages
     const interval = setInterval(fetchMessages, 5000);
-    
+
     return () => clearInterval(interval);
   }, [router, session, connectionId]);
-  
+
   const scrollToBottom = () => {
     messagesEndRef.current?.scrollIntoView({ behavior: 'smooth' });
   };
-  
+
   const handleSendMessage = async (e: React.FormEvent) => {
     e.preventDefault();
-    
+
     if (!newMessage.trim()) {
       return;
     }
-    
+
     setIsSending(true);
     setError('');
-    
+
     try {
       const response = await fetch(`/api/messages/${connectionId}`, {
         method: 'POST',
@@ -93,13 +93,13 @@ export default function MessagesPage({
           content: newMessage
         }),
       });
-      
+
       if (!response.ok) {
         throw new Error('Failed to send message');
       }
-      
-      const data = await response.json();
-      
+
+      const data = (((await response.json()) as any) as any) as any;
+
       // Add new message to the list
       const sentMessage = {
         ...data.message,
@@ -107,10 +107,10 @@ export default function MessagesPage({
         last_name: session?.lastName,
         photo_url: null // We don't have this in the session
       };
-      
+
       setMessages([...messages, sentMessage]);
       setNewMessage('');
-      
+
       // Scroll to bottom
       setTimeout(scrollToBottom, 100);
     } catch (err: any) {
@@ -119,17 +119,17 @@ export default function MessagesPage({
       setIsSending(false);
     }
   };
-  
+
   const formatTime = (dateString: string) => {
     const date = new Date(dateString);
     return date.toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' });
   };
-  
+
   const formatDate = (dateString: string) => {
     const date = new Date(dateString);
     return date.toLocaleDateString();
   };
-  
+
   if (isLoading) {
     return (
       <div className="min-h-screen bg-gray-50 flex items-center justify-center">
@@ -139,7 +139,7 @@ export default function MessagesPage({
       </div>
     );
   }
-  
+
   return (
     <div className="min-h-screen bg-gray-50 flex flex-col">
       <header className="bg-white shadow">
@@ -154,7 +154,7 @@ export default function MessagesPage({
                   <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M10 19l-7-7m0 0l7-7m-7 7h18" />
                 </svg>
               </button>
-              
+
               {otherUser && (
                 <div className="flex items-center">
                   <div className="flex-shrink-0 h-10 w-10">
@@ -186,7 +186,7 @@ export default function MessagesPage({
           </div>
         </div>
       </header>
-      
+
       <main className="flex-1 flex flex-col max-w-7xl w-full mx-auto">
         <div className="flex-1 overflow-y-auto px-4 py-6 sm:px-6 lg:px-8">
           {error && (
@@ -201,7 +201,7 @@ export default function MessagesPage({
               </div>
             </div>
           )}
-          
+
           <div className="space-y-4">
             {messages.length === 0 ? (
               <div className="text-center py-10">
@@ -211,9 +211,9 @@ export default function MessagesPage({
               <div className="space-y-4">
                 {messages.map((message, index) => {
                   const isCurrentUser = message.sender_id === session?.userId;
-                  const showDate = index === 0 || 
+                  const showDate = index === 0 ||
                     formatDate(messages[index - 1].created_at) !== formatDate(message.created_at);
-                  
+
                   return (
                     <div key={message.id}>
                       {showDate && (
@@ -223,7 +223,7 @@ export default function MessagesPage({
                           </div>
                         </div>
                       )}
-                      
+
                       <div className={`flex ${isCurrentUser ? 'justify-end' : 'justify-start'}`}>
                         <div className={`flex max-w-xs md:max-w-md ${isCurrentUser ? 'flex-row-reverse' : 'flex-row'}`}>
                           <div className="flex-shrink-0">
@@ -243,18 +243,16 @@ export default function MessagesPage({
                               </div>
                             )}
                           </div>
-                          
+
                           <div>
-                            <div className={`rounded-lg px-4 py-2 ${
-                              isCurrentUser 
-                                ? 'bg-indigo-600 text-white mr-2' 
-                                : 'bg-gray-100 text-gray-800'
-                            }`}>
+                            <div className={`rounded-lg px-4 py-2 ${isCurrentUser
+                              ? 'bg-indigo-600 text-white mr-2'
+                              : 'bg-gray-100 text-gray-800'
+                              }`}>
                               <p>{message.content}</p>
                             </div>
-                            <div className={`text-xs text-gray-500 mt-1 ${
-                              isCurrentUser ? 'text-right mr-2' : 'text-left'
-                            }`}>
+                            <div className={`text-xs text-gray-500 mt-1 ${isCurrentUser ? 'text-right mr-2' : 'text-left'
+                              }`}>
                               {formatTime(message.created_at)}
                             </div>
                           </div>
@@ -268,7 +266,7 @@ export default function MessagesPage({
             )}
           </div>
         </div>
-        
+
         <div className="bg-white border-t border-gray-200 px-4 py-4 sm:px-6 lg:px-8">
           <form onSubmit={handleSendMessage} className="flex space-x-2">
             <div className="flex-1">

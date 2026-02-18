@@ -1,33 +1,35 @@
+export const runtime = "edge";
 import { D1Database } from '@cloudflare/workers-types';
 import { getSession } from '@/lib/auth/auth-utils';
 import { createMessageReceivedNotification } from '@/lib/notifications';
 
+
 export async function GET(
   request: Request,
-  { params }: { params: { connectionId: string } }
+  { params }: { params: Promise<{ connectionId: string }> }
 ) {
+  const { connectionId } = await params;
   const session = getSession();
-  
+
   if (!session) {
     return Response.json(
       { error: 'Unauthorized' },
       { status: 401 }
     );
   }
-  
-  const connectionId = params.connectionId;
-  
+
+
   if (!connectionId) {
     return Response.json(
       { error: 'Connection ID is required' },
       { status: 400 }
     );
   }
-  
+
   try {
     // Get database from environment
     const db = (process.env as any).DB as D1Database;
-    
+
     // Verify connection exists and user is part of it
     const connection = await db
       .prepare(`
@@ -37,14 +39,14 @@ export async function GET(
       `)
       .bind(connectionId, session.userId, session.userId)
       .first();
-    
+
     if (!connection) {
       return Response.json(
         { error: 'Connection not found or you do not have access to it' },
         { status: 404 }
       );
     }
-    
+
     // Get messages for this connection
     const messages = await db
       .prepare(`
@@ -58,21 +60,21 @@ export async function GET(
       `)
       .bind(connectionId)
       .all();
-    
+
     if (!messages.success) {
       throw new Error('Failed to fetch messages');
     }
-    
+
     // Get other user's info
-    const otherUserId = (connection as any).teacher_id === session.userId 
-      ? (connection as any).learner_id 
+    const otherUserId = (connection as any).teacher_id === session.userId
+      ? (connection as any).learner_id
       : (connection as any).teacher_id;
-    
+
     const otherUser = await db
       .prepare('SELECT id, first_name, last_name, photo_url FROM users WHERE id = ? LIMIT 1')
       .bind(otherUserId)
       .first();
-    
+
     // Mark unread messages as read
     await db
       .prepare(`
@@ -82,7 +84,7 @@ export async function GET(
       `)
       .bind(connectionId, session.userId)
       .run();
-    
+
     return Response.json({
       connection,
       messages: messages.results,
@@ -97,41 +99,42 @@ export async function GET(
   }
 }
 
+
 export async function POST(
   request: Request,
-  { params }: { params: { connectionId: string } }
+  { params }: { params: Promise<{ connectionId: string }> }
 ) {
+  const { connectionId } = await params;
   const session = getSession();
-  
+
   if (!session) {
     return Response.json(
       { error: 'Unauthorized' },
       { status: 401 }
     );
   }
-  
-  const connectionId = params.connectionId;
-  
+
+
   if (!connectionId) {
     return Response.json(
       { error: 'Connection ID is required' },
       { status: 400 }
     );
   }
-  
+
   try {
-    const { content } = await request.json();
-    
+    const { content } = ((((await request.json()) as any) as any) as any) as { content: string };
+
     if (!content) {
       return Response.json(
         { error: 'Message content is required' },
         { status: 400 }
       );
     }
-    
+
     // Get database from environment
     const db = (process.env as any).DB as D1Database;
-    
+
     // Verify connection exists, is accepted, and user is part of it
     const connection = await db
       .prepare(`
@@ -141,14 +144,14 @@ export async function POST(
       `)
       .bind(connectionId, session.userId, session.userId)
       .first<any>();
-    
+
     if (!connection) {
       return Response.json(
         { error: 'Connection not found, not accepted, or you do not have access to it' },
         { status: 404 }
       );
     }
-    
+
     // Add message
     const result = await db
       .prepare(`
@@ -158,16 +161,16 @@ export async function POST(
       `)
       .bind(connectionId, session.userId, content)
       .first();
-    
+
     if (!result) {
       throw new Error('Failed to send message');
     }
-    
+
     // Get recipient ID
-    const recipientId = connection.teacher_id === session.userId 
-      ? connection.learner_id 
+    const recipientId = connection.teacher_id === session.userId
+      ? connection.learner_id
       : connection.teacher_id;
-    
+
     // Create notification for recipient
     await createMessageReceivedNotification(
       db,
@@ -176,7 +179,7 @@ export async function POST(
       `${session.firstName} ${session.lastName}`,
       parseInt(connectionId)
     );
-    
+
     return Response.json({
       success: true,
       message: result

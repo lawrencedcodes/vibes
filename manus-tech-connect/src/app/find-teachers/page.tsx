@@ -42,7 +42,7 @@ export default function FindTeachersPage() {
           throw new Error('Failed to fetch technologies');
         }
         
-        const techData = await techResponse.json();
+        const techData = (await techResponse.json()) as any;
         setTechnologies(techData.technologies || []);
         
         // Fetch teachers
@@ -52,7 +52,7 @@ export default function FindTeachersPage() {
           throw new Error('Failed to fetch teachers');
         }
         
-        const teacherData = await teacherResponse.json();
+        const teacherData = (await teacherResponse.json()) as any;
         setTeachers(teacherData.teachers || []);
         setFilteredTeachers(teacherData.teachers || []);
         
@@ -102,7 +102,7 @@ export default function FindTeachersPage() {
         }),
       });
       
-      const data = await response.json();
+      const data = ((await response.json()) as any) as any;
       
       if (!response.ok) {
         throw new Error(data.error || 'Failed to connect with teacher');

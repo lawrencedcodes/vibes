@@ -29,7 +29,7 @@ export default function ConnectionsPage() {
           throw new Error('Failed to fetch connections');
         }
         
-        const data = await response.json();
+        const data = ((await response.json()) as any) as any;
         setConnections(data.connections || []);
         setIsLoading(false);
       } catch (err: any) {
@@ -57,7 +57,7 @@ export default function ConnectionsPage() {
         }),
       });
       
-      const data = await response.json();
+      const data = ((await response.json()) as any) as any;
       
       if (!response.ok) {
         throw new Error(data.error || 'Failed to update connection');
