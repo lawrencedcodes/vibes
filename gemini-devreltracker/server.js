@@ -156,11 +156,20 @@ app.get('/api/metrics', (req, res) => {
         `).get();
         
         const communityHealth = sentimentResult.avg_sentiment !== null ? sentimentResult.avg_sentiment : 0;
+        
+        // Recent Mentions List (for Sentiment Section)
+        const recentMentionsList = db.prepare(`
+            SELECT source, content, sentiment, found_at 
+            FROM mentions 
+            ORDER BY found_at DESC 
+            LIMIT 5
+        `).all();
 
         res.json({
             upcomingContent: upcomingCount,
             recentMentions: mentionsCount,
-            communityHealth: communityHealth
+            communityHealth: communityHealth,
+            recentMentionsList: recentMentionsList
         });
 
     } catch (err) {

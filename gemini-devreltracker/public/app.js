@@ -59,6 +59,40 @@ async function loadMetrics() {
         healthStatusEl.textContent = statusText;
         healthScoreEl.textContent = `Avg Sentiment: ${healthScore.toFixed(2)}`;
 
+        // --- Update Automated Sentiment Section ---
+        const sentimentScoreDisplay = document.getElementById('sentiment-score-display');
+        const sentimentLabel = document.getElementById('sentiment-label');
+        const sentimentList = document.getElementById('sentiment-list');
+
+        if (sentimentScoreDisplay && sentimentLabel) {
+             sentimentScoreDisplay.textContent = healthScore.toFixed(2);
+             sentimentScoreDisplay.className = `text-5xl font-bold ${statusColor}`;
+             sentimentLabel.textContent = statusText;
+             sentimentLabel.className = `text-sm mt-2 font-medium ${statusColor}`;
+        }
+
+        if (sentimentList && data.recentMentionsList) {
+            sentimentList.innerHTML = '';
+            if (data.recentMentionsList.length === 0) {
+                sentimentList.innerHTML = '<li class="text-gray-400 italic">No recent mentions found.</li>';
+            } else {
+                data.recentMentionsList.forEach(m => {
+                    let colorClass = 'bg-gray-100 text-gray-600';
+                    let icon = '⚪';
+                    if (m.sentiment > 0) { colorClass = 'bg-green-100 text-green-700'; icon = '🟢'; }
+                    if (m.sentiment < 0) { colorClass = 'bg-red-100 text-red-700'; icon = '🔴'; }
+                    
+                    const li = document.createElement('li');
+                    li.className = `flex justify-between items-center p-2 rounded ${colorClass}`;
+                    li.innerHTML = `
+                        <span class="truncate mr-2" title="${m.content}">${icon} ${m.content}</span>
+                        <span class="font-mono font-bold text-xs">${m.sentiment > 0 ? '+' : ''}${m.sentiment}</span>
+                    `;
+                    sentimentList.appendChild(li);
+                });
+            }
+        }
+
     } catch (err) {
         console.error("Error loading metrics:", err);
     }

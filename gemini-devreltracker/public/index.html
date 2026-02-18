@@ -459,7 +459,7 @@
 
       <section
         id="sentiment"
-        class="mb-8 p-6 bg-white rounded-lg shadow-md opacity-50"
+        class="mb-8 p-6 bg-white rounded-lg shadow-md"
       >
         <h3 class="text-xl font-semibold text-gray-800 mb-4 flex items-center">
           <img
@@ -469,7 +469,19 @@
           />
           Automated Sentiment Analysis & Trend Identification
         </h3>
-        <p class="text-gray-500 italic">Feature coming soon...</p>
+        <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
+          <div class="bg-gray-50 p-4 rounded-lg border border-gray-200 flex flex-col items-center justify-center">
+             <h4 class="text-gray-500 text-sm font-medium uppercase tracking-wide mb-2">Current Sentiment Score</h4>
+             <p id="sentiment-score-display" class="text-5xl font-bold text-gray-400">--</p>
+             <p id="sentiment-label" class="text-sm mt-2 font-medium text-gray-500">Calculating...</p>
+          </div>
+          <div>
+            <h4 class="text-gray-700 font-medium mb-3">Recent Scored Mentions</h4>
+            <ul id="sentiment-list" class="space-y-2 text-sm">
+               <li class="text-gray-400 italic">No data yet...</li>
+            </ul>
+          </div>
+        </div>
       </section>
 
       <section
