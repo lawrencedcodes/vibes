@@ -21,11 +21,19 @@ const createMentionsTable = `
         source TEXT,
         content TEXT,
         url TEXT,
+        sentiment REAL DEFAULT 0,
         found_at DATETIME DEFAULT CURRENT_TIMESTAMP
     )
 `;
 
 db.exec(createContentTable);
 db.exec(createMentionsTable);
+
+// Migration: Add sentiment column if it doesn't exist (for existing DBs)
+try {
+    db.exec("ALTER TABLE mentions ADD COLUMN sentiment REAL DEFAULT 0");
+} catch (err) {
+    // Column likely already exists
+}
 
 module.exports = db;

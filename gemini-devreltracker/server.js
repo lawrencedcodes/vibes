@@ -3,7 +3,8 @@ const express = require('express');
 const cors = require('cors');
 const bodyParser = require('body-parser');
 const db = require('./database.js');
-// const fetch = require('node-fetch'); // Removed as Node 24 has native fetch
+const Sentiment = require('sentiment');
+const sentimentAnalyzer = new Sentiment();
 
 const app = express();
 const PORT = 3000;
@@ -81,6 +82,8 @@ app.get('/api/search', async (req, res) => {
     try {
         // Search Reddit (using .json trick)
         const redditUrl = `https://www.reddit.com/search.json?q=${encodeURIComponent(query)}&limit=5&sort=new`;
+        
+        // Use standard Fetch API (Node 18+)
         const response = await fetch(redditUrl, {
              headers: { 'User-Agent': 'devrel-tracker-bot/1.0' }
         });
@@ -90,19 +93,26 @@ app.get('/api/search', async (req, res) => {
         }
 
         const data = await response.json();
-        const results = data.data.children.map(child => ({
-            source: 'Reddit',
-            title: child.data.title,
-            url: `https://www.reddit.com${child.data.permalink}`,
-            snippet: child.data.selftext ? child.data.selftext.substring(0, 100) + '...' : '',
-            date: new Date(child.data.created_utc * 1000).toLocaleDateString()
-        }));
+        const results = data.data.children.map(child => {
+            const title = child.data.title;
+            const selftext = child.data.selftext || '';
+            const score = sentimentAnalyzer.analyze(title + ' ' + selftext).score;
+            
+            return {
+                source: 'Reddit',
+                title: title,
+                url: `https://www.reddit.com${child.data.permalink}`,
+                snippet: selftext ? selftext.substring(0, 100) + '...' : '',
+                date: new Date(child.data.created_utc * 1000).toLocaleDateString(),
+                sentiment: score
+            };
+        });
 
-        // Log mentions to DB for "Recent Mentions" count
-        const stmt = db.prepare('INSERT INTO mentions (source, content, url) VALUES (?, ?, ?)');
+        // Log mentions to DB with sentiment
+        const stmt = db.prepare('INSERT INTO mentions (source, content, url, sentiment) VALUES (?, ?, ?, ?)');
         results.forEach(r => {
             try {
-                stmt.run(r.source, r.title, r.url);
+                stmt.run(r.source, r.title, r.url, r.sentiment);
             } catch (e) {
                 // Ignore duplicates or insert errors
                 console.log("Mention insert error (likely duplicate):", e.message);
@@ -115,7 +125,7 @@ app.get('/api/search', async (req, res) => {
         console.error("Search error:", err);
         // Fallback to mock data if Reddit fails (e.g. rate limits)
         res.json([
-            { source: 'Mock Source', title: `Discussion about ${query}`, url: '#', snippet: 'This is a mock result as the search API failed.', date: new Date().toLocaleDateString() }
+            { source: 'Mock Source', title: `Discussion about ${query}`, url: '#', snippet: 'This is a mock result as the search API failed.', date: new Date().toLocaleDateString(), sentiment: 0 }
         ]);
     }
 });
@@ -136,10 +146,21 @@ app.get('/api/metrics', (req, res) => {
             SELECT COUNT(*) as count FROM mentions 
             WHERE found_at >= datetime('now', '-1 day')
         `).get().count;
+        
+        // Community Health: Avg sentiment last 7 days
+        // If no mentions, default to 0
+        const sentimentResult = db.prepare(`
+            SELECT AVG(sentiment) as avg_sentiment 
+            FROM mentions 
+            WHERE found_at >= datetime('now', '-7 days')
+        `).get();
+        
+        const communityHealth = sentimentResult.avg_sentiment !== null ? sentimentResult.avg_sentiment : 0;
 
         res.json({
             upcomingContent: upcomingCount,
-            recentMentions: mentionsCount
+            recentMentions: mentionsCount,
+            communityHealth: communityHealth
         });
 
     } catch (err) {

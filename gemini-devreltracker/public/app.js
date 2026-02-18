@@ -5,6 +5,22 @@ document.addEventListener('DOMContentLoaded', () => {
 
     // Navigation Logic
     window.addEventListener('hashchange', updateActiveNavLink);
+
+    // --- Theme Toggle ---
+    const themeToggle = document.getElementById('theme-toggle');
+    
+    // Check saved preference
+    if (localStorage.getItem('theme') === 'dark') {
+        document.body.classList.add('dark-mode');
+    }
+
+    if (themeToggle) {
+        themeToggle.addEventListener('click', () => {
+            document.body.classList.toggle('dark-mode');
+            const isDark = document.body.classList.contains('dark-mode');
+            localStorage.setItem('theme', isDark ? 'dark' : 'light');
+        });
+    }
 });
 
 // --- Metrics ---
@@ -15,6 +31,34 @@ async function loadMetrics() {
         
         document.getElementById('upcoming-count').textContent = `${data.upcomingContent} Items`;
         document.getElementById('recent-mentions-count').textContent = data.recentMentions;
+
+        // Community Health Logic
+        const healthScore = data.communityHealth || 0;
+        const healthStatusEl = document.getElementById('health-status');
+        const healthScoreEl = document.getElementById('health-score');
+        
+        let statusText = 'Neutral';
+        let statusColor = 'text-gray-600';
+
+        if (healthScore > 1) {
+            statusText = 'Excellent';
+            statusColor = 'text-green-600';
+        } else if (healthScore > 0) {
+            statusText = 'Good';
+            statusColor = 'text-green-500';
+        } else if (healthScore < -1) {
+            statusText = 'Critical';
+            statusColor = 'text-red-600';
+        } else if (healthScore < 0) {
+            statusText = 'Concerning';
+            statusColor = 'text-orange-500';
+        }
+
+        // Reset classes
+        healthStatusEl.className = `text-3xl font-bold ${statusColor}`;
+        healthStatusEl.textContent = statusText;
+        healthScoreEl.textContent = `Avg Sentiment: ${healthScore.toFixed(2)}`;
+
     } catch (err) {
         console.error("Error loading metrics:", err);
     }

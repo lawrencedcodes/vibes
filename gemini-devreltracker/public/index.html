@@ -74,6 +74,126 @@
       .content-card-icon {
         @apply h-4 w-4 text-secondary;
       }
+
+      /* --- Dark Mode (Nord Theme) --- */
+      body.dark-mode {
+        --bg-base: #2E3440;
+        --bg-surface: #3B4252;
+        --bg-elevated: #434C5E;
+        --text-primary: #ECEFF4;
+        --text-secondary: #D8DEE9;
+        --text-muted: #4C566A;
+        --accent-primary: #88C0D0;
+        --accent-success: #4ade80; /* Greener green */
+        --accent-warning: #EBCB8B;
+        --accent-danger: #BF616A;
+        --border-subtle: #4C566A;
+        
+        background-color: var(--bg-base);
+        color: var(--text-secondary);
+      }
+      
+      /* ... existing overrides ... */
+
+      /* Green text overrides */
+      body.dark-mode .text-green-600,
+      body.dark-mode .text-green-700 {
+        color: var(--accent-success) !important;
+      }
+
+      /* Green background overrides (e.g. badges) */
+      body.dark-mode .bg-green-100 {
+        background-color: rgba(74, 222, 128, 0.15) !important;
+        color: var(--accent-success) !important;
+      }
+      
+      body.dark-mode .hover\:bg-green-200:hover {
+        background-color: rgba(74, 222, 128, 0.25) !important;
+      }
+      
+      body.dark-mode aside {
+        background-color: var(--bg-surface) !important;
+        border-right: 1px solid var(--border-subtle) !important;
+      }
+      
+      body.dark-mode aside .border-b, 
+      body.dark-mode aside .border-t {
+        border-color: var(--border-subtle) !important;
+      }
+
+      body.dark-mode .bg-white,
+      body.dark-mode .content-card,
+      body.dark-mode section,
+      body.dark-mode .bg-slate-50, /* Planner columns */
+      body.dark-mode .bg-blue-50,
+      body.dark-mode .bg-gray-50 {
+        background-color: var(--bg-surface) !important;
+        border-color: var(--border-subtle) !important;
+        color: var(--text-secondary) !important;
+      }
+      
+      body.dark-mode .bg-gray-50 li { /* Search results */
+        background-color: var(--bg-elevated) !important;
+        border-color: var(--border-subtle) !important;
+      }
+
+      body.dark-mode h1,
+      body.dark-mode h2,
+      body.dark-mode h3,
+      body.dark-mode h4,
+      body.dark-mode h5,
+      body.dark-mode .text-gray-800,
+      body.dark-mode .text-gray-700,
+      body.dark-mode .font-bold,
+      body.dark-mode .font-semibold {
+        color: var(--text-primary) !important;
+      }
+
+      body.dark-mode .text-gray-600,
+      body.dark-mode .text-gray-500,
+      body.dark-mode .text-gray-400 {
+        color: var(--text-secondary) !important;
+      }
+
+      body.dark-mode input,
+      body.dark-mode select,
+      body.dark-mode textarea {
+        background-color: var(--bg-elevated) !important;
+        border-color: var(--border-subtle) !important;
+        color: var(--text-primary) !important;
+      }
+      
+      /* Primary buttons */
+      body.dark-mode .bg-primary {
+        background-color: var(--accent-primary) !important;
+        color: var(--bg-base) !important;
+      }
+      
+      body.dark-mode .text-primary {
+        color: var(--accent-primary) !important;
+      }
+      
+      /* Toggle Button Style */
+      #theme-toggle {
+        position: fixed;
+        top: 1.5rem;
+        right: 2rem;
+        z-index: 60; /* Above sidebar and content */
+        background-color: #e5e7eb;
+        color: #1f2937;
+        padding: 0.5rem;
+        border-radius: 9999px;
+        border: 1px solid #d1d5db;
+        cursor: pointer;
+        transition: all 0.3s ease;
+        box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.1);
+      }
+      
+      body.dark-mode #theme-toggle {
+        background-color: var(--bg-elevated);
+        color: var(--accent-primary);
+        border-color: var(--accent-primary);
+      }
     </style>
   </head>
   <body class="flex h-screen">
@@ -164,8 +284,8 @@
           <h3 class="text-lg font-semibold text-gray-700 mb-2">
             Community Health
           </h3>
-          <p class="text-3xl font-bold text-green-600">Good</p>
-          <p class="text-sm text-gray-500">Score: 85/100</p>
+          <p id="health-status" class="text-3xl font-bold text-green-600">--</p>
+          <p id="health-score" class="text-sm text-gray-500">Score: --</p>
         </div>
         <div class="bg-white p-6 rounded-lg shadow-md">
           <h3 class="text-lg font-semibold text-gray-700 mb-2">
@@ -368,6 +488,11 @@
       </section>
     </main>
 
+    <button id="theme-toggle" aria-label="Toggle Dark Mode" title="Toggle Dark Mode">
+      <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="h-6 w-6">
+        <path d="M12 3a6 6 0 0 0 9 9 9 9 0 1 1-9-9Z"></path>
+      </svg>
+    </button>
     <script src="app.js"></script>
   </body>
 </html>
