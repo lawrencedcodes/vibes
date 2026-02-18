@@ -3,10 +3,14 @@ com/faithtech/sms/service/WorkflowEngineService.class
 com/faithtech/sms/FaithTechSmsApplication.class
 com/faithtech/sms/ui/views/VisitorView$VisitorForm$CloseEvent.class
 com/faithtech/sms/controller/IntakeController.class
+com/faithtech/sms/ui/views/UserView.class
 com/faithtech/sms/service/TwilioService.class
 com/faithtech/sms/data/entity/Workflow.class
+com/faithtech/sms/data/repository/UserRepository.class
 com/faithtech/sms/ui/views/VisitorView.class
+com/faithtech/sms/security/CustomAuthenticationSuccessHandler.class
 com/faithtech/sms/data/entity/Visitor.class
+com/faithtech/sms/security/SecurityConfig.class
 com/faithtech/sms/ui/views/VisitorView$VisitorForm$SaveEvent.class
 com/faithtech/sms/data/repository/TenantRepository.class
 com/faithtech/sms/data/entity/VisitorWorkflowState.class
@@ -14,5 +18,9 @@ com/faithtech/sms/ui/views/VisitorView$VisitorForm$VisitorFormEvent.class
 com/faithtech/sms/data/repository/VisitorRepository.class
 com/faithtech/sms/data/enums/WorkflowStatus.class
 com/faithtech/sms/data/repository/WorkflowRepository.class
+com/faithtech/sms/data/entity/User.class
 com/faithtech/sms/data/entity/Tenant.class
+com/faithtech/sms/ui/MainLayout.class
+com/faithtech/sms/controller/LoginController.class
+com/faithtech/sms/security/UserDetailsServiceImpl.class
 com/faithtech/sms/data/repository/VisitorWorkflowStateRepository.class

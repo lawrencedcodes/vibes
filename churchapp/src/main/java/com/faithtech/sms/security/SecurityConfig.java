@@ -36,7 +36,7 @@ public class SecurityConfig {
                                 "/VAADIN/**",
                                 "/vaadinServlet/**")
                         .permitAll()
-                        .requestMatchers("/visitors/**").hasRole("ADMIN")
+                        .requestMatchers("/visitors/**", "/users/**").hasRole("ADMIN")
                         .anyRequest().authenticated())
                 .formLogin(form -> form
                         .loginPage("/login")

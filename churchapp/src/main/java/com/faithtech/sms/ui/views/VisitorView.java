@@ -2,6 +2,7 @@ package com.faithtech.sms.ui.views;
 
 import com.faithtech.sms.data.entity.Visitor;
 import com.faithtech.sms.data.repository.VisitorRepository;
+import com.faithtech.sms.ui.MainLayout;
 import com.vaadin.flow.component.UI;
 import com.vaadin.flow.component.button.Button;
 import com.vaadin.flow.component.button.ButtonVariant;
@@ -9,16 +10,17 @@ import com.vaadin.flow.component.dependency.CssImport;
 import com.vaadin.flow.component.dependency.StyleSheet;
 import com.vaadin.flow.component.grid.Grid;
 import com.vaadin.flow.component.grid.GridVariant;
-import com.vaadin.flow.component.html.H2;
 import com.vaadin.flow.component.orderedlayout.HorizontalLayout;
 import com.vaadin.flow.component.orderedlayout.VerticalLayout;
 import com.vaadin.flow.component.textfield.TextField;
 import com.vaadin.flow.data.binder.Binder;
+import com.vaadin.flow.router.PageTitle;
 import com.vaadin.flow.router.Route;
 import com.vaadin.flow.theme.lumo.LumoUtility;
 import org.springframework.security.core.context.SecurityContextHolder;
 
-@Route("visitors")
+@PageTitle("Visitors | FaithTech SMS")
+@Route(value = "visitors", layout = MainLayout.class)
 @StyleSheet("/css/church-theme.css")
 public class VisitorView extends VerticalLayout {
 
@@ -35,37 +37,12 @@ public class VisitorView extends VerticalLayout {
         setPadding(true);
         setSpacing(true);
 
-        // Header
-        HorizontalLayout header = createHeader();
-        add(header);
-
         configureGrid();
         configureForm();
 
         add(getToolbar(), getContent());
         updateList();
         closeEditor();
-    }
-
-    private HorizontalLayout createHeader() {
-        H2 logo = new H2("FaithTech Management");
-        logo.addClassNames(LumoUtility.TextColor.PRIMARY, LumoUtility.Margin.Bottom.MEDIUM);
-        logo.getStyle().set("font-family", "var(--font-heading)");
-        logo.getStyle().set("color", "var(--primary-purple)");
-
-        Button logout = new Button("Sign Out");
-        logout.addClickListener(e -> {
-            SecurityContextHolder.clearContext();
-            UI.getCurrent().getPage().setLocation("/logout");
-        });
-        logout.addThemeVariants(ButtonVariant.LUMO_TERTIARY);
-        logout.getStyle().set("color", "var(--error-red)");
-
-        HorizontalLayout header = new HorizontalLayout(logo, logout);
-        header.setWidthFull();
-        header.setJustifyContentMode(JustifyContentMode.BETWEEN);
-        header.setAlignItems(Alignment.CENTER);
-        return header;
     }
 
     private HorizontalLayout getContent() {
