@@ -21,7 +21,21 @@ document.addEventListener('DOMContentLoaded', () => {
             localStorage.setItem('theme', isDark ? 'dark' : 'light');
         });
     }
+
+    // Modal Event Listeners
+    document.getElementById('delete-confirm').addEventListener('click', confirmDelete);
+    document.getElementById('delete-cancel').addEventListener('click', hideDeleteModal);
+    
+    // Close modal on outside click
+    window.onclick = function(event) {
+        const modal = document.getElementById('delete-modal');
+        if (event.target == modal) {
+            hideDeleteModal();
+        }
+    }
 });
+
+let itemToDeleteId = null;
 
 // --- Metrics ---
 async function loadMetrics() {
@@ -108,10 +122,19 @@ async function loadContent() {
         const todayList = document.getElementById('content-today');
         const weekList = document.getElementById('content-this-week');
         const longTermList = document.getElementById('content-long-term');
+        const pastList = document.getElementById('content-past');
         
         todayList.innerHTML = '';
         weekList.innerHTML = '';
         longTermList.innerHTML = '';
+        pastList.innerHTML = '';
+
+        // Setup Drag and Drop for columns
+        [todayList, weekList, longTermList].forEach(el => {
+            el.ondragover = allowDrop;
+            el.ondrop = drop;
+            el.classList.add('min-h-[100px]'); // Ensure drop target has height
+        });
 
         const now = new Date();
         const today = now.toISOString().split('T')[0];
@@ -127,15 +150,11 @@ async function loadContent() {
             const card = createContentCard(item);
             
             if (item.status === 'complete') {
-                // Optional: Show completed items differently or in a separate list?
-                // For now, we'll just put them where they belong date-wise but maybe style them
-                // Or maybe we don't show completed items in the "Overview"?
-                // The prompt says "what the developer advocate should focus on", implying incomplete tasks.
-                // Let's filter out completed items from the main view, or put them at bottom.
-                // For this implementation, I will skip completed items in the "Planned" view.
-                return; 
+                pastList.appendChild(card);
+                return;
             }
 
+            // For incomplete items, determine where they go
             if (!item.due_date) {
                 longTermList.appendChild(card);
             } else if (item.due_date === today) {
@@ -148,9 +167,11 @@ async function loadContent() {
         });
         
         // Add "Empty" messages if lists are empty
-        if (todayList.children.length === 0) todayList.innerHTML = '<p class="text-xs text-gray-400 text-center">No items due today.</p>';
-        if (weekList.children.length === 0) weekList.innerHTML = '<p class="text-xs text-gray-400 text-center">No items due this week.</p>';
-        if (longTermList.children.length === 0) longTermList.innerHTML = '<p class="text-xs text-gray-400 text-center">No long term items.</p>';
+        const emptyMsg = '<p class="text-xs text-gray-400 text-center pointer-events-none">No items.</p>';
+        if (todayList.children.length === 0) todayList.innerHTML = emptyMsg;
+        if (weekList.children.length === 0) weekList.innerHTML = emptyMsg;
+        if (longTermList.children.length === 0) longTermList.innerHTML = emptyMsg;
+        if (pastList.children.length === 0) pastList.innerHTML = emptyMsg;
 
     } catch (err) {
         console.error("Error loading content:", err);
@@ -159,7 +180,10 @@ async function loadContent() {
 
 function createContentCard(item) {
     const div = document.createElement('div');
-    div.className = 'content-card';
+    div.className = 'content-card cursor-move select-none'; // Add cursor-move for UX
+    div.setAttribute('draggable', 'true');
+    div.setAttribute('data-id', item.id);
+    div.ondragstart = drag;
     
     // Icon mapping
     let iconSrc = 'https://cdn.jsdelivr.net/npm/lucide-static@latest/icons/file.svg';
@@ -169,10 +193,22 @@ function createContentCard(item) {
     if (item.type === 'social') iconSrc = 'https://cdn.jsdelivr.net/npm/lucide-static@latest/icons/twitter.svg';
     if (item.type === 'blog') iconSrc = 'https://cdn.jsdelivr.net/npm/lucide-static@latest/icons/file-text.svg';
 
+    let actionButton = '';
+    if (item.status !== 'complete') {
+        actionButton = `<button onclick="markComplete(${item.id})" class="text-[10px] bg-green-100 text-green-700 px-2 py-1 rounded hover:bg-green-200">Done</button>`;
+    }
+
+    // Delete button logic: Only visible in 'Past' section as per prompt ("Every time 'Done' is clicked... It also gets a 'delete' button")
+    // But existing code had delete button everywhere. Prompt says "It also gets a 'delete' button" implying it might not have had one before or specifically for this section.
+    // However, user usually wants to delete planned items too. I'll keep the top-right delete button but ensure it triggers the modal.
+    // Actually, prompt says: "Every time 'Done' is clicked for an item, it leaves its current time area and appears permanently in the new 'Past' section... It also gets a 'delete' button which when clicked facilitates the popup"
+    // This implies the delete button is distinctive features of the Past section.
+    // But I will keep the delete button for all items for consistency, but use the new modal.
+
     div.innerHTML = `
         <div class="flex justify-between items-start">
             <p class="content-card-title">${item.title}</p>
-            <button onclick="deleteContentItem(${item.id})" class="text-gray-400 hover:text-red-500" title="Delete">
+            <button onclick="showDeleteModal(${item.id})" class="text-gray-400 hover:text-red-500" title="Delete">
                 <img src="https://cdn.jsdelivr.net/npm/lucide-static@latest/icons/trash-2.svg" class="h-3 w-3" />
             </button>
         </div>
@@ -182,11 +218,64 @@ function createContentCard(item) {
             <span class="ml-auto text-[10px] text-gray-400">${item.due_date || 'No Date'}</span>
         </div>
         <div class="mt-2 text-right">
-             <button onclick="markComplete(${item.id})" class="text-[10px] bg-green-100 text-green-700 px-2 py-1 rounded hover:bg-green-200">Done</button>
+             ${actionButton}
         </div>
     `;
     return div;
 }
+
+// --- Drag and Drop Logic ---
+
+function allowDrop(ev) {
+    ev.preventDefault();
+}
+
+function drag(ev) {
+    ev.dataTransfer.setData("text/plain", ev.currentTarget.getAttribute('data-id'));
+}
+
+async function drop(ev) {
+    ev.preventDefault();
+    const id = ev.dataTransfer.getData("text/plain");
+    const dropTarget = ev.currentTarget; // The container (today, week, or longterm)
+    
+    // Determine new date based on drop target
+    const now = new Date();
+    let newDate = null;
+
+    if (dropTarget.id === 'content-today') {
+        newDate = now.toISOString().split('T')[0];
+    } else if (dropTarget.id === 'content-this-week') {
+        // Set to tomorrow? Or just keep it vaguely "this week"? 
+        // The prompt says "drag to 'This Week'". 
+        // Let's set it to tomorrow for simplicity if it wasn't already in the week.
+        // Or if we want to be smarter, we just ensure it falls within the week. 
+        // Let's stick to "Tomorrow" as a safe bet for "This Week" bucket logic if moving from Today.
+        const tomorrow = new Date(now);
+        tomorrow.setDate(now.getDate() + 1);
+        newDate = tomorrow.toISOString().split('T')[0];
+    } else if (dropTarget.id === 'content-long-term') {
+        // Set to null or a far future date?
+        // My logic uses !due_date for Long Term.
+        newDate = null; // Backend should handle this (set to NULL)
+    }
+
+    if (id && dropTarget.id) {
+        // Optimistic update? No, let's reload.
+        try {
+            await fetch(`/api/content/${id}`, {
+                method: 'PUT',
+                headers: { 'Content-Type': 'application/json' },
+                body: JSON.stringify({ due_date: newDate })
+            });
+            loadContent(); // Reload to reflect changes
+            loadMetrics();
+        } catch (err) {
+            console.error("Error moving item:", err);
+        }
+    }
+}
+
 
 async function addContentItem() {
     const title = document.getElementById('content-title').value;
@@ -222,16 +311,28 @@ async function addContentItem() {
     }
 }
 
-async function deleteContentItem(id) {
-    if (!confirm("Are you sure you want to delete this item?")) return;
-    
-    try {
-        await fetch(`/api/content/${id}`, { method: 'DELETE' });
-        loadContent();
-        loadMetrics();
-    } catch (err) {
-        console.error("Error deleting item:", err);
+// --- Delete Modal Logic ---
+function showDeleteModal(id) {
+    itemToDeleteId = id;
+    document.getElementById('delete-modal').classList.remove('hidden');
+}
+
+function hideDeleteModal() {
+    itemToDeleteId = null;
+    document.getElementById('delete-modal').classList.add('hidden');
+}
+
+async function confirmDelete() {
+    if (itemToDeleteId) {
+        try {
+            await fetch(`/api/content/${itemToDeleteId}`, { method: 'DELETE' });
+            loadContent();
+            loadMetrics();
+        } catch (err) {
+            console.error("Error deleting item:", err);
+        }
     }
+    hideDeleteModal();
 }
 
 async function markComplete(id) {

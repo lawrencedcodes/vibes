@@ -15,10 +15,10 @@ app.use(express.static('public'));
 
 // --- Content CRUD ---
 
-// Get all content items
+// Get all content items (excluding deleted)
 app.get('/api/content', (req, res) => {
     try {
-        const rows = db.prepare('SELECT * FROM content_items ORDER BY due_date ASC').all();
+        const rows = db.prepare("SELECT * FROM content_items WHERE status != 'deleted' ORDER BY due_date ASC").all();
         res.json(rows);
     } catch (err) {
         console.error("Error fetching content:", err);
@@ -42,13 +42,24 @@ app.post('/api/content', (req, res) => {
     }
 });
 
-// Update content status (or other fields later)
+// Update content status or due_date
 app.put('/api/content/:id', (req, res) => {
     try {
         const { id } = req.params;
-        const { status } = req.body; // Add other fields if needed
-        const stmt = db.prepare('UPDATE content_items SET status = ? WHERE id = ?');
-        stmt.run(status, id);
+        const { status, due_date } = req.body;
+        
+        let stmt;
+        if (status && due_date !== undefined) {
+            stmt = db.prepare('UPDATE content_items SET status = ?, due_date = ? WHERE id = ?');
+            stmt.run(status, due_date, id);
+        } else if (status) {
+            stmt = db.prepare('UPDATE content_items SET status = ? WHERE id = ?');
+            stmt.run(status, id);
+        } else if (due_date !== undefined) {
+            stmt = db.prepare('UPDATE content_items SET due_date = ? WHERE id = ?');
+            stmt.run(due_date, id);
+        }
+        
         res.json({ message: 'Content updated successfully' });
     } catch (err) {
         console.error("Error updating content:", err);
@@ -56,11 +67,11 @@ app.put('/api/content/:id', (req, res) => {
     }
 });
 
-// Delete content item
+// Soft delete content item
 app.delete('/api/content/:id', (req, res) => {
     try {
         const { id } = req.params;
-        const stmt = db.prepare('DELETE FROM content_items WHERE id = ?');
+        const stmt = db.prepare("UPDATE content_items SET status = 'deleted' WHERE id = ?");
         stmt.run(id);
         res.json({ message: 'Content deleted successfully' });
     } catch (err) {
