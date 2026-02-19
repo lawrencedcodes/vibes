@@ -187,6 +187,10 @@ export default function AssessmentForm() {
     } else {
       // Submit the assessment
       console.log('Assessment completed:', answers);
+      // Save to localStorage for the results page to pick up
+      if (typeof window !== 'undefined') {
+        localStorage.setItem('assessmentResults', JSON.stringify(answers));
+      }
       // Here you would typically send the data to your backend or process it
       window.location.href = '/results';
     }

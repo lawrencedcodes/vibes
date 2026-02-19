@@ -449,4 +449,31 @@ export class LearningPlanGenerator {
               }
             ],
             projects: [
-<response clipped><NOTE>To save on context only part of this file has been shown to you. You should retry this tool after you have searched inside the file with `grep -n` in order to find the line numbers of what you are looking for.</NOTE>
+              {
+                title: 'Enterprise Dashboard',
+                description: 'Build a complex dashboard with charts, tables, and authentication using TypeScript.',
+                skills: ['TypeScript', 'Testing', 'Visualization']
+              }
+            ]
+          }
+        ],
+        communityResources: [
+          {
+            name: 'Frontend Mentor',
+            type: 'Practice Platform',
+            url: 'https://www.frontendmentor.io/',
+            description: 'Solve real-world HTML, CSS and JavaScript challenges whilst working to professional designs.'
+          },
+          {
+            name: 'Reactiflux',
+            type: 'Discord Community',
+            url: 'https://www.reactiflux.com/',
+            description: 'A chat community of 200,000+ React developers.'
+          }
+        ]
+      }
+    };
+  }
+}
+
+export const learningPlanGenerator = new LearningPlanGenerator();

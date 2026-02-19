@@ -4,9 +4,8 @@ import React from 'react';
 import { Button } from '@/components/ui/Button';
 import { Card, CardHeader, CardTitle, CardDescription, CardContent, CardFooter } from '@/components/ui/Card';
 import { Container, Flex, Grid, Section } from '@/components/ui/Layout';
-import { Badge, Alert } from '@/components/ui/Feedback';
-import { Tabs, Accordion } from '@/components/ui/Navigation';
-import { Avatar } from '@/components/ui/Feedback';
+import { Badge, Alert, Avatar } from '@/components/ui/Feedback';
+import { Tabs } from '@/components/ui/Navigation';
 
 export default function CommunityPage() {
   const [activeTab, setActiveTab] = React.useState('discussions');
@@ -90,7 +89,7 @@ export default function CommunityPage() {
                                   <Flex align="center" gap="sm" className="text-sm text-muted-foreground">
                                     <Flex align="center" gap="sm">
                                       <Avatar 
-                                        src={discussion.avatar} 
+                                        src={discussion.avatar || undefined} 
                                         alt={discussion.author}
                                         fallback={discussion.author.substring(0, 2)}
                                         size="xs"
@@ -175,7 +174,7 @@ export default function CommunityPage() {
                               <CardContent className="p-4">
                                 <Flex gap="md">
                                   <Avatar 
-                                    src={null} 
+                                    src={undefined} 
                                     alt={mentor.name}
                                     fallback={mentor.name.substring(0, 2)}
                                     size="lg"
@@ -302,4 +301,28 @@ export default function CommunityPage() {
                             currentRole: 'Frontend Developer',
                             timeframe: '11 months',
                             quote: 'I never thought I could make the switch to tech without going back to college, but with structured learning and consistent practice, I landed my first developer role in less than a year.',
-                            story: 'After 8 years in retail management, I was looking for a career with more growth potential and better work-life balance. I started learning HTM<response clipped><NOTE>To save on context only part of this file has been shown to you. You should retry this tool after you have searched inside the file with `grep -n` in order to find the line numbers of what you are looking for.</NOTE>
+                            story: 'After 8 years in retail management, I was looking for a career with more growth potential and better work-life balance. I started learning HTML/CSS on weekends...'
+                          }
+                        ].map(story => (
+                          <Card key={story.id} variant="bordered">
+                            <CardContent className="p-4">
+                              <h3 className="font-bold">{story.name}</h3>
+                              <p className="text-sm text-muted-foreground">{story.previousRole} → {story.currentRole}</p>
+                              <p className="mt-2 italic">"{story.quote}"</p>
+                              <p className="mt-2">{story.story}</p>
+                            </CardContent>
+                          </Card>
+                        ))}
+                      </div>
+                    </CardContent>
+                  </Card>
+                </div>
+              )
+            }
+          ]}
+          variant="enclosed"
+        />
+      </Section>
+    </Container>
+  );
+}

@@ -386,4 +386,22 @@ export class CareerRecommendationEngine {
         workEnvironments: ['research', 'corporate', 'remote'],
         learningPath: '/learning-path/ai-ml-engineer',
         skills: [
-          { id: 'problem_solvin<response clipped><NOTE>To save on context only part of this file has been shown to you. You should retry this tool after you have searched inside the file with `grep -n` in order to find the line numbers of what you are looking for.</NOTE>
+          { id: 'problem_solving', name: 'Problem Solving', weight: 1.0 },
+          { id: 'analytical', name: 'Analytical Thinking', weight: 1.0 },
+          { id: 'programming', name: 'Basic Programming', weight: 0.9 },
+          { id: 'creativity', name: 'Creativity', weight: 0.7 }
+        ],
+        interests: [
+          { id: 'ai_ml', name: 'AI & Machine Learning', weight: 1.0 },
+          { id: 'data_science', name: 'Data Science & Analytics', weight: 0.7 }
+        ],
+        environments: [
+          { id: 'research', name: 'Research Environment', weight: 0.8 },
+          { id: 'corporate', name: 'Corporate Environment', weight: 0.6 }
+        ]
+      }
+    ];
+  }
+}
+
+export const recommendationEngine = new CareerRecommendationEngine();

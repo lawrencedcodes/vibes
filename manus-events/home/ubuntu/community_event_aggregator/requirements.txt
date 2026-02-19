@@ -1,0 +1,25 @@
+"""
+Requirements file for the Community Event Aggregator application.
+"""
+# Flask web framework
+flask==2.3.3
+
+# HTTP requests
+requests==2.31.0
+
+# HTML parsing
+beautifulsoup4==4.12.2
+lxml==4.9.3
+
+# Date and time handling
+python-dateutil==2.8.2
+
+# Natural language processing (for categorization)
+nltk==3.8.1
+
+# Web scraping utilities
+selenium==4.15.2
+webdriver-manager==4.0.1
+
+# Utilities
+python-dotenv==1.0.0

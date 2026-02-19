@@ -8,8 +8,23 @@ import { Badge, ProgressBar } from '@/components/ui/Feedback';
 import { recommendationEngine } from '@/lib/recommendationEngine';
 
 export default function CareerRecommendationsPage() {
-  // This would normally come from the assessment form submission
-  const sampleAssessment = {
+  const [assessmentResults, setAssessmentResults] = React.useState<Record<string, string[]> | null>(null);
+
+  React.useEffect(() => {
+    if (typeof window !== 'undefined') {
+      const stored = localStorage.getItem('assessmentResults');
+      if (stored) {
+        try {
+          setAssessmentResults(JSON.parse(stored));
+        } catch (e) {
+          console.error('Failed to parse assessment results', e);
+        }
+      }
+    }
+  }, []);
+
+  // Use stored results or fallback to sample
+  const assessmentData = assessmentResults || {
     interests: ['web_dev', 'ux_ui', 'mobile_dev'],
     skills: ['problem_solving', 'creativity', 'attention_detail'],
     challenges: ['technical_concepts', 'practical_experience'],
@@ -17,8 +32,8 @@ export default function CareerRecommendationsPage() {
     techAccess: ['laptop', 'high_speed_internet']
   };
 
-  // Generate recommendations based on the sample assessment
-  const recommendations = recommendationEngine.generateRecommendations(sampleAssessment);
+  // Generate recommendations based on the assessment
+  const recommendations = recommendationEngine.generateRecommendations(assessmentData as any);
 
   return (
     <Container className="py-12">
