@@ -49,6 +49,10 @@ This repository serves as a collection of "vibe-coded" applications, showcasing 
 *   **Directory:** [`TechPathways`](./TechPathways)
 *   **Description:** A comprehensive web application providing actionable pathways into technology careers, featuring assessments and learning plans.
 
+### 12. TechContent Multiplier
+*   **Directory:** [`TechContent Multiplier`](./techcontent-multiplier)
+*   **Description:** Fast way to get content ideas from a block of text, Url, or any text input
+  
 ### Core/Root App
 *   **Directory:** `.` (Root `backend/` and `frontend/`)
 *   **Description:** The central or foundational "Vibes" application components located at the project root.
