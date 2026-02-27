@@ -11,15 +11,15 @@ This repository serves as a collection of "vibe-coded" applications, showcasing 
 
 ### 2. Gemini MyDevBot
 *   **Directory:** [`gemini-mydevbot`](./gemini-mydevbot)
-*   **Description:** A development assistant or bot integration powered by Gemini.
+*   **Description:** A development assistant bot integration powered by Gemini.
 
 ### 3. Gemini Stock App
 *   **Directory:** [`gemini-stock-app`](./gemini-stock-app)
-*   **Description:** A stock market tracking or analysis tool utilizing Gemini capabilities.
+*   **Description:** A stock market tracking analysis tool utilizing Gemini capabilities.
 
 ### 4. Learn Sass
 *   **Directory:** [`learnsass`](./learnsass)
-*   **Description:** An educational project or sandbox for learning SASS (Software as a Service).
+*   **Description:** An educational project for learning SASS (Software as a Service).
 
 ### 5. Manus Stock App
 *   **Directory:** [`manus_stock_app`](./manus_stock_app)
@@ -27,11 +27,11 @@ This repository serves as a collection of "vibe-coded" applications, showcasing 
 
 ### 6. Manus Code Coach
 *   **Directory:** [`manus-code-coach`](./manus-code-coach)
-*   **Description:** A tool or platform designed to assist with coding education or mentorship.
+*   **Description:** A tool to assist with coding education or mentorship.
 
 ### 7. Manus Events
 *   **Directory:** [`manus-events`](./manus-events)
-*   **Description:** An event management or listing application.
+*   **Description:** An event management and listing application.
 
 ### 8. Manus Tech Career
 *   **Directory:** [`manus-tech-career`](./manus-tech-career)
