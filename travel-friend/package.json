@@ -1,0 +1,32 @@
+{
+  "name": "devrel-mult",
+  "version": "0.1.0",
+  "description": "CLI skill for turning technical artifacts into high-signal DevRel content.",
+  "type": "module",
+  "bin": {
+    "devrel-mult": "./dist/cli.js",
+    "devrel-mult-mcp": "./dist/mcp.js"
+  },
+  "scripts": {
+    "build": "tsc",
+    "dev": "tsx src/cli.ts",
+    "mcp": "tsx src/mcp.ts",
+    "typecheck": "tsc --noEmit"
+  },
+  "dependencies": {
+    "commander": "^12.1.0"
+  },
+  "devDependencies": {
+    "@types/node": "^22.10.2",
+    "tsx": "^4.19.2",
+    "typescript": "^5.7.2"
+  },
+  "engines": {
+    "node": ">=20"
+  },
+  "files": [
+    "dist",
+    "README.md",
+    "SKILL.md"
+  ]
+}

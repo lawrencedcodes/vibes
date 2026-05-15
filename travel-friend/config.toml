@@ -1,0 +1,8 @@
+voice = "Senior Architect"
+social_handle = ""
+default_platform = "twitter"
+max_iterations = 3
+
+[api_keys]
+provider = ""
+key = ""
