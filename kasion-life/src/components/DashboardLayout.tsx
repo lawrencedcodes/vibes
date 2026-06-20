@@ -13,7 +13,11 @@ import {
   CloseIcon,
   SunIcon,
   MoonIcon,
+  ListIcon,
+  ProjectIcon,
+  CalendarIcon,
 } from "./Icons";
+import { logout } from "@/app/actions/auth";
 
 interface DashboardLayoutProps {
   children: React.ReactNode;
@@ -46,9 +50,12 @@ export default function DashboardLayout({ children }: DashboardLayoutProps) {
 
   const navItems = [
     { name: "Overview", path: "/", icon: DashboardIcon },
+    { name: "Projects", path: "/projects", icon: ProjectIcon },
     { name: "Tracker", path: "/tracker", icon: TrackerIcon },
+    { name: "Planner", path: "/planner", icon: CalendarIcon },
     { name: "Journal", path: "/journal", icon: JournalIcon },
     { name: "Goals", path: "/goals", icon: GoalsIcon },
+    { name: "Lists", path: "/lists", icon: ListIcon },
     { name: "Settings", path: "/settings", icon: SettingsIcon },
   ];
 
@@ -158,6 +165,23 @@ export default function DashboardLayout({ children }: DashboardLayoutProps) {
               <span>Dark</span>
             </button>
           </div>
+
+          <button onClick={() => logout()} className="logout-btn">
+            <svg
+              xmlns="http://www.w3.org/2000/svg"
+              width="14"
+              height="14"
+              viewBox="0 0 24 24"
+              fill="none"
+              stroke="currentColor"
+              strokeWidth="2.5"
+              strokeLinecap="round"
+              strokeLinejoin="round"
+            >
+              <path d="M9 21H5a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h4M16 17l5-5-5-5M21 12H9" />
+            </svg>
+            <span>Sign Out</span>
+          </button>
           
           <div className="status-indicator">
             <div className="status-dot pulse" />
