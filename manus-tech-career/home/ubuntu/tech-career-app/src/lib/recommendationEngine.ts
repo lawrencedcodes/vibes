@@ -79,6 +79,11 @@ export class CareerRecommendationEngine {
     return recommendations.sort((a, b) => b.matchPercentage - a.matchPercentage);
   }
 
+  // Method to retrieve all available career paths
+  public getCareerPaths(): CareerPath[] {
+    return this.careerPaths;
+  }
+
   // Calculate match score between a career and user assessment (0-1)
   private calculateMatchScore(career: CareerPath, assessment: UserAssessment): number {
     let totalScore = 0;

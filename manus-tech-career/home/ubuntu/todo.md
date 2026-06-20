@@ -22,9 +22,9 @@
 - [x] Develop career matching algorithm
 - [x] Create learning plan generator
 - [x] Fix TypeScript errors for deployment
-- [ ] Implement resource recommendation system
-- [ ] Set up data storage for user profiles
-- [ ] Develop API endpoints
+- [x] Implement resource recommendation system (Dynamic Skill Gap Analyzer)
+- [x] Set up data storage for user profiles (UserSkill schema in Prisma SQLite)
+- [x] Develop API endpoints (gap-analysis and toggle endpoints)
 
 ## Testing & Deployment
 - [x] Test application functionality
