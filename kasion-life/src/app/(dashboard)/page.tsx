@@ -12,6 +12,7 @@ import {
   CalendarIcon,
   CountdownIcon,
 } from "@/components/Icons";
+import HabitTracker from "@/components/HabitTracker";
 
 export default async function OverviewPage() {
   const cookieStore = await cookies();
@@ -28,8 +29,11 @@ export default async function OverviewPage() {
   const tomorrow = new Date(today);
   tomorrow.setDate(today.getDate() + 1);
 
+  const oneYearAgo = new Date(today);
+  oneYearAgo.setDate(today.getDate() - 365);
+
   // Parallel fetch master dashboard data
-  const [countdowns, healthLog, focusSessions, events, weeklyScore] = await Promise.all([
+  const [countdowns, healthLog, focusSessions, events, weeklyScore, habits] = await Promise.all([
     db.countdown.findMany({
       where: { userId: session.userId },
       orderBy: { targetDate: "asc" },
@@ -65,7 +69,53 @@ export default async function OverviewPage() {
       },
     }),
     getWeeklyExecutionScore(session.userId),
+    db.habit.findMany({
+      where: { userId: session.userId },
+      include: {
+        logs: {
+          where: {
+            date: {
+              gte: oneYearAgo,
+              lte: today,
+            },
+          },
+          orderBy: {
+            date: "asc",
+          },
+        },
+      },
+      orderBy: {
+        createdAt: "asc",
+      },
+    }),
   ]);
+
+  // Map habits to a clean, serializable format for the client
+  const serializedHabits = habits.map((habit) => {
+    const todayLog = habit.logs.find((log) => {
+      const d = new Date(log.date);
+      d.setHours(0, 0, 0, 0);
+      return d.getTime() === today.getTime();
+    });
+
+    return {
+      id: habit.id,
+      title: habit.title,
+      type: habit.type,
+      dailyTarget: habit.dailyTarget,
+      currentStreak: habit.currentStreak,
+      longestStreak: habit.longestStreak,
+      routine: habit.routine,
+      createdAt: habit.createdAt.toISOString(),
+      isCompletedToday: todayLog ? todayLog.isCompleted : false,
+      valueToday: todayLog ? (todayLog.value ?? 0) : 0,
+      logs: habit.logs.map((log) => ({
+        date: log.date.toISOString(),
+        isCompleted: log.isCompleted,
+        value: log.value,
+      })),
+    };
+  });
 
   const totalFocusMinutes = focusSessions.reduce((acc, s) => acc + s.duration, 0);
 
@@ -333,6 +383,11 @@ export default async function OverviewPage() {
               })}
             </div>
           )}
+        </div>
+
+        {/* Card 6: Habits Bento Planner */}
+        <div className="col-span-6">
+          <HabitTracker initialHabits={serializedHabits} />
         </div>
       </div>
     </div>

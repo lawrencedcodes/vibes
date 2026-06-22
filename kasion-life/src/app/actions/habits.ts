@@ -74,6 +74,7 @@ export async function createHabit(
   const type = (formData.get("type") as string) || "BOOLEAN";
   const dailyTargetStr = formData.get("dailyTarget") as string;
   const dailyTarget = dailyTargetStr ? parseInt(dailyTargetStr, 10) : null;
+  const routine = (formData.get("routine") as string) || "ANYTIME";
 
   if (!title || title.trim() === "") {
     return { error: "Please enter a habit title." };
@@ -85,6 +86,11 @@ export async function createHabit(
 
   if (type === "NUMERIC" && (dailyTarget === null || isNaN(dailyTarget) || dailyTarget <= 0)) {
     return { error: "Numeric habits require a valid daily target greater than 0." };
+  }
+
+  const validRoutines = ["MORNING", "AFTERNOON", "EVENING", "ANYTIME"];
+  if (!validRoutines.includes(routine)) {
+    return { error: "Invalid routine selected." };
   }
 
   const cookieStore = await cookies();
@@ -102,6 +108,7 @@ export async function createHabit(
         title: title.trim(),
         type,
         dailyTarget: type === "NUMERIC" ? dailyTarget : null,
+        routine,
         currentStreak: 0,
         longestStreak: 0,
       },

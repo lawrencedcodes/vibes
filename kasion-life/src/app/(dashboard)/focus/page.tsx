@@ -4,7 +4,7 @@ import { decrypt } from "@/lib/session";
 import { cookies } from "next/headers";
 import { redirect } from "next/navigation";
 import TimerWidget from "@/components/TimerWidget";
-import FocusHistory from "@/components/FocusHistory";
+import FocusTimeline from "@/components/FocusTimeline";
 
 export default async function FocusPage() {
   const cookieStore = await cookies();
@@ -83,8 +83,8 @@ export default async function FocusPage() {
         {/* Column 1: Interactive Timer Widget */}
         <TimerWidget activeTodos={serializedTodos} />
         
-        {/* Column 2: Focus History Log and stats */}
-        <FocusHistory sessions={serializedSessions} />
+        {/* Column 2: Focus Timeline and stats */}
+        <FocusTimeline sessions={serializedSessions} />
       </div>
     </div>
   );

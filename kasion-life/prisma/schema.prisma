@@ -141,6 +141,7 @@ model Habit {
   dailyTarget   Int?
   currentStreak Int        @default(0)
   longestStreak Int        @default(0)
+  routine       String     @default("ANYTIME")
   createdAt     DateTime   @default(now())
   logs          HabitLog[]
   goalId        String?

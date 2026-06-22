@@ -56,6 +56,7 @@ export default async function TrackerPage() {
       dailyTarget: habit.dailyTarget,
       currentStreak: habit.currentStreak,
       longestStreak: habit.longestStreak,
+      routine: habit.routine,
       createdAt: habit.createdAt.toISOString(),
       isCompletedToday: todayLog ? todayLog.isCompleted : false,
       valueToday: todayLog ? (todayLog.value ?? 0) : 0,
