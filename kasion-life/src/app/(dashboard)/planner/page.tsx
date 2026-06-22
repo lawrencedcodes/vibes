@@ -4,6 +4,7 @@ import { redirect } from "next/navigation";
 import { decrypt } from "@/lib/session";
 import { db } from "@/lib/db";
 import EventForm from "@/components/EventForm";
+import WeeklyTimeBlocker from "@/components/WeeklyTimeBlocker";
 import { syncGoogleCalendar } from "@/lib/googleCalendar";
 
 export default async function PlannerPage(props: {
@@ -36,34 +37,53 @@ export default async function PlannerPage(props: {
     }
   }
 
-  // Fetch events (including any newly synced ones)
+  // Calculate Monday to Sunday of the current week (local time bounds)
+  const today = new Date();
+  today.setHours(0, 0, 0, 0);
+
+  const day = today.getDay();
+  // Monday is 1, Sunday is 0. If day is Sunday (0), diff is today - 6. Else it's today - day + 1.
+  const diff = today.getDate() - day + (day === 0 ? -6 : 1);
+  const monday = new Date(today.setDate(diff));
+  monday.setHours(0, 0, 0, 0);
+
+  const sunday = new Date(monday);
+  sunday.setDate(monday.getDate() + 6);
+  sunday.setHours(23, 59, 59, 999);
+
+  // Fetch events (including any newly synced ones) for the current week
   const events = await db.event.findMany({
-    where: { userId: session.userId },
+    where: {
+      userId: session.userId,
+      startTime: {
+        gte: monday,
+        lte: sunday,
+      },
+    },
     orderBy: { startTime: "asc" },
   });
 
-  // Group events by date string
-  const groupedEvents: { [key: string]: typeof events } = {};
-  events.forEach((event) => {
-    const dateStr = new Date(event.startTime).toLocaleDateString("en-US", {
-      weekday: "long",
-      month: "short",
-      day: "numeric",
-      year: "numeric",
-    });
-    if (!groupedEvents[dateStr]) {
-      groupedEvents[dateStr] = [];
-    }
-    groupedEvents[dateStr].push(event);
-  });
+  // Map events to a clean, serializable format for the client
+  const serializedEvents = events.map((event) => ({
+    id: event.id,
+    title: event.title,
+    description: event.description,
+    startTime: event.startTime.toISOString(),
+    endTime: event.endTime.toISOString(),
+    isAllDay: event.isAllDay,
+  }));
 
-  const formatTime = (date: Date) => {
-    return date.toLocaleTimeString("en-US", {
-      hour: "2-digit",
-      minute: "2-digit",
-      hour12: false,
-    });
-  };
+  // Build the 7 day objects for the current week
+  const weekDays = Array.from({ length: 7 }, (_, i) => {
+    const d = new Date(monday);
+    d.setDate(monday.getDate() + i);
+    return {
+      dayName: d.toLocaleDateString("en-US", { weekday: "short" }).toUpperCase(),
+      dayNum: d.getDate(),
+      dateStr: d.toDateString(),
+      dateKey: d.toISOString().split("T")[0],
+    };
+  });
 
   return (
     <div className="animate-fade-in" style={{ display: "flex", flexDirection: "column", gap: "2rem" }}>
@@ -150,81 +170,14 @@ export default async function PlannerPage(props: {
         <EventForm />
       </div>
 
-      {/* Daily Timeline */}
+      {/* Time-Blocked Weekly Grid */}
       <div style={{ display: "flex", flexDirection: "column", gap: "1.5rem" }}>
-        <h2 style={{ fontSize: "1.125rem", fontWeight: "700" }}>Daily Agenda</h2>
-
-        {events.length === 0 ? (
-          <div className="glass-panel" style={{ padding: "3rem 2rem", borderRadius: "1.25rem", borderStyle: "dashed", textAlign: "center" }}>
-            <p style={{ color: "var(--muted)", fontSize: "0.875rem" }}>
-              No events scheduled in your planner yet. Create one above to set up your timeline.
-            </p>
-          </div>
-        ) : (
-          <div style={{ display: "flex", flexDirection: "column", gap: "2rem" }}>
-            {Object.entries(groupedEvents).map(([dateStr, dayEvents]) => (
-              <div key={dateStr} style={{ display: "flex", flexDirection: "column", gap: "1rem" }}>
-                {/* Day Header */}
-                <h3 style={{ fontSize: "0.875rem", fontWeight: "700", color: "var(--accent)", borderBottom: "1px solid var(--border)", paddingBottom: "0.5rem", letterSpacing: "0.02em" }}>
-                  {dateStr}
-                </h3>
-                
-                {/* Timeline vertical list */}
-                <div style={{ display: "flex", flexDirection: "column", gap: "0.75rem", borderLeft: "2px solid var(--border)", paddingLeft: "1.25rem", marginLeft: "0.5rem" }}>
-                  {dayEvents.map((event) => (
-                    <div 
-                      key={event.id} 
-                      className="glass-panel" 
-                      style={{ 
-                        padding: "1rem 1.25rem", 
-                        borderRadius: "0.75rem", 
-                        display: "flex", 
-                        flexDirection: "column", 
-                        gap: "0.375rem", 
-                        position: "relative" 
-                      }}
-                    >
-                      {/* Left timeline dot indicator */}
-                      <span 
-                        style={{ 
-                          position: "absolute", 
-                          left: "calc(-1.25rem - 6px)", 
-                          top: "1.25rem", 
-                          height: "10px", 
-                          width: "10px", 
-                          borderRadius: "50%", 
-                          backgroundColor: "var(--accent)", 
-                          border: "2px solid var(--background)" 
-                        }} 
-                      />
-                      
-                      {/* Time and Title Row */}
-                      <div style={{ display: "flex", flexWrap: "wrap", justifyContent: "space-between", alignItems: "baseline", gap: "0.5rem" }}>
-                        <h4 style={{ fontSize: "0.95rem", fontWeight: "600", color: "var(--foreground)" }}>
-                          {event.title}
-                        </h4>
-                        
-                        <span style={{ fontSize: "0.75rem", color: "var(--accent)", fontFamily: "var(--font-mono)", fontWeight: "600" }}>
-                          {event.isAllDay ? (
-                            "ALL DAY"
-                          ) : (
-                            `${formatTime(new Date(event.startTime))} - ${formatTime(new Date(event.endTime))}`
-                          )}
-                        </span>
-                      </div>
-
-                      {event.description && (
-                        <p style={{ fontSize: "0.8rem", color: "var(--muted)", lineHeight: "1.4" }}>
-                          {event.description}
-                        </p>
-                      )}
-                    </div>
-                  ))}
-                </div>
-              </div>
-            ))}
-          </div>
-        )}
+        <h2 style={{ fontSize: "1.125rem", fontWeight: "700" }}>Weekly Schedule</h2>
+        
+        <WeeklyTimeBlocker 
+          events={serializedEvents} 
+          weekDays={weekDays} 
+        />
       </div>
     </div>
   );

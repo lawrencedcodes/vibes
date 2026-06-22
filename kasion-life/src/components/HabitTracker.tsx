@@ -2,6 +2,7 @@
 
 import React, { useState, useTransition, useActionState, useEffect, useRef } from "react";
 import { createHabit, deleteHabit, toggleHabitLog, updateHabitLogNumeric } from "@/app/actions/habits";
+import HabitHeatmap from "./HabitHeatmap";
 
 interface SerializedHabit {
   id: string;
@@ -13,6 +14,11 @@ interface SerializedHabit {
   createdAt: string;
   isCompletedToday: boolean;
   valueToday: number;
+  logs: {
+    date: string;
+    isCompleted: boolean;
+    value: number | null;
+  }[];
 }
 
 interface HabitTrackerProps {
@@ -145,7 +151,7 @@ export default function HabitTracker({ initialHabits }: HabitTrackerProps) {
           No habits. Add one below!
         </div>
       ) : (
-        <div style={{ display: "flex", flexDirection: "column", gap: "0.625rem" }}>
+        <div style={{ display: "flex", flexDirection: "column", gap: "0.75rem" }}>
           {habitsState.map((habit) => {
             const isHovered = hoveredHabitId === habit.id;
             return (
@@ -155,176 +161,181 @@ export default function HabitTracker({ initialHabits }: HabitTrackerProps) {
                 onMouseLeave={() => setHoveredHabitId(null)}
                 style={{
                   display: "flex",
-                  alignItems: "center",
-                  justifyContent: "space-between",
-                  gap: "0.75rem",
-                  padding: "0.5rem 0",
-                  borderBottom: "1px solid rgba(255, 255, 255, 0.02)",
+                  flexDirection: "column",
+                  gap: "0.5rem",
+                  padding: "0.75rem 0 1rem",
+                  borderBottom: "1px solid rgba(255, 255, 255, 0.04)",
                   opacity: isPending ? 0.7 : 1,
                   transition: "opacity 0.2s ease",
                 }}
               >
-                <div style={{ display: "flex", alignItems: "center", gap: "0.75rem", flex: 1, minWidth: 0 }}>
-                  {habit.type === "BOOLEAN" ? (
-                    /* Standard circular toggle button for BOOLEAN habits */
-                    <button
-                      onClick={() => handleToggle(habit.id, habit.isCompletedToday)}
-                      disabled={isPending}
-                      style={{
-                        background: "transparent",
-                        cursor: isPending ? "not-allowed" : "pointer",
-                        padding: 0,
-                        display: "flex",
-                        alignItems: "center",
-                        justifyContent: "center",
-                        width: "18px",
-                        height: "18px",
-                        borderRadius: "50%",
-                        border: `1.5px solid ${habit.isCompletedToday ? "var(--accent)" : "var(--border)"}`,
-                        backgroundColor: habit.isCompletedToday ? "var(--accent)" : "transparent",
-                        color: "var(--background)",
-                        transition: "all 0.2s ease",
-                        flexShrink: 0,
-                      }}
-                    >
-                      {habit.isCompletedToday && (
-                        <svg xmlns="http://www.w3.org/2000/svg" width="10" height="10" viewBox="0 0 24 24" fill="none" stroke="#ffffff" strokeWidth="4.5" strokeLinecap="round" strokeLinejoin="round">
-                          <polyline points="20 6 9 17 4 12" />
-                        </svg>
-                      )}
-                    </button>
-                  ) : (
-                    /* Plus/minus stepper for NUMERIC habits */
-                    <div style={{ display: "flex", alignItems: "center", gap: "0.375rem", flexShrink: 0 }}>
+                {/* Upper Row: Controls & Info */}
+                <div style={{ display: "flex", alignItems: "center", justifyContent: "space-between", gap: "0.75rem", width: "100%" }}>
+                  <div style={{ display: "flex", alignItems: "center", gap: "0.75rem", flex: 1, minWidth: 0 }}>
+                    {habit.type === "BOOLEAN" ? (
+                      /* Standard circular toggle button for BOOLEAN habits */
                       <button
-                        onClick={() => handleNumericChange(habit.id, habit.valueToday - 1, habit.dailyTarget || 1)}
-                        disabled={isPending || habit.valueToday <= 0}
-                        style={{
-                          background: "var(--muted-bg)",
-                          border: "1px solid var(--border)",
-                          borderRadius: "0.375rem",
-                          width: "20px",
-                          height: "20px",
-                          display: "flex",
-                          alignItems: "center",
-                          justifyContent: "center",
-                          cursor: "pointer",
-                          color: "var(--foreground)",
-                          opacity: habit.valueToday <= 0 ? 0.3 : 1,
-                          fontSize: "0.75rem",
-                          fontWeight: "bold",
-                          transition: "all 0.2s ease",
-                        }}
-                      >
-                        -
-                      </button>
-                      <span
-                        style={{
-                          fontSize: "0.75rem",
-                          minWidth: "40px",
-                          textAlign: "center",
-                          fontFamily: "var(--font-mono)",
-                          fontWeight: "700",
-                          color: habit.isCompletedToday ? "#10b981" : "var(--foreground)",
-                          transition: "color 0.2s ease",
-                        }}
-                      >
-                        {habit.valueToday}/{habit.dailyTarget}
-                      </span>
-                      <button
-                        onClick={() => handleNumericChange(habit.id, habit.valueToday + 1, habit.dailyTarget || 1)}
+                        onClick={() => handleToggle(habit.id, habit.isCompletedToday)}
                         disabled={isPending}
                         style={{
-                          background: "var(--muted-bg)",
-                          border: "1px solid var(--border)",
-                          borderRadius: "0.375rem",
-                          width: "20px",
-                          height: "20px",
+                          background: "transparent",
+                          cursor: isPending ? "not-allowed" : "pointer",
+                          padding: 0,
                           display: "flex",
                           alignItems: "center",
                           justifyContent: "center",
-                          cursor: "pointer",
-                          color: "var(--foreground)",
-                          fontSize: "0.75rem",
-                          fontWeight: "bold",
+                          width: "18px",
+                          height: "18px",
+                          borderRadius: "50%",
+                          border: `1.5px solid ${habit.isCompletedToday ? "var(--accent)" : "var(--border)"}`,
+                          backgroundColor: habit.isCompletedToday ? "var(--accent)" : "transparent",
+                          color: "var(--background)",
                           transition: "all 0.2s ease",
-                        }}
-                      >
-                        +
-                      </button>
-                    </div>
-                  )}
-                  
-                  {/* Title and Streak Badge */}
-                  <div style={{ display: "flex", alignItems: "center", gap: "0.25rem", minWidth: 0, flex: 1, flexWrap: "wrap" }}>
-                    <span
-                      style={{
-                        fontSize: "0.875rem",
-                        color: habit.isCompletedToday ? "var(--muted)" : "var(--foreground)",
-                        textDecoration: habit.isCompletedToday ? "line-through" : "none",
-                        transition: "color 0.2s ease, text-decoration 0.2s ease",
-                        wordBreak: "break-word",
-                        fontWeight: "500",
-                      }}
-                    >
-                      {habit.title}
-                    </span>
-                    {habit.currentStreak > 0 && (
-                      <span
-                        style={{
-                          display: "inline-flex",
-                          alignItems: "center",
-                          gap: "0.2rem",
-                          fontSize: "0.725rem",
-                          fontWeight: "700",
-                          color: "#f97316",
-                          backgroundColor: "rgba(249, 115, 22, 0.08)",
-                          padding: "1px 5px",
-                          borderRadius: "4px",
-                          fontFamily: "var(--font-mono)",
-                          marginLeft: "0.375rem",
                           flexShrink: 0,
                         }}
-                        title={`Current streak: ${habit.currentStreak} days • Longest: ${habit.longestStreak} days`}
                       >
-                        🔥 {habit.currentStreak}
-                      </span>
+                        {habit.isCompletedToday && (
+                          <svg xmlns="http://www.w3.org/2000/svg" width="10" height="10" viewBox="0 0 24 24" fill="none" stroke="#ffffff" strokeWidth="4.5" strokeLinecap="round" strokeLinejoin="round">
+                            <polyline points="20 6 9 17 4 12" />
+                          </svg>
+                        )}
+                      </button>
+                    ) : (
+                      /* Plus/minus stepper for NUMERIC habits */
+                      <div style={{ display: "flex", alignItems: "center", gap: "0.375rem", flexShrink: 0 }}>
+                        <button
+                          onClick={() => handleNumericChange(habit.id, habit.valueToday - 1, habit.dailyTarget || 1)}
+                          disabled={isPending || habit.valueToday <= 0}
+                          style={{
+                            background: "var(--muted-bg)",
+                            border: "1px solid var(--border)",
+                            borderRadius: "0.375rem",
+                            width: "20px",
+                            height: "20px",
+                            display: "flex",
+                            alignItems: "center",
+                            justifyContent: "center",
+                            cursor: "pointer",
+                            color: "var(--foreground)",
+                            opacity: habit.valueToday <= 0 ? 0.3 : 1,
+                            fontSize: "0.75rem",
+                            fontWeight: "bold",
+                            transition: "all 0.2s ease",
+                          }}
+                        >
+                          -
+                        </button>
+                        <span
+                          style={{
+                            fontSize: "0.75rem",
+                            minWidth: "40px",
+                            textAlign: "center",
+                            fontFamily: "var(--font-mono)",
+                            fontWeight: "700",
+                            color: habit.isCompletedToday ? "#10b981" : "var(--foreground)",
+                            transition: "color 0.2s ease",
+                          }}
+                        >
+                          {habit.valueToday}/{habit.dailyTarget}
+                        </span>
+                        <button
+                          onClick={() => handleNumericChange(habit.id, habit.valueToday + 1, habit.dailyTarget || 1)}
+                          disabled={isPending}
+                          style={{
+                            background: "var(--muted-bg)",
+                            border: "1px solid var(--border)",
+                            borderRadius: "0.375rem",
+                            width: "20px",
+                            height: "20px",
+                            display: "flex",
+                            alignItems: "center",
+                            justifyContent: "center",
+                            cursor: "pointer",
+                            color: "var(--foreground)",
+                            fontSize: "0.75rem",
+                            fontWeight: "bold",
+                            transition: "all 0.2s ease",
+                          }}
+                        >
+                          +
+                        </button>
+                      </div>
                     )}
+                    
+                    {/* Title and Streak Badge */}
+                    <div style={{ display: "flex", alignItems: "center", gap: "0.25rem", minWidth: 0, flex: 1, flexWrap: "wrap" }}>
+                      <span
+                        style={{
+                          fontSize: "0.875rem",
+                          color: habit.isCompletedToday ? "var(--muted)" : "var(--foreground)",
+                          textDecoration: habit.isCompletedToday ? "line-through" : "none",
+                          transition: "color 0.2s ease, text-decoration 0.2s ease",
+                          wordBreak: "break-word",
+                          fontWeight: "500",
+                        }}
+                      >
+                        {habit.title}
+                      </span>
+                      {habit.currentStreak > 0 && (
+                        <span
+                          style={{
+                            display: "inline-flex",
+                            alignItems: "center",
+                            gap: "0.2rem",
+                            fontSize: "0.725rem",
+                            fontWeight: "700",
+                            color: "#f97316",
+                            backgroundColor: "rgba(249, 115, 22, 0.08)",
+                            padding: "1px 5px",
+                            borderRadius: "4px",
+                            fontFamily: "var(--font-mono)",
+                            marginLeft: "0.375rem",
+                            flexShrink: 0,
+                          }}
+                          title={`Current streak: ${habit.currentStreak} days • Longest: ${habit.longestStreak} days`}
+                        >
+                          🔥 {habit.currentStreak}
+                        </span>
+                      )}
+                    </div>
                   </div>
+
+                  {/* Delete Button */}
+                  <button
+                    onClick={() => handleDelete(habit.id)}
+                    disabled={isPending}
+                    style={{
+                      background: "transparent",
+                      border: "none",
+                      color: isHovered ? "#f87171" : "transparent",
+                      cursor: "pointer",
+                      padding: "2px",
+                      borderRadius: "4px",
+                      display: "flex",
+                      alignItems: "center",
+                      justifyContent: "center",
+                      transition: "color 0.2s ease",
+                    }}
+                    title="Delete Habit"
+                  >
+                    <svg
+                      xmlns="http://www.w3.org/2000/svg"
+                      width="14"
+                      height="14"
+                      viewBox="0 0 24 24"
+                      fill="none"
+                      stroke="currentColor"
+                      strokeWidth="2"
+                      strokeLinecap="round"
+                      strokeLinejoin="round"
+                    >
+                      <path d="M3 6h18M19 6v14c0 1-1 2-2 2H7c-1 0-2-1-2-2V6M8 6V4c0-1 1-2 2-2h4c1 0 2 1 2 2v2M10 11v6M14 11v6" />
+                    </svg>
+                  </button>
                 </div>
 
-                {/* Delete Button */}
-                <button
-                  onClick={() => handleDelete(habit.id)}
-                  disabled={isPending}
-                  style={{
-                    background: "transparent",
-                    border: "none",
-                    color: isHovered ? "#f87171" : "transparent",
-                    cursor: "pointer",
-                    padding: "2px",
-                    borderRadius: "4px",
-                    display: "flex",
-                    alignItems: "center",
-                    justifyContent: "center",
-                    transition: "color 0.2s ease",
-                  }}
-                  title="Delete Habit"
-                >
-                  <svg
-                    xmlns="http://www.w3.org/2000/svg"
-                    width="14"
-                    height="14"
-                    viewBox="0 0 24 24"
-                    fill="none"
-                    stroke="currentColor"
-                    strokeWidth="2"
-                    strokeLinecap="round"
-                    strokeLinejoin="round"
-                  >
-                    <path d="M3 6h18M19 6v14c0 1-1 2-2 2H7c-1 0-2-1-2-2V6M8 6V4c0-1 1-2 2-2h4c1 0 2 1 2 2v2M10 11v6M14 11v6" />
-                  </svg>
-                </button>
+                {/* Heatmap graph below */}
+                <HabitHeatmap logs={habit.logs} type={habit.type} dailyTarget={habit.dailyTarget || 1} />
               </div>
             );
           })}

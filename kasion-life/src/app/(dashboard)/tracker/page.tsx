@@ -17,13 +17,22 @@ export default async function TrackerPage() {
   const today = new Date();
   today.setHours(0, 0, 0, 0);
 
-  // Fetch the habits and today's logs for this user
+  const oneYearAgo = new Date(today);
+  oneYearAgo.setDate(today.getDate() - 365);
+
+  // Fetch the habits and the last 365 days of logs for this user
   const habits = await db.habit.findMany({
     where: { userId: session.userId },
     include: {
       logs: {
         where: {
-          date: today,
+          date: {
+            gte: oneYearAgo,
+            lte: today,
+          },
+        },
+        orderBy: {
+          date: "asc",
         },
       },
     },
@@ -33,17 +42,30 @@ export default async function TrackerPage() {
   });
 
   // Map habits to a clean, serializable format for the client
-  const serializedHabits = habits.map((habit) => ({
-    id: habit.id,
-    title: habit.title,
-    type: habit.type,
-    dailyTarget: habit.dailyTarget,
-    currentStreak: habit.currentStreak,
-    longestStreak: habit.longestStreak,
-    createdAt: habit.createdAt.toISOString(),
-    isCompletedToday: habit.logs.length > 0 ? habit.logs[0].isCompleted : false,
-    valueToday: habit.logs.length > 0 ? (habit.logs[0].value ?? 0) : 0,
-  }));
+  const serializedHabits = habits.map((habit) => {
+    const todayLog = habit.logs.find((log) => {
+      const d = new Date(log.date);
+      d.setHours(0, 0, 0, 0);
+      return d.getTime() === today.getTime();
+    });
+
+    return {
+      id: habit.id,
+      title: habit.title,
+      type: habit.type,
+      dailyTarget: habit.dailyTarget,
+      currentStreak: habit.currentStreak,
+      longestStreak: habit.longestStreak,
+      createdAt: habit.createdAt.toISOString(),
+      isCompletedToday: todayLog ? todayLog.isCompleted : false,
+      valueToday: todayLog ? (todayLog.value ?? 0) : 0,
+      logs: habit.logs.map((log) => ({
+        date: log.date.toISOString(),
+        isCompleted: log.isCompleted,
+        value: log.value,
+      })),
+    };
+  });
 
   return (
     <div className="animate-fade-in" style={{ display: "flex", flexDirection: "column", gap: "2rem" }}>
