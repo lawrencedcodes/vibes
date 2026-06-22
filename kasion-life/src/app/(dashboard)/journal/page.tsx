@@ -1,7 +1,63 @@
 import React from "react";
 import { JournalIcon } from "@/components/Icons";
+import { db } from "@/lib/db";
+import { decrypt } from "@/lib/session";
+import { cookies } from "next/headers";
+import { redirect } from "next/navigation";
+import JournalEditor from "@/components/JournalEditor";
 
-export default function JournalPage() {
+export default async function JournalPage() {
+  const cookieStore = await cookies();
+  const sessionCookie = cookieStore.get("session")?.value;
+  const session = await decrypt(sessionCookie);
+
+  if (!session?.userId) {
+    redirect("/login");
+  }
+
+  const today = new Date();
+  today.setHours(0, 0, 0, 0);
+
+  // Fetch today's entry
+  const todayEntry = await db.journalEntry.findUnique({
+    where: {
+      userId_date: {
+        userId: session.userId,
+        date: today,
+      },
+    },
+  });
+
+  // Fetch past entries
+  const pastEntries = await db.journalEntry.findMany({
+    where: {
+      userId: session.userId,
+      date: {
+        lt: today,
+      },
+    },
+    orderBy: {
+      date: "desc",
+    },
+    take: 10, // Limit to 10 past entries
+  });
+
+  const months = [
+    "JANUARY", "FEBRUARY", "MARCH", "APRIL", "MAY", "JUNE",
+    "JULY", "AUGUST", "SEPTEMBER", "OCTOBER", "NOVEMBER", "DECEMBER"
+  ];
+  
+  const formatDate = (date: Date) => {
+    const d = new Date(date);
+    return `${months[d.getMonth()]} ${d.getDate()}, ${d.getFullYear()}`;
+  };
+
+  const getPreviewTitle = (content: string) => {
+    const firstLine = content.trim().split("\n")[0];
+    if (!firstLine) return "Empty entry";
+    return firstLine.length > 80 ? firstLine.substring(0, 80) + "..." : firstLine;
+  };
+
   return (
     <div className="animate-fade-in" style={{ display: "flex", flexDirection: "column", gap: "2rem" }}>
       {/* Title */}
@@ -14,84 +70,35 @@ export default function JournalPage() {
         </p>
       </div>
 
-      {/* Editor Placeholder Area */}
-      <div className="glass-panel" style={{ padding: "2rem", borderRadius: "1.25rem", display: "flex", flexDirection: "column", gap: "1.5rem" }}>
-        <div style={{ display: "flex", justifyContent: "space-between", alignItems: "center" }}>
-          <div>
-            <span style={{ fontSize: "0.75rem", fontFamily: "var(--font-mono)", color: "var(--accent)" }}>NEW LOG</span>
-            <h2 style={{ fontSize: "1.125rem", fontWeight: "700", marginTop: "0.25rem" }}>Reflections on Web Foundation Architecture</h2>
-          </div>
-          <span style={{ fontSize: "0.75rem", color: "var(--muted)", fontFamily: "var(--font-mono)" }}>
-            Draft • Saved 3m ago
-          </span>
-        </div>
-
-        {/* Minimal input area */}
-        <textarea
-          placeholder="Start writing..."
-          defaultValue={`Setting up a minimalist Next.js dashboard template with structured vanilla CSS. The layout feels lightweight and responsive. The implementation uses system font variables and a sleek dark theme. Next steps: configuring state synchronization and database connections...`}
-          style={{
-            width: "100%",
-            minHeight: "150px",
-            background: "transparent",
-            border: "none",
-            resize: "vertical",
-            outline: "none",
-            color: "var(--foreground)",
-            fontFamily: "var(--font-sans)",
-            fontSize: "0.95rem",
-            lineHeight: "1.6",
-          }}
-        />
-
-        <div style={{ display: "flex", justifyContent: "flex-end", gap: "0.75rem", borderTop: "1px solid var(--border)", paddingTop: "1rem" }}>
-          <button style={{
-            background: "transparent",
-            border: "1px solid var(--border)",
-            color: "var(--foreground)",
-            padding: "0.5rem 1rem",
-            borderRadius: "0.5rem",
-            fontSize: "0.75rem",
-            fontWeight: "600",
-            cursor: "pointer"
-          }}>
-            Discard
-          </button>
-          <button style={{
-            backgroundColor: "var(--accent)",
-            border: "none",
-            color: "var(--accent-foreground)",
-            padding: "0.5rem 1rem",
-            borderRadius: "0.5rem",
-            fontSize: "0.75rem",
-            fontWeight: "600",
-            cursor: "pointer"
-          }}>
-            Publish Log
-          </button>
-        </div>
-      </div>
+      {/* Editor Component */}
+      <JournalEditor initialContent={todayEntry?.content || ""} />
 
       {/* History */}
       <div style={{ display: "flex", flexDirection: "column", gap: "1rem" }}>
         <h3 style={{ fontSize: "1rem", fontWeight: "700" }}>Past Logs</h3>
-        <div style={{ display: "flex", flexDirection: "column", gap: "0.75rem" }}>
-          <div className="glass-panel" style={{ padding: "1.25rem", borderRadius: "1rem", display: "flex", justifyContent: "space-between", alignItems: "center" }}>
-            <div>
-              <span style={{ fontSize: "11px", color: "var(--muted)", fontFamily: "var(--font-mono)" }}>JUNE 19, 2026</span>
-              <h4 style={{ fontSize: "0.875rem", fontWeight: "600", marginTop: "0.15rem" }}>Personal development milestones for mid-year review</h4>
-            </div>
-            <span style={{ color: "var(--muted)" }}><JournalIcon size={16} /></span>
+        {pastEntries.length === 0 ? (
+          <p style={{ color: "var(--muted)", fontSize: "0.875rem", fontStyle: "italic" }}>
+            No past journal entries yet. Start writing today!
+          </p>
+        ) : (
+          <div style={{ display: "flex", flexDirection: "column", gap: "0.75rem" }}>
+            {pastEntries.map((entry) => (
+              <div key={entry.id} className="glass-panel" style={{ padding: "1.25rem", borderRadius: "1rem", display: "flex", justifyContent: "space-between", alignItems: "center" }}>
+                <div>
+                  <span style={{ fontSize: "11px", color: "var(--muted)", fontFamily: "var(--font-mono)" }}>
+                    {formatDate(entry.date)}
+                  </span>
+                  <h4 style={{ fontSize: "0.875rem", fontWeight: "600", marginTop: "0.15rem", color: "var(--foreground)" }}>
+                    {getPreviewTitle(entry.content)}
+                  </h4>
+                </div>
+                <span style={{ color: "var(--muted)" }}><JournalIcon size={16} /></span>
+              </div>
+            ))}
           </div>
-          <div className="glass-panel" style={{ padding: "1.25rem", borderRadius: "1rem", display: "flex", justifyContent: "space-between", alignItems: "center" }}>
-            <div>
-              <span style={{ fontSize: "11px", color: "var(--muted)", fontFamily: "var(--font-mono)" }}>JUNE 18, 2026</span>
-              <h4 style={{ fontSize: "0.875rem", fontWeight: "600", marginTop: "0.15rem" }}>Initial plans for kasionlife.com launch strategy</h4>
-            </div>
-            <span style={{ color: "var(--muted)" }}><JournalIcon size={16} /></span>
-          </div>
-        </div>
+        )}
       </div>
     </div>
   );
 }
+

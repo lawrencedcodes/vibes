@@ -22,6 +22,10 @@ model User {
   events       Event[]
   googleToken  GoogleToken?
   habits       Habit[]
+  focusSessions FocusSession[]
+  journalEntries JournalEntry[]
+  countdowns    Countdown[]
+  healthLogs    HealthLog[]
 }
 
 model Metric {
@@ -57,9 +61,10 @@ model Goal {
   user        User     @relation(fields: [userId], references: [id], onDelete: Cascade)
   title       String
   description String?
-  completed   Boolean  @default(false)
+  targetDate  DateTime
+  isCompleted Boolean  @default(false)
   createdAt   DateTime @default(now())
-  updatedAt   DateTime @updatedAt
+  habits      Habit[]
 }
 
 model List {
@@ -78,9 +83,10 @@ model Todo {
   listId      String
   list        List     @relation(fields: [listId], references: [id], onDelete: Cascade)
   content     String
-  isCompleted Boolean  @default(false)
-  createdAt   DateTime @default(now())
+  isCompleted Boolean   @default(false)
+  createdAt   DateTime  @default(now())
   subtasks    Subtask[]
+  focusSessions FocusSession[]
 }
 
 model Subtask {
@@ -137,6 +143,8 @@ model Habit {
   longestStreak Int        @default(0)
   createdAt     DateTime   @default(now())
   logs          HabitLog[]
+  goalId        String?
+  goal          Goal?      @relation(fields: [goalId], references: [id], onDelete: SetNull)
 }
 
 model HabitLog {
@@ -149,3 +157,50 @@ model HabitLog {
 
   @@unique([habitId, date])
 }
+
+model FocusSession {
+  id        String    @id @default(uuid())
+  userId    String
+  user      User      @relation(fields: [userId], references: [id], onDelete: Cascade)
+  startTime DateTime
+  endTime   DateTime?
+  duration  Int       // total minutes
+  status    String    @default("COMPLETED")
+  todoId    String?
+  todo      Todo?     @relation(fields: [todoId], references: [id], onDelete: SetNull)
+}
+
+model JournalEntry {
+  id        String   @id @default(uuid())
+  userId    String
+  user      User     @relation(fields: [userId], references: [id], onDelete: Cascade)
+  date      DateTime
+  content   String
+  createdAt DateTime @default(now())
+
+  @@unique([userId, date])
+}
+
+model Countdown {
+  id         String   @id @default(uuid())
+  userId     String
+  user       User     @relation(fields: [userId], references: [id], onDelete: Cascade)
+  title      String
+  targetDate DateTime
+  createdAt  DateTime @default(now())
+}
+
+model HealthLog {
+  id          String   @id @default(uuid())
+  userId      String
+  user        User     @relation(fields: [userId], references: [id], onDelete: Cascade)
+  date        DateTime
+  sleepHours  Float    @default(0)
+  waterIntake Int      @default(0)
+  energyLevel Int      @default(5)
+  createdAt   DateTime @default(now())
+
+  @@unique([userId, date])
+}
+
+

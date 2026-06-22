@@ -16,6 +16,9 @@ import {
   ListIcon,
   ProjectIcon,
   CalendarIcon,
+  TimerIcon,
+  CountdownIcon,
+  HealthIcon,
 } from "./Icons";
 import { logout } from "@/app/actions/auth";
 
@@ -52,9 +55,12 @@ export default function DashboardLayout({ children }: DashboardLayoutProps) {
     { name: "Overview", path: "/", icon: DashboardIcon },
     { name: "Projects", path: "/projects", icon: ProjectIcon },
     { name: "Tracker", path: "/tracker", icon: TrackerIcon },
+    { name: "Health", path: "/health", icon: HealthIcon },
+    { name: "Focus", path: "/focus", icon: TimerIcon },
     { name: "Planner", path: "/planner", icon: CalendarIcon },
     { name: "Journal", path: "/journal", icon: JournalIcon },
     { name: "Goals", path: "/goals", icon: GoalsIcon },
+    { name: "Countdowns", path: "/countdowns", icon: CountdownIcon },
     { name: "Lists", path: "/lists", icon: ListIcon },
     { name: "Settings", path: "/settings", icon: SettingsIcon },
   ];

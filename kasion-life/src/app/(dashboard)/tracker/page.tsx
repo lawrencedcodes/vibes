@@ -1,5 +1,4 @@
 import React from "react";
-import { TrackerIcon } from "@/components/Icons";
 import { db } from "@/lib/db";
 import { decrypt } from "@/lib/session";
 import { cookies } from "next/headers";
@@ -58,60 +57,12 @@ export default async function TrackerPage() {
         </p>
       </div>
 
-      {/* Grid containing tracking categories */}
-      <div className="metric-grid">
+      {/* Centered Tracker Container */}
+      <div style={{ maxWidth: "680px", width: "100%", margin: "0 auto" }}>
         {/* Habit Card (Dynamic Interactive checklist) */}
         <HabitTracker initialHabits={serializedHabits} />
-
-        {/* Health Metrics (Mocked) */}
-        <div className="dashboard-card glass-panel" style={{ display: "flex", flexDirection: "column", gap: "1rem" }}>
-          <div className="card-title-row">
-            <span className="card-title">Sleep Quality</span>
-            <span className="card-icon-wrapper"><TrackerIcon size={18} /></span>
-          </div>
-          <div>
-            <div className="card-value">7.5<span style={{ fontSize: "1rem", color: "var(--muted)" }}> hrs</span></div>
-            <div className="card-description" style={{ marginTop: "0.25rem" }}>
-              Deep sleep: 2.1h (28%)
-            </div>
-          </div>
-        </div>
-
-        {/* Focus Score (Mocked) */}
-        <div className="dashboard-card glass-panel" style={{ display: "flex", flexDirection: "column", gap: "1rem" }}>
-          <div className="card-title-row">
-            <span className="card-title">Productivity Log</span>
-            <span className="card-icon-wrapper"><TrackerIcon size={18} /></span>
-          </div>
-          <div>
-            <div className="card-value">88<span style={{ fontSize: "1rem", color: "var(--muted)" }}>/100</span></div>
-            <div className="card-description" style={{ marginTop: "0.25rem" }}>
-              Highly focused session recorded
-            </div>
-          </div>
-        </div>
-      </div>
-
-      {/* Blank State Integration Container */}
-      <div className="glass-panel" style={{ padding: "3rem 2rem", borderRadius: "1.25rem", borderStyle: "dashed", textAlign: "center" }}>
-        <h3 style={{ fontSize: "1rem", fontWeight: "600", marginBottom: "0.5rem" }}>No external integrations connected</h3>
-        <p style={{ color: "var(--muted)", fontSize: "0.875rem", maxWidth: "450px", margin: "0 auto 1.5rem" }}>
-          Connect Apple Health, Oura Ring, or custom integrations to automatically sync tracker data.
-        </p>
-        <button style={{
-          backgroundColor: "var(--muted-bg)",
-          border: "1px solid var(--border)",
-          color: "var(--foreground)",
-          padding: "0.625rem 1.25rem",
-          borderRadius: "0.75rem",
-          fontSize: "0.875rem",
-          fontWeight: "600",
-          cursor: "pointer",
-          transition: "border-color 0.2s ease"
-        }}>
-          Manage Integrations
-        </button>
       </div>
     </div>
   );
 }
+

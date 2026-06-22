@@ -3,7 +3,7 @@ import type { NextRequest } from "next/server";
 import { decrypt } from "@/lib/session";
 
 // Specify protected and public routes
-const protectedRoutes = ["/", "/tracker", "/journal", "/goals", "/settings", "/lists"];
+const protectedRoutes = ["/", "/tracker", "/journal", "/goals", "/settings", "/lists", "/focus", "/countdowns", "/health"];
 const publicRoutes = ["/login"];
 
 export default async function proxy(req: NextRequest) {
@@ -17,7 +17,10 @@ export default async function proxy(req: NextRequest) {
                            path.startsWith("/settings") || 
                            path.startsWith("/lists") ||
                            path.startsWith("/projects") ||
-                           path.startsWith("/planner");
+                           path.startsWith("/planner") ||
+                           path.startsWith("/focus") ||
+                           path.startsWith("/countdowns") ||
+                           path.startsWith("/health");
   const isPublicRoute = path.startsWith("/login");
 
   // Get session cookie
