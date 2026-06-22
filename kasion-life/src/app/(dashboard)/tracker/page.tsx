@@ -1,7 +1,51 @@
 import React from "react";
 import { TrackerIcon } from "@/components/Icons";
+import { db } from "@/lib/db";
+import { decrypt } from "@/lib/session";
+import { cookies } from "next/headers";
+import { redirect } from "next/navigation";
+import HabitTracker from "@/components/HabitTracker";
 
-export default function TrackerPage() {
+export default async function TrackerPage() {
+  const cookieStore = await cookies();
+  const sessionCookie = cookieStore.get("session")?.value;
+  const session = await decrypt(sessionCookie);
+
+  if (!session?.userId) {
+    redirect("/login");
+  }
+
+  const today = new Date();
+  today.setHours(0, 0, 0, 0);
+
+  // Fetch the habits and today's logs for this user
+  const habits = await db.habit.findMany({
+    where: { userId: session.userId },
+    include: {
+      logs: {
+        where: {
+          date: today,
+        },
+      },
+    },
+    orderBy: {
+      createdAt: "asc",
+    },
+  });
+
+  // Map habits to a clean, serializable format for the client
+  const serializedHabits = habits.map((habit) => ({
+    id: habit.id,
+    title: habit.title,
+    type: habit.type,
+    dailyTarget: habit.dailyTarget,
+    currentStreak: habit.currentStreak,
+    longestStreak: habit.longestStreak,
+    createdAt: habit.createdAt.toISOString(),
+    isCompletedToday: habit.logs.length > 0 ? habit.logs[0].isCompleted : false,
+    valueToday: habit.logs.length > 0 ? (habit.logs[0].value ?? 0) : 0,
+  }));
+
   return (
     <div className="animate-fade-in" style={{ display: "flex", flexDirection: "column", gap: "2rem" }}>
       {/* Title */}
@@ -16,30 +60,11 @@ export default function TrackerPage() {
 
       {/* Grid containing tracking categories */}
       <div className="metric-grid">
-        {/* Habit Card */}
-        <div className="dashboard-card glass-panel">
-          <div className="card-title-row">
-            <span className="card-title">Habits Checklist</span>
-            <span className="card-icon-wrapper"><TrackerIcon size={18} /></span>
-          </div>
-          <div style={{ display: "flex", flexDirection: "column", gap: "0.75rem", margin: "0.5rem 0" }}>
-            <div style={{ display: "flex", alignItems: "center", gap: "0.75rem", fontSize: "0.875rem" }}>
-              <input type="checkbox" defaultChecked style={{ accentColor: "var(--accent)" }} />
-              <span style={{ textDecoration: "line-through", color: "var(--muted)" }}>Read 30 mins</span>
-            </div>
-            <div style={{ display: "flex", alignItems: "center", gap: "0.75rem", fontSize: "0.875rem" }}>
-              <input type="checkbox" defaultChecked style={{ accentColor: "var(--accent)" }} />
-              <span style={{ textDecoration: "line-through", color: "var(--muted)" }}>Exercise 45 mins</span>
-            </div>
-            <div style={{ display: "flex", alignItems: "center", gap: "0.75rem", fontSize: "0.875rem" }}>
-              <input type="checkbox" style={{ accentColor: "var(--accent)" }} />
-              <span>Hydrate 3L</span>
-            </div>
-          </div>
-        </div>
+        {/* Habit Card (Dynamic Interactive checklist) */}
+        <HabitTracker initialHabits={serializedHabits} />
 
-        {/* Health Metrics */}
-        <div className="dashboard-card glass-panel">
+        {/* Health Metrics (Mocked) */}
+        <div className="dashboard-card glass-panel" style={{ display: "flex", flexDirection: "column", gap: "1rem" }}>
           <div className="card-title-row">
             <span className="card-title">Sleep Quality</span>
             <span className="card-icon-wrapper"><TrackerIcon size={18} /></span>
@@ -52,8 +77,8 @@ export default function TrackerPage() {
           </div>
         </div>
 
-        {/* Focus Score */}
-        <div className="dashboard-card glass-panel">
+        {/* Focus Score (Mocked) */}
+        <div className="dashboard-card glass-panel" style={{ display: "flex", flexDirection: "column", gap: "1rem" }}>
           <div className="card-title-row">
             <span className="card-title">Productivity Log</span>
             <span className="card-icon-wrapper"><TrackerIcon size={18} /></span>
