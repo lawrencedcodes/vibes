@@ -22,9 +22,9 @@ export default async function PlannerPage(props: {
   // Check if Google OAuth integration exists for the current user
   const user = await db.user.findUnique({
     where: { id: session.userId },
-    select: { googleRefreshToken: true },
+    select: { googleToken: { select: { id: true } } },
   });
-  const isGoogleConnected = !!user?.googleRefreshToken;
+  const isGoogleConnected = !!user?.googleToken;
 
   // Fetch events
   const events = await db.event.findMany({

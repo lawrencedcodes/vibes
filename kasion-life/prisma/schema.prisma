@@ -8,21 +8,19 @@ datasource db {
 }
 
 model User {
-  id                 String    @id @default(uuid())
-  email              String    @unique
-  passwordHash       String
-  name               String?
-  createdAt          DateTime  @default(now())
-  updatedAt          DateTime  @updatedAt
-  metrics            Metric[]
-  journals           Journal[]
-  goals              Goal[]
-  lists              List[]
-  projects           Project[]
-  events             Event[]
-  googleAccessToken  String?
-  googleRefreshToken String?
-  googleTokenExpiry  DateTime?
+  id           String       @id @default(uuid())
+  email        String       @unique
+  passwordHash String
+  name         String?
+  createdAt    DateTime     @default(now())
+  updatedAt    DateTime     @updatedAt
+  metrics      Metric[]
+  journals     Journal[]
+  goals        Goal[]
+  lists        List[]
+  projects     Project[]
+  events       Event[]
+  googleToken  GoogleToken?
 }
 
 model Metric {
@@ -114,4 +112,15 @@ model Event {
   isAllDay      Boolean  @default(false)
   googleEventId String?  @unique
   createdAt     DateTime @default(now())
+}
+
+model GoogleToken {
+  id           String   @id @default(uuid())
+  userId       String   @unique
+  user         User     @relation(fields: [userId], references: [id], onDelete: Cascade)
+  accessToken  String
+  refreshToken String
+  expiresAt    DateTime
+  createdAt    DateTime @default(now())
+  updatedAt    DateTime @updatedAt
 }
