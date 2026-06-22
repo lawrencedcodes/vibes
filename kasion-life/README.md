@@ -1,6 +1,18 @@
 # 🌌 KasionLife — Personal Operating System & Dashboard
 
-KasionLife is a high-density, minimalist, and ultra-performant personal dashboard designed as a centralized "Life OS." Built using **Next.js 16 (App Router)**, **React 19**, and **Prisma with SQLite**, it provides a distraction-free environment to manage goals, time-blocking, habits, reflections, and wellness metrics in a single, visually striking glassmorphic interface.
+> **Ditch the fragmented productivity stack.** KasionLife is a high-density, local-first, distraction-free "Personal OS" that unifies your calendar, daily habits, deep work focus timers, milestones, reflections, and wellness metrics into one cohesive, visually stunning dashboard.
+
+No more switching between Notion for journaling, Google Calendar for schedules, phone apps for habit tracking, and pomodoro web timers. KasionLife consolidates your execution mechanics into a single, high-fidelity screen.
+
+---
+
+## 🎯 What is KasionLife Good For?
+
+- **Consolidating Your Focus**: View your agenda, wellness stats, Pomodoro logs, habits, and countdowns in a single, high-density screen.
+- **Executing the 12 Week Year**: Keep daily habits mapped to long-term goals. The integrated weekly execution scoring system gives you a metric-driven view of your focus success rate.
+- **Deep Work & Flow State**: Associate focus sessions directly with Todo lists. Start a 25-minute Pomodoro timer, auto-save focus durations, and eliminate tabs/distractions.
+- **Distraction-Free Journaling**: Write daily reflection logs in a clean canvas that auto-saves as you think, keeping a history of your milestones.
+- **Unified Time-Blocking**: Manage events, schedule daily slots, and sync them automatically with Google Calendar, avoiding scheduling overlaps with a built-in collision layout algorithm.
 
 ---
 
