@@ -92,6 +92,93 @@ export async function getFreshClient(userId: string) {
 }
 
 /**
+ * Synchronizes events from the user's primary Google Calendar for the next 30 days.
+ * Fetches events, performs upserts matching on googleEventId, and updates local events.
+ * 
+ * @param userId - ID of the local User
+ */
+export async function syncGoogleCalendar(userId: string): Promise<void> {
+  console.log(`[Google Calendar Sync] Starting synchronization for user ${userId}...`);
+  try {
+    const auth = await getFreshClient(userId);
+    if (!auth) {
+      console.log(`[Google Calendar Sync] User ${userId} is not integrated with Google Calendar. Skipping.`);
+      return;
+    }
+
+    const calendar = google.calendar({ version: "v3", auth });
+
+    const now = new Date();
+    const thirtyDaysLater = new Date();
+    thirtyDaysLater.setDate(now.getDate() + 30);
+
+    const response = await calendar.events.list({
+      calendarId: "primary",
+      timeMin: now.toISOString(),
+      timeMax: thirtyDaysLater.toISOString(),
+      singleEvents: true, // Expands recurring events into individual instances
+      orderBy: "startTime",
+    });
+
+    const googleEvents = response.data.items || [];
+    console.log(`[Google Calendar Sync] Retrieved ${googleEvents.length} events from Google for the next 30 days.`);
+
+    for (const gEvent of googleEvents) {
+      if (!gEvent.id) continue;
+
+      const title = gEvent.summary || "Untitled Event";
+      const description = gEvent.description || null;
+
+      let startTime: Date;
+      let endTime: Date;
+      let isAllDay = false;
+
+      // Detect and map time/all-day formats
+      if (gEvent.start?.dateTime) {
+        startTime = new Date(gEvent.start.dateTime);
+      } else if (gEvent.start?.date) {
+        startTime = new Date(gEvent.start.date);
+        isAllDay = true;
+      } else {
+        continue;
+      }
+
+      if (gEvent.end?.dateTime) {
+        endTime = new Date(gEvent.end.dateTime);
+      } else if (gEvent.end?.date) {
+        endTime = new Date(gEvent.end.date);
+      } else {
+        endTime = new Date(startTime.getTime() + 60 * 60 * 1000); // 1-hour fallback
+      }
+
+      // Upsert event matching on googleEventId
+      await db.event.upsert({
+        where: { googleEventId: gEvent.id },
+        update: {
+          title,
+          description,
+          startTime,
+          endTime,
+          isAllDay,
+        },
+        create: {
+          userId,
+          title,
+          description,
+          startTime,
+          endTime,
+          isAllDay,
+          googleEventId: gEvent.id,
+        },
+      });
+    }
+    console.log(`[Google Calendar Sync] Synchronization completed successfully for user ${userId}.`);
+  } catch (error) {
+    console.error(`[Google Calendar Sync] Error during calendar synchronization for user ${userId}:`, error);
+  }
+}
+
+/**
  * Pushes a local event to the user's Google Calendar.
  * 
  * @param userId - ID of the local User
@@ -105,9 +192,8 @@ export async function pushEventToGoogle(userId: string, eventId: string): Promis
       console.log(`[Google Calendar Sync] User ${userId} is not integrated with Google Calendar.`);
       return;
     }
-    // Foundational mock implementation to use auth in calendar API call
     const calendar = google.calendar({ version: "v3", auth });
-    // Future sync API integration can go here
+    // Future sync API push logic
   } catch (error) {
     console.error(`[Google Calendar Sync] Error pushing event:`, error);
   }
@@ -115,21 +201,10 @@ export async function pushEventToGoogle(userId: string, eventId: string): Promis
 
 /**
  * Pulls events from the user's Google Calendar and updates local events.
+ * Calls syncGoogleCalendar to perform synchronization logic.
  * 
  * @param userId - ID of the local User
  */
 export async function pullEventsFromGoogle(userId: string): Promise<void> {
-  console.log(`[Google Calendar Sync] pullEventsFromGoogle called: userId=${userId}`);
-  try {
-    const auth = await getFreshClient(userId);
-    if (!auth) {
-      console.log(`[Google Calendar Sync] User ${userId} is not integrated with Google Calendar.`);
-      return;
-    }
-    // Foundational mock implementation to use auth in calendar API call
-    const calendar = google.calendar({ version: "v3", auth });
-    // Future sync API integration can go here
-  } catch (error) {
-    console.error(`[Google Calendar Sync] Error pulling events:`, error);
-  }
+  await syncGoogleCalendar(userId);
 }

@@ -4,6 +4,7 @@ import { redirect } from "next/navigation";
 import { decrypt } from "@/lib/session";
 import { db } from "@/lib/db";
 import EventForm from "@/components/EventForm";
+import { syncGoogleCalendar } from "@/lib/googleCalendar";
 
 export default async function PlannerPage(props: {
   searchParams: Promise<{ [key: string]: string | string[] | undefined }>;
@@ -26,7 +27,16 @@ export default async function PlannerPage(props: {
   });
   const isGoogleConnected = !!user?.googleToken;
 
-  // Fetch events
+  // Safely execute Google Calendar synchronization in the background on page load
+  if (isGoogleConnected) {
+    try {
+      await syncGoogleCalendar(session.userId);
+    } catch (error) {
+      console.error("[Planner Background Sync] Failed to sync Google Calendar events:", error);
+    }
+  }
+
+  // Fetch events (including any newly synced ones)
   const events = await db.event.findMany({
     where: { userId: session.userId },
     orderBy: { startTime: "asc" },
