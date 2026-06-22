@@ -8,18 +8,21 @@ datasource db {
 }
 
 model User {
-  id           String    @id @default(uuid())
-  email        String    @unique
-  passwordHash String
-  name         String?
-  createdAt    DateTime  @default(now())
-  updatedAt    DateTime  @updatedAt
-  metrics      Metric[]
-  journals     Journal[]
-  goals        Goal[]
-  lists        List[]
-  projects     Project[]
-  events       Event[]
+  id                 String    @id @default(uuid())
+  email              String    @unique
+  passwordHash       String
+  name               String?
+  createdAt          DateTime  @default(now())
+  updatedAt          DateTime  @updatedAt
+  metrics            Metric[]
+  journals           Journal[]
+  goals              Goal[]
+  lists              List[]
+  projects           Project[]
+  events             Event[]
+  googleAccessToken  String?
+  googleRefreshToken String?
+  googleTokenExpiry  DateTime?
 }
 
 model Metric {
@@ -101,13 +104,14 @@ model Project {
 }
 
 model Event {
-  id          String   @id @default(uuid())
-  userId      String
-  user        User     @relation(fields: [userId], references: [id], onDelete: Cascade)
-  title       String
-  description String?
-  startTime   DateTime
-  endTime     DateTime
-  isAllDay    Boolean  @default(false)
-  createdAt   DateTime @default(now())
+  id            String   @id @default(uuid())
+  userId        String
+  user          User     @relation(fields: [userId], references: [id], onDelete: Cascade)
+  title         String
+  description   String?
+  startTime     DateTime
+  endTime       DateTime
+  isAllDay      Boolean  @default(false)
+  googleEventId String?  @unique
+  createdAt     DateTime @default(now())
 }
