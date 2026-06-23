@@ -1,0 +1,613 @@
+<!DOCTYPE html>
+<html lang="en" class="scroll-smooth">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  
+  <title>Lawrence Lockhart | Senior Developer Advocate & Solo Builder</title>
+  <meta name="description" content="Portfolio of Lawrence Lockhart, Senior Developer Advocate, Software Engineer, and Solo Builder. Bridging the gap between complex code and developer communities.">
+  
+  <!-- Fonts -->
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=JetBrains+Mono:ital,wght@0,100..800;1,100..800&family=Outfit:wght@100..900&display=swap" rel="stylesheet">
+  
+  <!-- Tailwind CSS v4 CDN -->
+  <script src="https://cdn.jsdelivr.net/npm/@tailwindcss/browser@4"></script>
+  
+  <style type="text/tailwindcss">
+    @theme {
+      --font-sans: 'Outfit', -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
+      --font-mono: 'JetBrains Mono', 'Fira Code', monospace;
+      
+      --color-bg-dark: #09090b;
+      --color-panel-dark: #121215;
+      --color-panel-border: #222227;
+      
+      --color-brand-violet: #8b5cf6;
+      --color-brand-cyan: #06b6d4;
+    }
+  </style>
+
+  <style>
+    /* Custom scrollbar styling for a premium documentation look */
+    ::-webkit-scrollbar {
+      width: 8px;
+      height: 8px;
+    }
+    ::-webkit-scrollbar-track {
+      background: #09090b;
+    }
+    ::-webkit-scrollbar-thumb {
+      background: #27272a;
+      border-radius: 4px;
+    }
+    ::-webkit-scrollbar-thumb:hover {
+      background: #3f3f46;
+    }
+
+    /* Ambient background grid pattern using inline SVG */
+    .bg-grid-pattern {
+      background-image: radial-gradient(circle at 1px 1px, rgba(63, 63, 70, 0.15) 1px, transparent 0);
+      background-size: 24px 24px;
+    }
+
+    /* Scroll reveal transitions */
+    .scroll-reveal {
+      opacity: 0;
+      transform: translateY(20px);
+      transition: opacity 0.8s cubic-bezier(0.16, 1, 0.3, 1), transform 0.8s cubic-bezier(0.16, 1, 0.3, 1);
+    }
+    .scroll-reveal.is-visible {
+      opacity: 1;
+      transform: translateY(0);
+    }
+  </style>
+</head>
+<body class="bg-bg-dark text-zinc-100 font-sans selection:bg-brand-cyan/30 selection:text-white relative overflow-x-hidden min-h-screen bg-grid-pattern">
+
+  <!-- Glow effects behind content -->
+  <div class="absolute top-[-10%] left-[-10%] w-[50%] h-[50%] rounded-full bg-brand-violet/10 blur-[120px] pointer-events-none" aria-hidden="true"></div>
+  <div class="absolute top-[40%] right-[-15%] w-[45%] h-[45%] rounded-full bg-brand-cyan/5 blur-[120px] pointer-events-none" aria-hidden="true"></div>
+  <div class="absolute bottom-[-10%] left-[20%] w-[40%] h-[40%] rounded-full bg-brand-violet/5 blur-[120px] pointer-events-none" aria-hidden="true"></div>
+
+  <!-- Header & Navigation -->
+  <header class="sticky top-0 z-50 w-full border-b border-panel-border bg-bg-dark/75 backdrop-blur-md">
+    <div class="mx-auto flex h-16 max-w-7xl items-center justify-between px-4 sm:px-6 lg:px-8">
+      <div class="flex items-center gap-2">
+        <span class="font-mono text-sm tracking-tight text-white hover:text-brand-cyan transition-colors duration-200">
+          <span class="text-brand-violet">&lt;</span>lawrence.lockhart <span class="text-brand-cyan">/&gt;</span>
+        </span>
+      </div>
+      <nav class="flex items-center gap-6" aria-label="Main Navigation">
+        <a href="#about" class="text-sm font-medium text-zinc-400 hover:text-white transition-colors duration-200 focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-brand-cyan rounded" aria-label="Navigate to About section">About</a>
+        <a href="#speaking" class="text-sm font-medium text-zinc-400 hover:text-white transition-colors duration-200 focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-brand-cyan rounded" aria-label="Navigate to Speaking & Talks section">Speaking</a>
+        <a href="#writing" class="text-sm font-medium text-zinc-400 hover:text-white transition-colors duration-200 focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-brand-cyan rounded" aria-label="Navigate to Technical Writing section">Writing</a>
+        <a href="https://topmate.io/lawrencedcodes" target="_blank" rel="noopener noreferrer" class="hidden sm:inline-flex items-center gap-1.5 rounded-lg bg-brand-violet/10 border border-brand-violet/30 px-3.5 py-1.5 text-xs font-semibold text-zinc-200 hover:bg-brand-violet/20 hover:border-brand-violet/50 transition-all duration-200 focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-brand-violet" aria-label="Book a consultation on Topmate, opens in new tab">
+          Book a Call
+          <svg class="h-3 w-3" fill="none" viewBox="0 0 24 24" stroke-width="2.5" stroke="currentColor" aria-hidden="true"><path stroke-linecap="round" stroke-linejoin="round" d="M13.5 6H5.25A2.25 2.25 0 003 8.25v10.5A2.25 2.25 0 005.25 21h10.5A2.25 2.25 0 0018 18.75V10.5m-10.5 6L21 3m0 0h-5.25M21 3v5.25" /></svg>
+        </a>
+      </nav>
+    </div>
+  </header>
+
+  <main class="mx-auto max-w-7xl px-4 sm:px-6 lg:px-8 py-12 sm:py-20 relative">
+
+    <!-- Hero Section -->
+    <section id="hero" class="grid grid-cols-1 lg:grid-cols-12 gap-12 lg:gap-8 items-center py-4 sm:py-8 scroll-reveal" aria-label="Introduction">
+      <div class="lg:col-span-7 flex flex-col justify-center space-y-6">
+        <div class="inline-flex items-center gap-2 self-start rounded-full border border-brand-violet/20 bg-brand-violet/5 px-3 py-1 text-xs font-medium text-brand-violet tracking-wide">
+          <span class="flex h-2 w-2 rounded-full bg-brand-cyan animate-pulse" aria-hidden="true"></span>
+          Senior Developer Advocate & Software Engineer
+        </div>
+        <h1 class="text-4xl sm:text-6xl font-bold tracking-tight text-white leading-none">
+          Lawrence Lockhart
+        </h1>
+        <p class="text-xl sm:text-2xl font-light text-zinc-300 leading-relaxed max-w-xl">
+          Bridging the gap between complex code and developer communities.
+        </p>
+        <p class="text-zinc-400 text-base sm:text-lg max-w-lg leading-relaxed">
+          Creating technical resources, building agentic AI workflows, and empowering developers globally through clear educational narratives and robust architecture.
+        </p>
+        <div class="flex flex-wrap gap-4 pt-2">
+          <a href="https://topmate.io/lawrencedcodes" target="_blank" rel="noopener noreferrer" class="inline-flex items-center justify-center gap-2 rounded-lg bg-brand-violet text-white px-5 py-3 text-sm font-semibold hover:bg-brand-violet/90 hover:shadow-[0_0_20px_rgba(139,92,246,0.4)] transition-all duration-300 focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-brand-violet" aria-label="Book a call on Topmate (opens in new tab)">
+            <svg class="h-4.5 w-4.5" fill="none" viewBox="0 0 24 24" stroke-width="2" stroke="currentColor" aria-hidden="true"><path stroke-linecap="round" stroke-linejoin="round" d="M6.75 3v2.25M17.25 3v2.25M3 18.75V7.5a2.25 2.25 0 012.25-2.25h13.5A2.25 2.25 0 0121 7.5v11.25m-18 0A2.25 2.25 0 005.25 21h13.5A2.25 2.25 0 0021 18.75m-18 0v-7.5A2.25 2.25 0 015.25 9h13.5A2.25 2.25 0 0121 11.25v7.5" /></svg>
+            Book a Call via Topmate
+          </a>
+          <a href="https://github.com/lawrencedcodes" target="_blank" rel="noopener noreferrer" class="inline-flex items-center justify-center gap-2 rounded-lg bg-zinc-900 border border-zinc-800 text-zinc-300 hover:text-white hover:bg-zinc-800 hover:border-zinc-700 px-5 py-3 text-sm font-semibold transition-all duration-200 focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-zinc-500" aria-label="View Github profile (opens in new tab)">
+            <svg class="h-4.5 w-4.5 fill-current" viewBox="0 0 24 24" aria-hidden="true"><path fill-rule="evenodd" d="M12 2C6.477 2 2 6.477 2 12c0 4.42 2.865 8.166 6.839 9.489.5.092.682-.217.682-.482 0-.237-.008-.866-.013-1.7-2.782.603-3.369-1.34-3.369-1.34-.454-1.156-1.11-1.464-1.11-1.464-.908-.62.069-.608.069-.608 1.003.07 1.531 1.03 1.531 1.03.892 1.529 2.341 1.087 2.91.831.092-.646.35-1.086.636-1.336-2.22-.253-4.555-1.11-4.555-4.943 0-1.091.39-1.984 1.029-2.683-.103-.253-.446-1.27.098-2.647 0 0 .84-.269 2.75 1.025A9.564 9.564 0 0112 6.844c.85.004 1.705.115 2.504.337 1.909-1.294 2.747-1.025 2.747-1.025.546 1.377.203 2.394.1 2.647.64.699 1.028 1.592 1.028 2.683 0 3.842-2.339 4.687-4.566 4.935.359.309.678.919.678 1.852 0 1.336-.012 2.415-.012 2.743 0 .267.18.579.688.481C19.137 20.162 22 16.418 22 12c0-5.523-4.477-10-10-10z" clip-rule="evenodd" /></svg>
+            GitHub Profile
+          </a>
+        </div>
+      </div>
+
+      <!-- Developer Aesthetic Graphic -->
+      <div class="lg:col-span-5 relative w-full flex justify-center">
+        <div class="w-full max-w-md rounded-xl border border-panel-border bg-panel-dark p-6 shadow-2xl relative overflow-hidden group hover:border-zinc-700 transition-all duration-300">
+          <!-- Terminal header dots -->
+          <div class="flex items-center gap-1.5 pb-4 border-b border-panel-border" aria-hidden="true">
+            <span class="h-3 w-3 rounded-full bg-red-500/80"></span>
+            <span class="h-3 w-3 rounded-full bg-yellow-500/80"></span>
+            <span class="h-3 w-3 rounded-full bg-green-500/80"></span>
+            <span class="text-xs font-mono text-zinc-500 ml-2">lawrence_lockhart.json</span>
+          </div>
+          <!-- JSON Editor View -->
+          <pre class="mt-4 font-mono text-xs text-zinc-400 overflow-x-auto leading-relaxed"><code>{
+  <span class="text-brand-cyan">"name"</span>: <span class="text-emerald-400">"Lawrence Lockhart"</span>,
+  <span class="text-brand-cyan">"role"</span>: <span class="text-emerald-400">"Senior Developer Advocate"</span>,
+  <span class="text-brand-cyan">"expertise"</span>: [
+    <span class="text-brand-violet">"Developer Relations"</span>,
+    <span class="text-brand-violet">"Software Engineering"</span>,
+    <span class="text-brand-violet">"Solo SaaS Architecture"</span>
+  ],
+  <span class="text-brand-cyan">"focus_areas"</span>: {
+    <span class="text-brand-cyan">"backend"</span>: [<span class="text-brand-violet">"Java"</span>, <span class="text-brand-violet">"Spring Boot"</span>],
+    <span class="text-brand-cyan">"ai"</span>: [<span class="text-brand-violet">"Agentic Loops"</span>, <span class="text-brand-violet">"MCP"</span>]
+  },
+  <span class="text-brand-cyan">"mission"</span>: <span class="text-emerald-400">"Bridging complexity with community"</span>,
+  <span class="text-brand-cyan">"status"</span>: <span class="text-amber-400">"ACTIVE_AND_BUILDING"</span>
+}</code></pre>
+          <!-- Absolute status pill in terminal -->
+          <div class="absolute bottom-4 right-4 rounded bg-brand-cyan/10 border border-brand-cyan/20 px-2 py-0.5 font-mono text-[10px] text-brand-cyan uppercase tracking-wider">
+            v4.0.0-prod
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <!-- About Me Section -->
+    <section id="about" class="py-16 sm:py-24 border-t border-panel-border scroll-reveal" aria-label="About Lawrence">
+      <div class="grid grid-cols-1 lg:grid-cols-12 gap-8 items-start">
+        <div class="lg:col-span-4">
+          <h2 class="text-xs font-mono font-bold uppercase tracking-widest text-brand-cyan flex items-center gap-2">
+            <span>//</span> 01. About Me
+          </h2>
+          <p class="mt-4 text-3xl font-bold tracking-tight text-white sm:text-4xl">
+            Empowering developers, building software.
+          </p>
+        </div>
+        <div class="lg:col-span-8 space-y-6">
+          <p class="text-lg text-zinc-300 leading-relaxed font-light">
+            My transition into technology represents a career shift driven by raw curiosity and the joy of problem-solving. Having learned to code later in life, I bring a unique dual perspective: the technical rigor of a Software Engineer and the empathetic mindset of a Developer Advocate who understands the learning curve intimately.
+          </p>
+          <p class="text-lg text-zinc-300 leading-relaxed font-light">
+            My current technical exploration is centered on taking the cutting edge of artificial intelligence and making that accessible to enterprise developers and teams.
+          </p>
+          <div class="grid grid-cols-1 sm:grid-cols-3 gap-4 pt-4">
+            <div class="border border-panel-border bg-panel-dark/50 rounded-lg p-4">
+              <div class="font-mono text-brand-cyan text-sm">// DevRel Strategy</div>
+              <p class="mt-1 text-xs text-zinc-400">Connecting developer tools with workflows that developers love.</p>
+            </div>
+            <div class="border border-panel-border bg-panel-dark/50 rounded-lg p-4">
+              <div class="font-mono text-brand-violet text-sm">// AI Orchestration</div>
+              <p class="mt-1 text-xs text-zinc-400">Leveraging LLMs, context injection, and agent tool execution.</p>
+            </div>
+            <div class="border border-panel-border bg-panel-dark/50 rounded-lg p-4">
+              <div class="font-mono text-white text-sm">// Full-Stack Java</div>
+              <p class="mt-1 text-xs text-zinc-400">Designing responsive applications with modern enterprise tools.</p>
+            </div>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <!-- Speaking & Talks Section -->
+    <section id="speaking" class="py-16 sm:py-24 border-t border-panel-border scroll-reveal" aria-label="Speaking Engagements and Public Talks">
+      <div class="flex flex-col md:flex-row md:items-end justify-between mb-12 gap-6">
+        <div>
+          <h2 class="text-xs font-mono font-bold uppercase tracking-widest text-brand-cyan flex items-center gap-2">
+            <span>//</span> 02. Speaking & Talks
+          </h2>
+          <p class="mt-4 text-3xl font-bold tracking-tight text-white sm:text-4xl">
+            Impact on stage
+          </p>
+        </div>
+        <a href="https://sessionize.com/LawrenceDCodes/" target="_blank" rel="noopener noreferrer" class="inline-flex items-center gap-2 rounded-lg bg-zinc-900 border border-zinc-800 text-zinc-300 hover:text-white hover:bg-zinc-800 hover:border-zinc-700 px-4 py-2.5 text-sm font-semibold transition-all duration-200 focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-zinc-500" aria-label="View my Sessionize profile, opens in a new tab">
+          <svg class="h-4 w-4" fill="none" viewBox="0 0 24 24" stroke-width="2" stroke="currentColor" aria-hidden="true"><path stroke-linecap="round" stroke-linejoin="round" d="M6.75 3v2.25M17.25 3v2.25M3 18.75V7.5a2.25 2.25 0 012.25-2.25h13.5A2.25 2.25 0 0121 7.5v11.25m-18 0A2.25 2.25 0 005.25 21h13.5A2.25 2.25 0 0021 18.75m-18 0v-7.5A2.25 2.25 0 015.25 9h13.5A2.25 2.25 0 0121 11.25v7.5m-9-6h.008v.008H12v-.008zM12 15h.008v.008H12V15zm0 2.25h.008v.008H12v-.008zM9.75 15h.008v.008H9.75V15zm0 2.25h.008v.008H9.75v-.008zM7.5 15h.008v.008H7.5V15zm0 2.25h.008v.008H7.5v-.008zm6.75-4.5h.008v.008h-.008v-.008zm0 2.25h.008v.008h-.008V15zm0 2.25h.008v.008h-.008v-.008zm2.25-4.5h.008v.008H16.5v-.008zm0 2.25h.008v.008H16.5V15z" /></svg>
+          Full Sessionize Profile
+        </a>
+      </div>
+
+      <div class="grid grid-cols-1 md:grid-cols-2 gap-8">
+        
+        <!-- Card 1 -->
+        <a href="https://www.youtube.com/results?search_query=Lawrence+Lockhart+You+Don%27t+Know+JSON" target="_blank" rel="noopener noreferrer" class="group rounded-xl border border-panel-border bg-panel-dark overflow-hidden flex flex-col hover:border-brand-cyan/40 hover:shadow-[0_0_30px_rgba(6,182,212,0.1)] transition-all duration-300 focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-brand-cyan" aria-label="Watch 'You Don't Know JSON' talk by Lawrence Lockhart on YouTube, opens in new tab">
+          <div class="relative aspect-video w-full bg-gradient-to-br from-zinc-950 to-zinc-900 flex items-center justify-center border-b border-panel-border overflow-hidden">
+            <!-- Decorative code/graphical placeholder -->
+            <div class="absolute inset-0 opacity-15 font-mono text-[9px] p-4 select-none overflow-hidden leading-tight text-brand-cyan">
+              {"spec": "JSON Schema", "type": "superpowers", "syntax": "strict", "nested": true, "depth": 99, "status": "Grow"}
+            </div>
+            <!-- Glow background element -->
+            <div class="absolute w-24 h-24 rounded-full bg-brand-cyan/20 blur-xl group-hover:scale-125 transition-transform duration-300" aria-hidden="true"></div>
+            <!-- Video Overlay / SVG Graphic -->
+            <div class="relative z-10 flex flex-col items-center gap-3">
+              <div class="rounded-full bg-zinc-900/80 border border-zinc-800 p-4 text-brand-cyan group-hover:bg-brand-cyan group-hover:text-black group-hover:scale-110 transition-all duration-300 shadow-lg">
+                <svg class="h-6 w-6 fill-current" viewBox="0 0 24 24" aria-hidden="true"><path d="M8 5v14l11-7z"/></svg>
+              </div>
+              <span class="text-xs font-mono text-zinc-500 uppercase tracking-widest">ATO Presentation</span>
+            </div>
+          </div>
+          <div class="p-6 flex-1 flex flex-col justify-between">
+            <div>
+              <div class="flex items-center gap-2">
+                <span class="rounded bg-brand-cyan/10 px-2 py-0.5 font-mono text-[10px] font-medium text-brand-cyan tracking-wider uppercase">JSON</span>
+                <span class="text-xs text-zinc-500 font-mono">All Things Open</span>
+              </div>
+              <h3 class="mt-3 text-xl font-semibold text-white group-hover:text-brand-cyan transition-colors duration-200">
+                You Don't Know JSON: How To Grow From Syntax To Superpowers
+              </h3>
+              <p class="mt-2 text-sm text-zinc-400 leading-relaxed font-light">
+                Discovering the hidden capabilities of JSON. Elevating simple syntax declarations to production architecture assets that power modern configuration, schema enforcement, and developer tool chains.
+              </p>
+            </div>
+            <div class="mt-6 flex items-center gap-2 pt-4 border-t border-panel-border/50">
+              <span class="text-xs font-mono text-zinc-500">Tags:</span>
+              <span class="rounded bg-zinc-800 px-2 py-0.5 text-xs text-zinc-300">JSON</span>
+              <span class="rounded bg-zinc-800 px-2 py-0.5 text-xs text-zinc-300">Syntax</span>
+              <span class="rounded bg-zinc-800 px-2 py-0.5 text-xs text-zinc-300">Best Practices</span>
+            </div>
+          </div>
+        </a>
+
+        <!-- Card 2 -->
+        <a href="https://www.youtube.com/results?search_query=Lawrence+Lockhart+Full-stack+from+the+back+Building+for+the+web+with+Java" target="_blank" rel="noopener noreferrer" class="group rounded-xl border border-panel-border bg-panel-dark overflow-hidden flex flex-col hover:border-brand-violet/40 hover:shadow-[0_0_30px_rgba(139,92,246,0.1)] transition-all duration-300 focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-brand-violet" aria-label="Watch 'Full-stack from the back' presentation by Lawrence Lockhart on YouTube, opens in new tab">
+          <div class="relative aspect-video w-full bg-gradient-to-br from-zinc-950 to-zinc-900 flex items-center justify-center border-b border-panel-border overflow-hidden">
+            <!-- Decorative Java outline -->
+            <div class="absolute inset-0 opacity-15 font-mono text-[9px] p-4 select-none overflow-hidden leading-tight text-brand-violet">
+              public class JavaWebController {
+                public static void main(String[] args) {
+                  System.out.println("Java for Frontend!");
+                }
+              }
+            </div>
+            <div class="absolute w-24 h-24 rounded-full bg-brand-violet/20 blur-xl group-hover:scale-125 transition-transform duration-300" aria-hidden="true"></div>
+            <div class="relative z-10 flex flex-col items-center gap-3">
+              <div class="rounded-full bg-zinc-900/80 border border-zinc-800 p-4 text-brand-violet group-hover:bg-brand-violet group-hover:text-black group-hover:scale-110 transition-all duration-300 shadow-lg">
+                <svg class="h-6 w-6 fill-current" viewBox="0 0 24 24" aria-hidden="true"><path d="M8 5v14l11-7z"/></svg>
+              </div>
+              <span class="text-xs font-mono text-zinc-500 uppercase tracking-widest">Speaking Session</span>
+            </div>
+          </div>
+          <div class="p-6 flex-1 flex flex-col justify-between">
+            <div>
+              <div class="flex items-center gap-2">
+                <span class="rounded bg-brand-violet/10 px-2 py-0.5 font-mono text-[10px] font-medium text-brand-violet tracking-wider uppercase">Java</span>
+                <span class="text-xs text-zinc-500 font-mono">Full-Stack Tech Talk</span>
+              </div>
+              <h3 class="mt-3 text-xl font-semibold text-white group-hover:text-brand-violet transition-colors duration-200">
+                Full-stack from the back: Building for the web with Java
+              </h3>
+              <p class="mt-2 text-sm text-zinc-400 leading-relaxed font-light">
+                Challenging the assumption that modern UI requires complex Node.js client bundles. Demonstrating how backend Java architectures can build elegant, high-fidelity responsive websites directly.
+              </p>
+            </div>
+            <div class="mt-6 flex items-center gap-2 pt-4 border-t border-panel-border/50">
+              <span class="text-xs font-mono text-zinc-500">Tags:</span>
+              <span class="rounded bg-zinc-800 px-2 py-0.5 text-xs text-zinc-300">Java</span>
+              <span class="rounded bg-zinc-800 px-2 py-0.5 text-xs text-zinc-300">Spring Boot</span>
+              <span class="rounded bg-zinc-800 px-2 py-0.5 text-xs text-zinc-300">SaaS UI</span>
+            </div>
+          </div>
+        </a>
+
+        <!-- Card 3 -->
+        <a href="https://www.youtube.com/results?search_query=Lawrence+Lockhart+RenderATL" target="_blank" rel="noopener noreferrer" class="group rounded-xl border border-panel-border bg-panel-dark overflow-hidden flex flex-col hover:border-brand-violet/40 hover:shadow-[0_0_30px_rgba(139,92,246,0.1)] transition-all duration-300 focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-brand-violet" aria-label="Watch 'Lawrence Lockhart brings R&B to Java' session on YouTube, opens in new tab">
+          <div class="relative aspect-video w-full bg-gradient-to-br from-zinc-950 to-zinc-900 flex items-center justify-center border-b border-panel-border overflow-hidden">
+            <!-- Audio waves visualization placeholder -->
+            <div class="absolute inset-x-8 bottom-4 top-4 flex items-end justify-center gap-1.5 opacity-10">
+              <span class="w-1.5 bg-brand-violet h-1/3 animate-pulse"></span>
+              <span class="w-1.5 bg-brand-violet h-2/3 animate-pulse" style="animation-delay: 0.1s"></span>
+              <span class="w-1.5 bg-brand-violet h-full animate-pulse" style="animation-delay: 0.2s"></span>
+              <span class="w-1.5 bg-brand-violet h-4/5 animate-pulse" style="animation-delay: 0.3s"></span>
+              <span class="w-1.5 bg-brand-violet h-2/5 animate-pulse" style="animation-delay: 0.4s"></span>
+              <span class="w-1.5 bg-brand-violet h-3/5 animate-pulse" style="animation-delay: 0.5s"></span>
+            </div>
+            <div class="absolute w-24 h-24 rounded-full bg-brand-violet/20 blur-xl group-hover:scale-125 transition-transform duration-300" aria-hidden="true"></div>
+            <div class="relative z-10 flex flex-col items-center gap-3">
+              <div class="rounded-full bg-zinc-900/80 border border-zinc-800 p-4 text-brand-violet group-hover:bg-brand-violet group-hover:text-black group-hover:scale-110 transition-all duration-300 shadow-lg">
+                <svg class="h-6 w-6 fill-current" viewBox="0 0 24 24" aria-hidden="true"><path d="M8 5v14l11-7z"/></svg>
+              </div>
+              <span class="text-xs font-mono text-zinc-500 uppercase tracking-widest">Storytelling Session</span>
+            </div>
+          </div>
+          <div class="p-6 flex-1 flex flex-col justify-between">
+            <div>
+              <div class="flex items-center gap-2">
+                <span class="rounded bg-brand-violet/10 px-2 py-0.5 font-mono text-[10px] font-medium text-brand-violet tracking-wider uppercase">DevRel</span>
+                <span class="text-xs text-zinc-500 font-mono">Performance Event</span>
+              </div>
+              <h3 class="mt-3 text-xl font-semibold text-white group-hover:text-brand-violet transition-colors duration-200">
+                Lawrence Lockhart brings R&B to Java
+              </h3>
+              <p class="mt-2 text-sm text-zinc-400 leading-relaxed font-light">
+                An engaging presentation that fuses software design principles with creative storytelling and music. Demonstrating the art of technical entertainment to command developer attention and build community rapport.
+              </p>
+            </div>
+            <div class="mt-6 flex items-center gap-2 pt-4 border-t border-panel-border/50">
+              <span class="text-xs font-mono text-zinc-500">Tags:</span>
+              <span class="rounded bg-zinc-800 px-2 py-0.5 text-xs text-zinc-300">Java</span>
+              <span class="rounded bg-zinc-800 px-2 py-0.5 text-xs text-zinc-300">Community</span>
+              <span class="rounded bg-zinc-800 px-2 py-0.5 text-xs text-zinc-300">Keynote</span>
+            </div>
+          </div>
+        </a>
+
+        <!-- Card 4 -->
+        <a href="https://www.youtube.com/results?search_query=Chris+Sean+Lawrence+Lockhart+learned+to+code" target="_blank" rel="noopener noreferrer" class="group rounded-xl border border-panel-border bg-panel-dark overflow-hidden flex flex-col hover:border-brand-cyan/40 hover:shadow-[0_0_30px_rgba(6,182,212,0.1)] transition-all duration-300 focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-brand-cyan" aria-label="Watch 'He learned to code in his 40s!?' interview on the Chris Sean Talks podcast on YouTube, opens in new tab">
+          <div class="relative aspect-video w-full bg-gradient-to-br from-zinc-950 to-zinc-900 flex items-center justify-center border-b border-panel-border overflow-hidden">
+            <!-- Waveform layout representation -->
+            <div class="absolute inset-0 opacity-10 flex items-center justify-center gap-0.5">
+              <span class="w-1 bg-brand-cyan h-4 rounded"></span>
+              <span class="w-1 bg-brand-cyan h-8 rounded"></span>
+              <span class="w-1 bg-brand-cyan h-16 rounded"></span>
+              <span class="w-1 bg-brand-cyan h-24 rounded"></span>
+              <span class="w-1 bg-brand-cyan h-12 rounded"></span>
+              <span class="w-1 bg-brand-cyan h-20 rounded"></span>
+              <span class="w-1 bg-brand-cyan h-8 rounded"></span>
+            </div>
+            <div class="absolute w-24 h-24 rounded-full bg-brand-cyan/20 blur-xl group-hover:scale-125 transition-transform duration-300" aria-hidden="true"></div>
+            <div class="relative z-10 flex flex-col items-center gap-3">
+              <div class="rounded-full bg-zinc-900/80 border border-zinc-800 p-4 text-brand-cyan group-hover:bg-brand-cyan group-hover:text-black group-hover:scale-110 transition-all duration-300 shadow-lg">
+                <svg class="h-6 w-6 fill-current" viewBox="0 0 24 24" aria-hidden="true"><path d="M8 5v14l11-7z"/></svg>
+              </div>
+              <span class="text-xs font-mono text-zinc-500 uppercase tracking-widest">Podcast Interview</span>
+            </div>
+          </div>
+          <div class="p-6 flex-1 flex flex-col justify-between">
+            <div>
+              <div class="flex items-center gap-2">
+                <span class="rounded bg-brand-cyan/10 px-2 py-0.5 font-mono text-[10px] font-medium text-brand-cyan tracking-wider uppercase">Podcast</span>
+                <span class="text-xs text-zinc-500 font-mono">Chris Sean Talks</span>
+              </div>
+              <h3 class="mt-3 text-xl font-semibold text-white group-hover:text-brand-cyan transition-colors duration-200">
+                He learned to code in his 40s!? | Chris Sean Talks Podcast
+              </h3>
+              <p class="mt-2 text-sm text-zinc-400 leading-relaxed font-light">
+                An inspiring discussion detailing the mental shifts, study strategies, and structural plans necessary to transition successfully into tech and DevRel later in life.
+              </p>
+            </div>
+            <div class="mt-6 flex items-center gap-2 pt-4 border-t border-panel-border/50">
+              <span class="text-xs font-mono text-zinc-500">Tags:</span>
+              <span class="rounded bg-zinc-800 px-2 py-0.5 text-xs text-zinc-300">Podcast</span>
+              <span class="rounded bg-zinc-800 px-2 py-0.5 text-xs text-zinc-300">Career Shift</span>
+              <span class="rounded bg-zinc-800 px-2 py-0.5 text-xs text-zinc-300">Mentorship</span>
+            </div>
+          </div>
+        </a>
+
+      </div>
+    </section>
+
+    <!-- Technical Writing Section -->
+    <section id="writing" class="py-16 sm:py-24 border-t border-panel-border scroll-reveal" aria-label="Technical Publications and Writing">
+      <div class="mb-12">
+        <h2 class="text-xs font-mono font-bold uppercase tracking-widest text-brand-cyan flex items-center gap-2">
+          <span>//</span> 03. Technical Writing
+        </h2>
+        <p class="mt-4 text-3xl font-bold tracking-tight text-white sm:text-4xl">
+          Articles & insights
+        </p>
+      </div>
+
+      <!-- Bento Box Layout Grid -->
+      <div class="grid grid-cols-1 md:grid-cols-6 gap-6">
+
+        <!-- Torc Article (Strategic piece, Large grid cell) -->
+        <article class="md:col-span-4 rounded-2xl border border-brand-violet/20 bg-gradient-to-br from-panel-dark to-zinc-950 p-8 flex flex-col justify-between group hover:border-brand-violet/50 hover:shadow-[0_0_30px_rgba(139,92,246,0.15)] transition-all duration-300 relative overflow-hidden">
+          <div class="absolute top-0 right-0 w-64 h-64 bg-brand-violet/10 rounded-full blur-3xl pointer-events-none" aria-hidden="true"></div>
+          <div>
+            <div class="flex items-center justify-between">
+              <div class="inline-flex items-center gap-2 rounded-full border border-brand-violet/30 bg-brand-violet/10 px-3 py-1 text-xs font-medium text-brand-violet">
+                Featured Strategy Guide
+              </div>
+              <span class="text-xs font-mono text-zinc-500">Torc.dev</span>
+            </div>
+            <h3 class="mt-6 text-2xl sm:text-3xl font-bold text-white group-hover:text-brand-violet transition-colors duration-200">
+              <a href="https://www.torc.dev/blog/layoff-to-offer-in-89-days-lawrence-lockhart-s-strategic-job-search" target="_blank" rel="noopener noreferrer" class="focus-visible:outline-none" aria-label="Read Layoff to offer in 89 days on Torc.dev, opens in new tab">
+                Layoff to offer in 89 days: A strategic developer workflow
+              </a>
+            </h3>
+            <p class="mt-4 text-zinc-300 font-light leading-relaxed text-base sm:text-lg">
+              A tactical breakdown of Lawrence Lockhart's systematic approach to navigating the modern tech job market. Explores target lists, optimizing public profiles, technical review cadence, and utilizing personal branding to secure a premium offer under pressure.
+            </p>
+          </div>
+          <div class="mt-12 flex items-center justify-between pt-6 border-t border-panel-border">
+            <span class="text-xs text-zinc-500 font-mono">Published on Torc Blog</span>
+            <a href="https://www.torc.dev/blog/layoff-to-offer-in-89-days-lawrence-lockhart-s-strategic-job-search" target="_blank" rel="noopener noreferrer" class="inline-flex items-center gap-1.5 font-semibold text-brand-violet hover:text-white group-hover:translate-x-1 transition-all duration-200 text-sm" aria-hidden="true">
+              Read Article
+              <svg class="h-4.5 w-4.5" fill="none" viewBox="0 0 24 24" stroke-width="2" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" d="M13.5 4.5L21 12m0 0l-7.5 7.5M21 12H3" /></svg>
+            </a>
+          </div>
+        </article>
+
+        <!-- Vaadin Blog (Grid cell 1x1) -->
+        <article class="md:col-span-2 rounded-2xl border border-panel-border bg-panel-dark p-6 flex flex-col justify-between group hover:border-emerald-500/30 hover:shadow-[0_0_20px_rgba(16,185,129,0.05)] transition-all duration-300">
+          <div>
+            <div class="flex items-center justify-between">
+              <div class="h-8 w-8 rounded bg-emerald-500/10 flex items-center justify-center text-emerald-400">
+                <!-- Custom Vaadin 'V' shape -->
+                <svg class="h-5 w-5 fill-none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2.5" aria-hidden="true"><path stroke-linecap="round" stroke-linejoin="round" d="M6 4l6 14L18 4" /></svg>
+              </div>
+              <span class="text-xs font-mono text-zinc-500">Vaadin Blog</span>
+            </div>
+            <h3 class="mt-6 text-lg font-bold text-white group-hover:text-emerald-400 transition-colors duration-200">
+              <a href="https://vaadin.com/blog/page/1?query=lawrence" target="_blank" rel="noopener noreferrer" class="focus-visible:outline-none" aria-label="Read articles on the Vaadin Blog, opens in new tab">
+                Full-Stack Java UX Articles
+              </a>
+            </h3>
+            <p class="mt-2 text-sm text-zinc-400 leading-relaxed font-light">
+              Authored technical posts focused on modern full-stack web UI design using Java, enabling back-end engineering teams to deliver responsive consumer-grade layouts.
+            </p>
+          </div>
+          <div class="mt-8 flex items-center justify-between pt-4 border-t border-panel-border/50">
+            <span class="text-xs text-zinc-500 font-mono">Multiple guides</span>
+            <a href="https://vaadin.com/blog/page/1?query=lawrence" target="_blank" rel="noopener noreferrer" class="inline-flex items-center gap-1.5 font-semibold text-emerald-400 hover:text-white group-hover:translate-x-0.5 transition-all duration-200 text-xs" aria-hidden="true">
+              Explore posts
+              <svg class="h-3.5 w-3.5" fill="none" viewBox="0 0 24 24" stroke-width="2" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" d="M13.5 4.5L21 12m0 0l-7.5 7.5M21 12H3" /></svg>
+            </a>
+          </div>
+        </article>
+
+        <!-- Beefree Developer News (Grid cell 1x1) -->
+        <article class="md:col-span-3 rounded-2xl border border-panel-border bg-panel-dark p-6 flex flex-col justify-between group hover:border-brand-cyan/30 hover:shadow-[0_0_20px_rgba(6,182,212,0.05)] transition-all duration-300">
+          <div>
+            <div class="flex items-center justify-between">
+              <div class="h-8 w-8 rounded bg-brand-cyan/10 flex items-center justify-center text-brand-cyan">
+                <!-- Mail/Developer icon -->
+                <svg class="h-5 w-5 fill-none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2" aria-hidden="true"><path stroke-linecap="round" stroke-linejoin="round" d="M21.75 6.75v10.5a2.25 2.25 0 01-2.25 2.25h-15a2.25 2.25 0 01-2.25-2.25V6.75m19.5 0A2.25 2.25 0 0019.5 4.5h-15a2.25 2.25 0 00-2.25 2.25m19.5 0v.243a2.25 2.25 0 01-1.07 1.916l-7.5 4.615a2.25 2.25 0 01-2.36 0L3.32 8.91a2.25 2.25 0 01-1.07-1.916V6.75" /></svg>
+              </div>
+              <span class="text-xs font-mono text-zinc-500">Beefree</span>
+            </div>
+            <h3 class="mt-6 text-lg font-bold text-white group-hover:text-brand-cyan transition-colors duration-200">
+              <a href="https://developers.beefree.io/category/developer-news" target="_blank" rel="noopener noreferrer" class="focus-visible:outline-none" aria-label="Read developer news contributions on Beefree, opens in new tab">
+                Developer News Contributions
+              </a>
+            </h3>
+            <p class="mt-2 text-sm text-zinc-400 leading-relaxed font-light">
+              Writing technical deep dives on responsive HTML/CSS structures, newsletter layouts, developer tools, and email template architecture optimizations.
+            </p>
+          </div>
+          <div class="mt-8 flex items-center justify-between pt-4 border-t border-panel-border/50">
+            <span class="text-xs text-zinc-500 font-mono">Newsletter & blog</span>
+            <a href="https://developers.beefree.io/category/developer-news" target="_blank" rel="noopener noreferrer" class="inline-flex items-center gap-1.5 font-semibold text-brand-cyan hover:text-white group-hover:translate-x-0.5 transition-all duration-200 text-xs" aria-hidden="true">
+              Read news
+              <svg class="h-3.5 w-3.5" fill="none" viewBox="0 0 24 24" stroke-width="2" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" d="M13.5 4.5L21 12m0 0l-7.5 7.5M21 12H3" /></svg>
+            </a>
+          </div>
+        </article>
+
+        <!-- Personal Blog (Grid cell 1x1) -->
+        <article class="md:col-span-3 rounded-2xl border border-panel-border bg-panel-dark p-6 flex flex-col justify-between group hover:border-brand-violet/30 hover:shadow-[0_0_20px_rgba(139,92,246,0.05)] transition-all duration-300">
+          <div>
+            <div class="flex items-center justify-between">
+              <div class="h-8 w-8 rounded bg-brand-violet/10 flex items-center justify-center text-brand-violet">
+                <!-- Blog rss / edit icon -->
+                <svg class="h-5 w-5 fill-none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2" aria-hidden="true"><path stroke-linecap="round" stroke-linejoin="round" d="M16.862 4.487l1.687-1.688a1.875 1.875 0 112.652 2.652L10.582 16.07a4.5 4.5 0 01-1.897 1.13L6 18l.8-2.685a4.5 4.5 0 011.13-1.897l8.932-8.931zm0 0L19.5 7.125M18 14v4.75A2.25 2.25 0 0115.75 21H5.25A2.25 2.25 0 013 18.75V8.25A2.25 2.25 0 015.25 6H10" /></svg>
+              </div>
+              <span class="text-xs font-mono text-zinc-500">Personal Blog</span>
+            </div>
+            <h3 class="mt-6 text-lg font-bold text-white group-hover:text-brand-violet transition-colors duration-200">
+              <a href="https://lawrencedcodes.blogspot.com/" target="_blank" rel="noopener noreferrer" class="focus-visible:outline-none" aria-label="Read Lawrence's personal technical blog, opens in new tab">
+                Personal Technical Blog
+              </a>
+            </h3>
+            <p class="mt-2 text-sm text-zinc-400 leading-relaxed font-light">
+              Insights, debugging logs, and reflections on code. Documenting real-time updates regarding agentic systems, Model Context Protocol configurations, and solo developer builds.
+            </p>
+          </div>
+          <div class="mt-8 flex items-center justify-between pt-4 border-t border-panel-border/50">
+            <span class="text-xs text-zinc-500 font-mono">Blogger journal</span>
+            <a href="https://lawrencedcodes.blogspot.com/" target="_blank" rel="noopener noreferrer" class="inline-flex items-center gap-1.5 font-semibold text-brand-violet hover:text-white group-hover:translate-x-0.5 transition-all duration-200 text-xs" aria-hidden="true">
+              Visit blog
+              <svg class="h-3.5 w-3.5" fill="none" viewBox="0 0 24 24" stroke-width="2" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" d="M13.5 4.5L21 12m0 0l-7.5 7.5M21 12H3" /></svg>
+            </a>
+          </div>
+        </article>
+
+      </div>
+    </section>
+
+    <!-- Connect / Call-to-action Section -->
+    <section class="py-16 sm:py-24 border-t border-panel-border scroll-reveal" aria-label="Call to Action">
+      <div class="rounded-2xl border border-panel-border bg-gradient-to-br from-panel-dark to-zinc-950 p-8 sm:p-12 text-center relative overflow-hidden">
+        <div class="absolute -top-12 -left-12 w-48 h-48 bg-brand-cyan/10 rounded-full blur-3xl pointer-events-none" aria-hidden="true"></div>
+        <div class="absolute -bottom-12 -right-12 w-48 h-48 bg-brand-violet/10 rounded-full blur-3xl pointer-events-none" aria-hidden="true"></div>
+        
+        <h2 class="text-3xl font-bold tracking-tight text-white sm:text-4xl">Let's build something together</h2>
+        <p class="mx-auto mt-4 max-w-xl text-zinc-400 font-light">
+          Whether you need a compelling speaker for a developer conference, high-quality technical content for your blog, or assistance integrating agentic AI loops into your product.
+        </p>
+        
+        <div class="mt-8 flex flex-wrap justify-center gap-4">
+          <a href="https://topmate.io/lawrencedcodes" target="_blank" rel="noopener noreferrer" class="inline-flex items-center gap-2 rounded-lg bg-brand-violet text-white px-6 py-3.5 text-sm font-semibold hover:bg-brand-violet/90 hover:shadow-[0_0_20px_rgba(139,92,246,0.4)] transition-all duration-300 focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-brand-violet" aria-label="Schedule a call on Topmate, opens in a new tab">
+            <svg class="h-4.5 w-4.5" fill="none" viewBox="0 0 24 24" stroke-width="2" stroke="currentColor" aria-hidden="true"><path stroke-linecap="round" stroke-linejoin="round" d="M6.75 3v2.25M17.25 3v2.25M3 18.75V7.5a2.25 2.25 0 012.25-2.25h13.5A2.25 2.25 0 0121 7.5v11.25m-18 0A2.25 2.25 0 005.25 21h13.5A2.25 2.25 0 0021 18.75m-18 0v-7.5A2.25 2.25 0 015.25 9h13.5A2.25 2.25 0 0121 11.25v7.5" /></svg>
+            Schedule Consultation
+          </a>
+          <a href="mailto:lawrence@lawrencelockhart.com" class="inline-flex items-center gap-2 rounded-lg bg-zinc-900 border border-zinc-800 text-zinc-300 hover:text-white hover:bg-zinc-800 hover:border-zinc-700 px-6 py-3.5 text-sm font-semibold transition-all duration-200 focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-zinc-500" aria-label="Send Lawrence an email">
+            <svg class="h-4.5 w-4.5" fill="none" viewBox="0 0 24 24" stroke-width="2" stroke="currentColor" aria-hidden="true"><path stroke-linecap="round" stroke-linejoin="round" d="M21.75 6.75v10.5a2.25 2.25 0 01-2.25 2.25h-15a2.25 2.25 0 01-2.25-2.25V6.75m19.5 0A2.25 2.25 0 0019.5 4.5h-15a2.25 2.25 0 00-2.25 2.25m19.5 0v.243a2.25 2.25 0 01-1.07 1.916l-7.5 4.615a2.25 2.25 0 01-2.36 0L3.32 8.91a2.25 2.25 0 01-1.07-1.916V6.75" /></svg>
+            Get In Touch
+          </a>
+        </div>
+      </div>
+    </section>
+
+  </main>
+
+  <!-- Footer Section -->
+  <footer class="border-t border-panel-border bg-bg-dark py-12">
+    <div class="mx-auto max-w-7xl px-4 sm:px-6 lg:px-8 flex flex-col md:flex-row items-center justify-between gap-6">
+      
+      <!-- Logo and Copyright -->
+      <div class="flex flex-col items-center md:items-start gap-1">
+        <span class="font-mono text-sm tracking-tight text-white">
+          <span class="text-brand-violet">&lt;</span>lawrence.lockhart <span class="text-brand-cyan">/&gt;</span>
+        </span>
+        <p class="text-xs text-zinc-500">
+          &copy; <span id="current-year">2026</span> Lawrence Lockhart. All rights reserved.
+        </p>
+      </div>
+
+      <!-- Social Icons & Links -->
+      <nav class="flex items-center gap-5" aria-label="Social Profiles">
+        <!-- X (Twitter) -->
+        <a href="https://x.com/LawrenceDCodes" target="_blank" rel="noopener noreferrer" class="text-zinc-500 hover:text-white transition-colors duration-200 focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-brand-cyan rounded p-1" aria-label="Follow me on X (Twitter), opens in a new tab">
+          <svg class="h-5 w-5 fill-current" viewBox="0 0 24 24" aria-hidden="true">
+            <path d="M18.244 2.25h3.308l-7.227 8.26 8.502 11.24H16.17l-5.214-6.817L4.99 21.75H1.68l7.73-8.835L1.254 2.25H8.08l4.713 6.231zm-1.161 17.52h1.833L7.084 4.126H5.117z" />
+          </svg>
+        </a>
+
+        <!-- LinkedIn -->
+        <a href="https://linkedin.com/in/lawrencelockhart" target="_blank" rel="noopener noreferrer" class="text-zinc-500 hover:text-white transition-colors duration-200 focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-brand-cyan rounded p-1" aria-label="Connect with me on LinkedIn, opens in a new tab">
+          <svg class="h-5 w-5 fill-current" viewBox="0 0 24 24" aria-hidden="true">
+            <path fill-rule="evenodd" d="M19 0h-14c-2.761 0-5 2.239-5 5v14c0 2.761 2.239 5 5 5h14c2.762 0 5-2.239 5-5v-14c0-2.761-2.238-5-5-5zm-11 19h-3v-11h3v11zm-1.5-12.268c-.966 0-1.75-.779-1.75-1.75s.784-1.75 1.75-1.75 1.75.779 1.75 1.75-.784 1.75-1.75 1.75zm13.5 12.268h-3v-5.604c0-3.368-4-3.113-4 0v5.604h-3v-11h3v1.765c1.396-2.586 7-2.777 7 2.476v6.759z" clip-rule="evenodd"/>
+          </svg>
+        </a>
+
+        <!-- YouTube -->
+        <a href="https://www.youtube.com/@LawrenceDCodes" target="_blank" rel="noopener noreferrer" class="text-zinc-500 hover:text-white transition-colors duration-200 focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-brand-cyan rounded p-1" aria-label="Subscribe to my YouTube channel, opens in a new tab">
+          <svg class="h-5 w-5 fill-current" viewBox="0 0 24 24" aria-hidden="true">
+            <path fill-rule="evenodd" d="M23.498 6.163a3.003 3.003 0 00-2.11-2.11C19.517 3.545 12 3.545 12 3.545s-7.517 0-9.388.508a3.003 3.003 0 00-2.11 2.11C0 8.033 0 12 0 12s0 3.967.502 5.837a3.003 3.003 0 002.11 2.11c1.871.508 9.388.508 9.388.508s7.517 0 9.388-.508a3.003 3.003 0 002.11-2.11C24 15.967 24 12 24 12s0-3.967-.502-5.837zM9.545 15.568V8.432L15.818 12l-6.273 3.568z" clip-rule="evenodd"/>
+          </svg>
+        </a>
+
+        <!-- GitHub -->
+        <a href="https://github.com/lawrencedcodes" target="_blank" rel="noopener noreferrer" class="text-zinc-500 hover:text-white transition-colors duration-200 focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-brand-cyan rounded p-1" aria-label="Check my GitHub profile, opens in a new tab">
+          <svg class="h-5 w-5 fill-current" viewBox="0 0 24 24" aria-hidden="true">
+            <path fill-rule="evenodd" d="M12 2C6.477 2 2 6.477 2 12c0 4.42 2.865 8.166 6.839 9.489.5.092.682-.217.682-.482 0-.237-.008-.866-.013-1.7-2.782.603-3.369-1.34-3.369-1.34-.454-1.156-1.11-1.464-1.11-1.464-.908-.62.069-.608.069-.608 1.003.07 1.531 1.03 1.531 1.03.892 1.529 2.341 1.087 2.91.831.092-.646.35-1.086.636-1.336-2.22-.253-4.555-1.11-4.555-4.943 0-1.091.39-1.984 1.029-2.683-.103-.253-.446-1.27.098-2.647 0 0 .84-.269 2.75 1.025A9.564 9.564 0 0112 6.844c.85.004 1.705.115 2.504.337 1.909-1.294 2.747-1.025 2.747-1.025.546 1.377.203 2.394.1 2.647.64.699 1.028 1.592 1.028 2.683 0 3.842-2.339 4.687-4.566 4.935.359.309.678.919.678 1.852 0 1.336-.012 2.415-.012 2.743 0 .267.18.579.688.481C19.137 20.162 22 16.418 22 12c0-5.523-4.477-10-10-10z" clip-rule="evenodd" />
+          </svg>
+        </a>
+      </nav>
+
+    </div>
+  </footer>
+
+  <!-- Script for Scroll Reveal Animations and Auto-Year -->
+  <script>
+    // Update copyright year dynamically
+    document.getElementById('current-year').textContent = new Date().getFullYear();
+
+    // IntersectionObserver scroll reveal setup (graceful progressive enhancement fallback/standard)
+    const observerOptions = {
+      root: null,
+      rootMargin: '0px',
+      threshold: 0.1
+    };
+
+    const scrollRevealObserver = new IntersectionObserver((entries) => {
+      entries.forEach(entry => {
+        if (entry.isIntersecting) {
+          entry.target.classList.add('is-visible');
+          // Once visible, stop observing to optimize performance
+          scrollRevealObserver.unobserve(entry.target);
+        }
+      });
+    }, observerOptions);
+
+    // Track scroll elements
+    document.querySelectorAll('.scroll-reveal').forEach((el) => {
+      scrollRevealObserver.observe(el);
+    });
+  </script>
+
+</body>
+</html>
