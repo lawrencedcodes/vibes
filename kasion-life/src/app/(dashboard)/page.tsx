@@ -33,7 +33,11 @@ export default async function OverviewPage() {
   oneYearAgo.setDate(today.getDate() - 365);
 
   // Parallel fetch master dashboard data
-  const [countdowns, healthLog, focusSessions, events, weeklyScore, habits] = await Promise.all([
+  const [user, countdowns, healthLog, focusSessions, events, weeklyScore, habits] = await Promise.all([
+    db.user.findUnique({
+      where: { id: session.userId },
+      select: { name: true, email: true },
+    }),
     db.countdown.findMany({
       where: { userId: session.userId },
       orderBy: { targetDate: "asc" },
@@ -89,6 +93,8 @@ export default async function OverviewPage() {
       },
     }),
   ]);
+
+  const displayName = user?.name?.trim() || user?.email?.split("@")[0] || "Explorer";
 
   // Map habits to a clean, serializable format for the client
   const serializedHabits = habits.map((habit) => {
@@ -176,13 +182,36 @@ export default async function OverviewPage() {
       `}</style>
 
       {/* Welcome Hero Area */}
-      <div style={{ display: "flex", flexDirection: "column", gap: "0.5rem" }}>
-        <h1 style={{ fontSize: "2rem", fontWeight: "800", letterSpacing: "-0.03em" }}>
-          Welcome back, Lawrence
-        </h1>
-        <p style={{ color: "var(--muted)", fontSize: "0.875rem" }}>
-          Here is your overview for today
-        </p>
+      <div style={{ display: "flex", alignItems: "center", justifyContent: "space-between", flexWrap: "wrap", gap: "1rem" }}>
+        <div style={{ display: "flex", flexDirection: "column", gap: "0.5rem" }}>
+          <h1 style={{ fontSize: "2rem", fontWeight: "800", letterSpacing: "-0.03em" }}>
+            Welcome back, {displayName}
+          </h1>
+          <p style={{ color: "var(--muted)", fontSize: "0.875rem" }}>
+            Here is your overview for today
+          </p>
+        </div>
+
+        {habits.length === 0 && (
+          <Link
+            href="/onboarding"
+            style={{
+              display: "inline-flex",
+              alignItems: "center",
+              gap: "0.5rem",
+              padding: "0.65rem 1.25rem",
+              borderRadius: "0.875rem",
+              backgroundColor: "var(--accent)",
+              color: "var(--accent-foreground)",
+              fontSize: "0.815rem",
+              fontWeight: "700",
+              textDecoration: "none",
+              boxShadow: "0 4px 14px var(--accent-glow)",
+            }}
+          >
+            <span>🚀 Run 12-Week Year Setup Wizard</span>
+          </Link>
+        )}
       </div>
 
       {/* Bento Grid */}

@@ -1,7 +1,24 @@
 import React from "react";
-import { SettingsIcon } from "@/components/Icons";
+import { cookies } from "next/headers";
+import { redirect } from "next/navigation";
+import { decrypt } from "@/lib/session";
+import { db } from "@/lib/db";
+import ProfileSettingsForm from "@/components/ProfileSettingsForm";
 
-export default function SettingsPage() {
+export default async function SettingsPage() {
+  const cookieStore = await cookies();
+  const sessionCookie = cookieStore.get("session")?.value;
+  const session = await decrypt(sessionCookie);
+
+  if (!session?.userId) {
+    redirect("/login");
+  }
+
+  const user = await db.user.findUnique({
+    where: { id: session.userId },
+    select: { name: true, email: true },
+  });
+
   return (
     <div className="animate-fade-in" style={{ display: "flex", flexDirection: "column", gap: "2rem" }}>
       {/* Title */}
@@ -13,6 +30,12 @@ export default function SettingsPage() {
           Configure user profile settings, application modes, and export databases.
         </p>
       </div>
+
+      {/* Account Profile & Onboarding Card */}
+      <ProfileSettingsForm
+        initialName={user?.name || ""}
+        email={user?.email || ""}
+      />
 
       {/* General Settings Card */}
       <div className="glass-panel" style={{ padding: "2rem", borderRadius: "1.25rem", display: "flex", flexDirection: "column", gap: "1.5rem" }}>

@@ -24,12 +24,23 @@ import { logout } from "@/app/actions/auth";
 
 interface DashboardLayoutProps {
   children: React.ReactNode;
+  userName?: string | null;
+  userEmail?: string | null;
 }
 
-export default function DashboardLayout({ children }: DashboardLayoutProps) {
+export default function DashboardLayout({ children, userName, userEmail }: DashboardLayoutProps) {
   const [sidebarOpen, setSidebarOpen] = useState(false);
   const [theme, setTheme] = useState<"dark" | "light">("dark");
   const pathname = usePathname();
+
+  const getUserInitials = () => {
+    const source = (userName || userEmail || "KL").trim();
+    const parts = source.split(/\s+/).filter(Boolean);
+    if (parts.length >= 2) {
+      return `${parts[0][0]}${parts[1][0]}`.toUpperCase();
+    }
+    return source.slice(0, 2).toUpperCase();
+  };
 
   // Initialize theme from localStorage or system preferences
   useEffect(() => {
@@ -139,16 +150,24 @@ export default function DashboardLayout({ children }: DashboardLayoutProps) {
             })}
           </nav>
 
-          {/* Minimalist Sidebar Modules Indicator */}
+          {/* Workspace & Plan Quick Links */}
           <div className="sidebar-footer-divider" style={{ marginTop: "2rem", paddingTop: "2rem", borderTop: "1px solid var(--sidebar-border)" }}>
             <div className="nav-section-title" style={{ marginBottom: "0.75rem" }}>
-              Active Modules
+              Workspace &amp; Plan
             </div>
-            <div style={{ display: "flex", flexDirection: "column", gap: "0.75rem" }}>
-              <button className="add-widget-dashed">
-                <span>Add Widget...</span>
+            <div style={{ display: "flex", flexDirection: "column", gap: "0.625rem" }}>
+              <Link
+                href="/pricing"
+                className="add-widget-dashed"
+                style={{ textDecoration: "none", borderStyle: "solid", borderColor: "rgba(99, 102, 241, 0.25)" }}
+              >
+                <span style={{ color: "var(--foreground)", fontWeight: "600" }}>⚡ View Pro Plans</span>
+                <span className="badge-plus" style={{ color: "var(--accent)" }}>PRO</span>
+              </Link>
+              <Link href="/onboarding" className="add-widget-dashed" style={{ textDecoration: "none" }}>
+                <span>12-Week Setup Wizard</span>
                 <span className="badge-plus">+</span>
-              </button>
+              </Link>
             </div>
           </div>
         </div>
@@ -226,10 +245,15 @@ export default function DashboardLayout({ children }: DashboardLayoutProps) {
               <span>{getFormattedDate()}</span>
             </div>
 
-            {/* Profile Dropdown Placeholder */}
-            <div className="profile-avatar">
-              KL
-            </div>
+            {/* Profile Badge */}
+            <Link
+              href="/settings"
+              className="profile-avatar"
+              title={userName ? `${userName} (${userEmail || ""})` : "Account Settings"}
+              style={{ textDecoration: "none" }}
+            >
+              {getUserInitials()}
+            </Link>
           </div>
         </header>
 
