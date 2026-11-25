@@ -41,6 +41,24 @@ export async function createGoal(
       return { error: "Invalid target date format." };
     }
 
+    const user = await db.user.findUnique({
+      where: { id: session.userId },
+      select: { plan: true },
+    });
+
+    const isFree = !user?.plan || user.plan === "FREE";
+    if (isFree) {
+      const activeGoalCount = await db.goal.count({
+        where: { userId: session.userId, isCompleted: false },
+      });
+      if (activeGoalCount >= 1) {
+        return {
+          error:
+            "Starter OS includes 1 active 12-Week Year Goal. Upgrade to Kasion Pro or Founder Edition in Settings for unlimited goals.",
+        };
+      }
+    }
+
     // Create the Goal
     const newGoal = await db.goal.create({
       data: {

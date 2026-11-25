@@ -3,7 +3,7 @@ import { db } from "@/lib/db";
 import { decrypt } from "@/lib/session";
 import { cookies } from "next/headers";
 import { redirect } from "next/navigation";
-import HealthWidget from "@/components/HealthWidget";
+import HealthWidget, { SerializedHealthLog } from "@/components/HealthWidget";
 
 export default async function HealthPage() {
   const cookieStore = await cookies();
@@ -27,17 +27,15 @@ export default async function HealthPage() {
     },
   });
 
-  // Fetch logs for the past 7 days
-  const sevenDaysAgo = new Date();
-  sevenDaysAgo.setDate(sevenDaysAgo.getDate() - 7);
-  sevenDaysAgo.setHours(0, 0, 0, 0);
+  // Fetch recent health logs (up to 14 days including today)
+  const fourteenDaysAgo = new Date(today);
+  fourteenDaysAgo.setDate(today.getDate() - 14);
 
-  const pastLogs = await db.healthLog.findMany({
+  const recentLogs = await db.healthLog.findMany({
     where: {
       userId: session.userId,
       date: {
-        lt: today,
-        gte: sevenDaysAgo,
+        gte: fourteenDaysAgo,
       },
     },
     orderBy: {
@@ -45,74 +43,52 @@ export default async function HealthPage() {
     },
   });
 
-  const months = [
-    "JANUARY", "FEBRUARY", "MARCH", "APRIL", "MAY", "JUNE",
-    "JULY", "AUGUST", "SEPTEMBER", "OCTOBER", "NOVEMBER", "DECEMBER"
-  ];
-  
-  const formatDate = (date: Date) => {
-    const d = new Date(date);
-    return `${months[d.getMonth()]} ${d.getDate()}, ${d.getFullYear()}`;
-  };
+  const serializeLog = (
+    log: NonNullable<typeof todayLog> | null,
+    fallbackDate: Date
+  ): SerializedHealthLog => ({
+    id: log?.id ?? "today-draft",
+    date: (log?.date ?? fallbackDate).toISOString(),
+    sleepHours: log?.sleepHours ?? 0,
+    sleepQuality: log?.sleepQuality ?? 3,
+    waterIntake: log?.waterIntake ?? 0,
+    energyLevel: log?.energyLevel ?? 5,
+    steps: log?.steps ?? 0,
+    workoutMinutes: log?.workoutMinutes ?? 0,
+    workoutType: log?.workoutType ?? "NONE",
+    mood: log?.mood ?? "CALM",
+    stressLevel: log?.stressLevel ?? 3,
+    calories: log?.calories ?? 0,
+    proteinGrams: log?.proteinGrams ?? 0,
+    caffeineCups: log?.caffeineCups ?? 0,
+    weightLbs: log?.weightLbs ?? null,
+    restingHeartRate: log?.restingHeartRate ?? null,
+    mindfulnessMinutes: log?.mindfulnessMinutes ?? 0,
+    sunlightMinutes: log?.sunlightMinutes ?? 0,
+    supplementsTaken: log?.supplementsTaken ?? "",
+    notes: log?.notes ?? "",
+  });
+
+  const serializedToday = serializeLog(todayLog, today);
+  const serializedHistory = recentLogs.map((l) => serializeLog(l, l.date));
 
   return (
-    <div className="animate-fade-in" style={{ display: "flex", flexDirection: "column", gap: "2.5rem", maxWidth: "600px" }}>
+    <div className="animate-fade-in" style={{ display: "flex", flexDirection: "column", gap: "2rem", inlineSize: "100%" }}>
       {/* Title */}
       <div style={{ display: "flex", flexDirection: "column", gap: "0.5rem" }}>
         <h1 style={{ fontSize: "2rem", fontWeight: "800", letterSpacing: "-0.03em" }}>
-          Health & Wellness
+          Health &amp; Wellness OS
         </h1>
         <p style={{ color: "var(--muted)", fontSize: "0.875rem" }}>
-          Monitor your daily physical vitals, energy levels, and sleep patterns.
+          Track your daily readiness score, sleep architecture, movement, nutrition, cardiovascular vitals, and recovery stack.
         </p>
       </div>
 
-      {/* Interactive Tracker Widget */}
+      {/* Comprehensive Interactive Health & Biometric Tracker */}
       <HealthWidget
-        initialSleep={todayLog?.sleepHours ?? 0}
-        initialWater={todayLog?.waterIntake ?? 0}
-        initialEnergy={todayLog?.energyLevel ?? 5}
+        initialTodayLog={serializedToday}
+        initialHistoryLogs={serializedHistory}
       />
-
-      {/* History */}
-      <div style={{ display: "flex", flexDirection: "column", gap: "1rem" }}>
-        <h3 style={{ fontSize: "1rem", fontWeight: "700" }}>Past 7 Days</h3>
-        {pastLogs.length === 0 ? (
-          <p style={{ color: "var(--muted)", fontSize: "0.875rem", fontStyle: "italic" }}>
-            No health logs found for the past week. Consistent tracking builds wellness!
-          </p>
-        ) : (
-          <div style={{ display: "flex", flexDirection: "column", gap: "0.75rem" }}>
-            {pastLogs.map((log) => (
-              <div key={log.id} className="glass-panel" style={{
-                padding: "1rem 1.25rem",
-                borderRadius: "1rem",
-                display: "flex",
-                justifyContent: "space-between",
-                alignItems: "center",
-                backgroundColor: "var(--card-bg)"
-              }}>
-                <div>
-                  <span style={{ fontSize: "11px", color: "var(--muted)", fontFamily: "var(--font-mono)" }}>
-                    {formatDate(log.date)}
-                  </span>
-                  <div style={{ display: "flex", gap: "1.25rem", marginTop: "0.35rem", fontSize: "0.815rem", color: "var(--foreground)" }}>
-                    <span style={{ display: "flex", alignItems: "center", gap: "0.25rem" }}>
-                      💧 <strong>{log.waterIntake}</strong> gl
-                    </span>
-                    <span style={{ display: "flex", alignItems: "center", gap: "0.25rem" }}>
-                      😴 <strong>{log.sleepHours}</strong> hrs
-                    </span>
-                    <span style={{ display: "flex", alignItems: "center", gap: "0.25rem" }}>
-                      ⚡ <strong>{log.energyLevel}</strong>/10
-                    </span>
-                  </div>
-                </div>
-              </div>
-            ))}
-          </div>
-        )}
-      </div>
     </div>
   );
 }

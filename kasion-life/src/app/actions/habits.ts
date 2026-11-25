@@ -102,6 +102,24 @@ export async function createHabit(
   }
 
   try {
+    const user = await db.user.findUnique({
+      where: { id: session.userId },
+      select: { plan: true },
+    });
+
+    const isFree = !user?.plan || user.plan === "FREE";
+    if (isFree) {
+      const currentHabitCount = await db.habit.count({
+        where: { userId: session.userId },
+      });
+      if (currentHabitCount >= 3) {
+        return {
+          error:
+            "Starter OS is limited to 3 active habits. Upgrade to Kasion Pro or Founder Edition in Settings for unlimited habits.",
+        };
+      }
+    }
+
     await db.habit.create({
       data: {
         userId: session.userId,

@@ -10,18 +10,21 @@ export default async function WelcomePage() {
   const session = await decrypt(sessionCookie);
 
   let userName: string | null = null;
+  let userPlan: string = "FREE";
   if (session?.userId) {
     const user = await db.user.findUnique({
       where: { id: session.userId },
-      select: { name: true },
+      select: { name: true, plan: true },
     });
     userName = user?.name ?? null;
+    userPlan = user?.plan ?? "FREE";
   }
 
   return (
     <LandingPricingPage
       isAuthenticated={Boolean(session?.userId)}
       userName={userName}
+      userPlan={userPlan}
       focusPricing={false}
     />
   );

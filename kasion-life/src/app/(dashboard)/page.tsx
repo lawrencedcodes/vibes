@@ -13,6 +13,7 @@ import {
   CountdownIcon,
 } from "@/components/Icons";
 import HabitTracker from "@/components/HabitTracker";
+import WorkflowBlueprint, { WorkflowStats } from "@/components/WorkflowBlueprint";
 
 export default async function OverviewPage() {
   const cookieStore = await cookies();
@@ -32,8 +33,22 @@ export default async function OverviewPage() {
   const oneYearAgo = new Date(today);
   oneYearAgo.setDate(today.getDate() - 365);
 
-  // Parallel fetch master dashboard data
-  const [user, countdowns, healthLog, focusSessions, events, weeklyScore, habits] = await Promise.all([
+  // Parallel fetch master dashboard data + workflow connection counts
+  const [
+    user,
+    countdowns,
+    healthLog,
+    focusSessions,
+    events,
+    weeklyScore,
+    habits,
+    goalsCount,
+    projectsCount,
+    listsCount,
+    activeTodosCount,
+    completedTodosCount,
+    journalToday,
+  ] = await Promise.all([
     db.user.findUnique({
       where: { id: session.userId },
       select: { name: true, email: true },
@@ -92,6 +107,31 @@ export default async function OverviewPage() {
         createdAt: "asc",
       },
     }),
+    db.goal.count({
+      where: { userId: session.userId, isCompleted: false },
+    }),
+    db.project.count({
+      where: { userId: session.userId },
+    }),
+    db.list.count({
+      where: { userId: session.userId },
+    }),
+    db.todo.count({
+      where: { list: { userId: session.userId }, isCompleted: false },
+    }),
+    db.todo.count({
+      where: { list: { userId: session.userId }, isCompleted: true },
+    }),
+    db.journalEntry.findFirst({
+      where: {
+        userId: session.userId,
+        date: {
+          gte: today,
+          lt: tomorrow,
+        },
+      },
+      select: { id: true },
+    }),
   ]);
 
   const displayName = user?.name?.trim() || user?.email?.split("@")[0] || "Explorer";
@@ -124,6 +164,25 @@ export default async function OverviewPage() {
   });
 
   const totalFocusMinutes = focusSessions.reduce((acc, s) => acc + s.duration, 0);
+  const habitsCompletedToday = serializedHabits.filter((h) => h.isCompletedToday).length;
+  const linkedHabitsCount = habits.filter((h) => Boolean(h.goalId)).length;
+
+  const workflowStats: WorkflowStats = {
+    goalsCount,
+    habitsCount: habits.length,
+    linkedHabitsCount,
+    habitsCompletedToday,
+    projectsCount,
+    listsCount,
+    activeTodosCount,
+    completedTodosCount,
+    hasHealthLogToday: Boolean(healthLog),
+    eventsTodayCount: events.length,
+    focusSessionsTodayCount: focusSessions.length,
+    focusMinutesToday: totalFocusMinutes,
+    hasJournalToday: Boolean(journalToday),
+    countdownsCount: countdowns.length,
+  };
 
   const formatFocusDuration = (mins: number) => {
     if (mins < 60) return `${mins}m`;
@@ -192,27 +251,29 @@ export default async function OverviewPage() {
           </p>
         </div>
 
-        {habits.length === 0 && (
-          <Link
-            href="/onboarding"
-            style={{
-              display: "inline-flex",
-              alignItems: "center",
-              gap: "0.5rem",
-              padding: "0.65rem 1.25rem",
-              borderRadius: "0.875rem",
-              backgroundColor: "var(--accent)",
-              color: "var(--accent-foreground)",
-              fontSize: "0.815rem",
-              fontWeight: "700",
-              textDecoration: "none",
-              boxShadow: "0 4px 14px var(--accent-glow)",
-            }}
-          >
-            <span>🚀 Run 12-Week Year Setup Wizard</span>
-          </Link>
-        )}
+        <Link
+          href="/onboarding"
+          style={{
+            display: "inline-flex",
+            alignItems: "center",
+            gap: "0.5rem",
+            padding: "0.65rem 1.25rem",
+            borderRadius: "0.875rem",
+            backgroundColor: habits.length === 0 ? "var(--accent)" : "var(--muted-bg)",
+            color: habits.length === 0 ? "var(--accent-foreground)" : "var(--foreground)",
+            border: habits.length === 0 ? "none" : "1px solid var(--border)",
+            fontSize: "0.815rem",
+            fontWeight: "700",
+            textDecoration: "none",
+            boxShadow: habits.length === 0 ? "0 4px 14px var(--accent-glow)" : "none",
+          }}
+        >
+          <span>🚀 {habits.length === 0 ? "Run 12-Week Year Setup Wizard" : "12-Week Setup Wizard"}</span>
+        </Link>
       </div>
+
+      {/* Interactive Happy Path Workflow & Module Connections Blueprint */}
+      <WorkflowBlueprint stats={workflowStats} />
 
       {/* Bento Grid */}
       <div className="bento-grid">

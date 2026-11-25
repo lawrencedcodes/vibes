@@ -8,24 +8,31 @@ datasource db {
 }
 
 model User {
-  id           String       @id @default(uuid())
-  email        String       @unique
-  passwordHash String
-  name         String?
-  createdAt    DateTime     @default(now())
-  updatedAt    DateTime     @updatedAt
-  metrics      Metric[]
-  journals     Journal[]
-  goals        Goal[]
-  lists        List[]
-  projects     Project[]
-  events       Event[]
-  googleToken  GoogleToken?
-  habits       Habit[]
-  focusSessions FocusSession[]
-  journalEntries JournalEntry[]
-  countdowns    Countdown[]
-  healthLogs    HealthLog[]
+  id                     String         @id @default(uuid())
+  email                  String         @unique
+  passwordHash           String
+  name                   String?
+  plan                   String         @default("FREE") // "FREE" | "PRO" | "LIFETIME"
+  billingInterval        String?        // "monthly" | "annual" | "lifetime"
+  subscriptionStatus     String?        // "active" | "trialing" | "canceled" | "past_due"
+  stripeCustomerId       String?        @unique
+  stripeSubscriptionId   String?        @unique
+  stripePriceId          String?
+  stripeCurrentPeriodEnd DateTime?
+  createdAt              DateTime       @default(now())
+  updatedAt              DateTime       @updatedAt
+  metrics                Metric[]
+  journals               Journal[]
+  goals                  Goal[]
+  lists                  List[]
+  projects               Project[]
+  events                 Event[]
+  googleToken            GoogleToken?
+  habits                 Habit[]
+  focusSessions          FocusSession[]
+  journalEntries         JournalEntry[]
+  countdowns             Countdown[]
+  healthLogs             HealthLog[]
 }
 
 model Metric {
@@ -192,16 +199,32 @@ model Countdown {
 }
 
 model HealthLog {
-  id          String   @id @default(uuid())
-  userId      String
-  user        User     @relation(fields: [userId], references: [id], onDelete: Cascade)
-  date        DateTime
-  sleepHours  Float    @default(0)
-  waterIntake Int      @default(0)
-  energyLevel Int      @default(5)
-  createdAt   DateTime @default(now())
+  id                 String   @id @default(uuid())
+  userId             String
+  user               User     @relation(fields: [userId], references: [id], onDelete: Cascade)
+  date               DateTime
+  sleepHours         Float    @default(0)
+  sleepQuality       Int      @default(3)      // 1-5 rating
+  waterIntake        Int      @default(0)      // glasses
+  energyLevel        Int      @default(5)      // 1-10 scale
+  steps              Int      @default(0)      // daily step count
+  workoutMinutes     Int      @default(0)      // active exercise minutes
+  workoutType        String   @default("NONE") // NONE, STRENGTH, CARDIO, HIIT, YOGA, CYCLING, WALK, SPORTS
+  mood               String   @default("CALM") // FOCUSED, ENERGIZED, CALM, GRATEFUL, TIRED, STRESSED
+  stressLevel        Int      @default(3)      // 1-10 scale
+  calories           Int      @default(0)      // daily kcal
+  proteinGrams       Int      @default(0)      // daily protein (g)
+  caffeineCups       Int      @default(0)      // cups of coffee/tea
+  weightLbs          Float?                    // optional body weight
+  restingHeartRate   Int?                      // optional RHR (bpm)
+  mindfulnessMinutes Int      @default(0)      // meditation / breathwork mins
+  sunlightMinutes    Int      @default(0)      // outdoor light exposure mins
+  supplementsTaken   String   @default("")     // comma-separated list of taken supplements
+  notes              String   @default("")     // daily physical/recovery notes
+  createdAt          DateTime @default(now())
 
   @@unique([userId, date])
 }
+
 
 

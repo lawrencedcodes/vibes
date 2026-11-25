@@ -69,6 +69,8 @@ export async function signup(state: AuthState, formData: FormData): Promise<Auth
   const rawName = (formData.get("name") as string) || "";
   const rawEmail = (formData.get("email") as string) || "";
   const password = (formData.get("new-password") as string) || (formData.get("password") as string) || "";
+  const selectedPlan = (formData.get("selectedPlan") as string) || "free";
+  const selectedBilling = (formData.get("selectedBilling") as string) || "annual";
 
   const name = rawName.trim();
   const email = rawEmail.trim().toLowerCase();
@@ -97,11 +99,30 @@ export async function signup(state: AuthState, formData: FormData): Promise<Auth
 
     const passwordHash = await bcrypt.hash(password, 10);
 
+    const isProSelection = selectedPlan === "pro";
+    const isLifetimeSelection = selectedPlan === "lifetime";
+    const trialEnd = new Date();
+    trialEnd.setDate(trialEnd.getDate() + 14);
+
     const newUser = await db.user.create({
       data: {
         name,
         email,
         passwordHash,
+        plan: isLifetimeSelection ? "LIFETIME" : isProSelection ? "PRO" : "FREE",
+        billingInterval: isLifetimeSelection
+          ? "lifetime"
+          : isProSelection
+          ? selectedBilling === "monthly"
+            ? "monthly"
+            : "annual"
+          : null,
+        subscriptionStatus: isLifetimeSelection
+          ? "active"
+          : isProSelection
+          ? "trialing"
+          : null,
+        stripeCurrentPeriodEnd: isProSelection ? trialEnd : null,
       },
     });
 

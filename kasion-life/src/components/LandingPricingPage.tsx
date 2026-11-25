@@ -3,6 +3,7 @@
 import React, { useState, useEffect } from "react";
 import Link from "next/link";
 import { loginDemo } from "@/app/actions/auth";
+import { createCheckoutSession } from "@/app/actions/billing";
 import {
   TrackerIcon,
   TimerIcon,
@@ -17,6 +18,7 @@ import {
 interface LandingPricingPageProps {
   isAuthenticated?: boolean;
   userName?: string | null;
+  userPlan?: string;
   focusPricing?: boolean;
 }
 
@@ -38,6 +40,7 @@ const PREVIEW_HEATMAP_LEVELS = [
 export default function LandingPricingPage({
   isAuthenticated = false,
   userName = null,
+  userPlan = "FREE",
   focusPricing = false,
 }: LandingPricingPageProps) {
   const [billingCycle, setBillingCycle] = useState<"annual" | "monthly">("annual");
@@ -963,7 +966,11 @@ export default function LandingPricingPage({
                   textDecoration: "none",
                 }}
               >
-                {isAuthenticated ? "Current Workspace" : "Get Started Free →"}
+                {isAuthenticated
+                  ? userPlan === "FREE"
+                    ? "Current Plan • Open Dashboard →"
+                    : "Open Dashboard →"
+                  : "Get Started Free →"}
               </Link>
             </div>
 
@@ -1020,19 +1027,31 @@ export default function LandingPricingPage({
                 </li>
               </ul>
 
-              <Link
-                href={isAuthenticated ? "/settings" : `/signup?plan=pro&billing=${billingCycle}`}
-                className="login-btn"
-                style={{
-                  padding: "0.85rem 1.25rem",
-                  borderRadius: "0.875rem",
-                  fontSize: "0.875rem",
-                  fontWeight: "700",
-                  textDecoration: "none",
-                }}
-              >
-                {isAuthenticated ? "Upgrade in Settings →" : "Start 14-Day Pro Trial →"}
-              </Link>
+              <form action={createCheckoutSession}>
+                <input
+                  type="hidden"
+                  name="planOption"
+                  value={billingCycle === "annual" ? "pro_annual" : "pro_monthly"}
+                />
+                <button
+                  type="submit"
+                  className="login-btn"
+                  style={{
+                    inlineSize: "100%",
+                    padding: "0.85rem 1.25rem",
+                    borderRadius: "0.875rem",
+                    fontSize: "0.875rem",
+                    fontWeight: "700",
+                    cursor: "pointer",
+                  }}
+                >
+                  {isAuthenticated
+                    ? userPlan === "PRO"
+                      ? "Current Plan • Switch Cycle →"
+                      : "Start 14-Day Pro Trial (Stripe) →"
+                    : "Start 14-Day Pro Trial →"}
+                </button>
+              </form>
             </div>
 
             {/* Tier 3: Founder Lifetime */}
@@ -1084,24 +1103,32 @@ export default function LandingPricingPage({
                 </li>
               </ul>
 
-              <Link
-                href={isAuthenticated ? "/settings" : "/signup?plan=lifetime"}
-                style={{
-                  display: "flex",
-                  alignItems: "center",
-                  justifyContent: "center",
-                  padding: "0.85rem 1.25rem",
-                  borderRadius: "0.875rem",
-                  backgroundColor: "var(--muted-bg)",
-                  border: "1px solid var(--border)",
-                  color: "var(--foreground)",
-                  fontSize: "0.875rem",
-                  fontWeight: "700",
-                  textDecoration: "none",
-                }}
-              >
-                {isAuthenticated ? "Claim Founder Pass →" : "Claim Lifetime Access →"}
-              </Link>
+              <form action={createCheckoutSession}>
+                <input type="hidden" name="planOption" value="lifetime" />
+                <button
+                  type="submit"
+                  style={{
+                    inlineSize: "100%",
+                    display: "flex",
+                    alignItems: "center",
+                    justifyContent: "center",
+                    padding: "0.85rem 1.25rem",
+                    borderRadius: "0.875rem",
+                    backgroundColor: "var(--muted-bg)",
+                    border: "1px solid var(--border)",
+                    color: "var(--foreground)",
+                    fontSize: "0.875rem",
+                    fontWeight: "700",
+                    cursor: "pointer",
+                  }}
+                >
+                  {isAuthenticated
+                    ? userPlan === "LIFETIME"
+                      ? "Founder Pass Active ✓"
+                      : "Claim Founder Pass ($149) →"
+                    : "Claim Lifetime Access →"}
+                </button>
+              </form>
             </div>
           </div>
         </section>
